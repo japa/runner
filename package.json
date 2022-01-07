@@ -1,0 +1,107 @@
+{
+  "name": "@japa/runner",
+  "version": "0.0.0",
+  "description": "Runner for Japa testing framework",
+  "main": "build/index.js",
+  "files": [
+    "build/src",
+    "build/index.d.ts",
+    "build/index.js"
+  ],
+  "exports": {
+    ".": "./build/index.js"
+  },
+  "scripts": {
+    "mrm": "mrm --preset=@adonisjs/mrm-preset",
+    "pretest": "npm run lint",
+    "test": "node .bin/test.js",
+    "clean": "del build",
+    "compile": "npm run lint && npm run clean && tsc",
+    "build": "npm run compile",
+    "prepublishOnly": "npm run build",
+    "lint": "eslint . --ext=.ts",
+    "format": "prettier --write .",
+    "commit": "git-cz",
+    "release": "np --message=\"chore(release): %s\"",
+    "version": "npm run build",
+    "sync-labels": "github-label-sync --labels ./node_modules/@adonisjs/mrm-preset/gh-labels.json japa/runner"
+  },
+  "keywords": [
+    "japa",
+    "tests",
+    "test-runner"
+  ],
+  "author": "virk,japa",
+  "license": "MIT",
+  "devDependencies": {
+    "@adonisjs/mrm-preset": "^5.0.2",
+    "@adonisjs/require-ts": "^2.0.9",
+    "@types/node": "^17.0.14",
+    "commitizen": "^4.2.4",
+    "cz-conventional-changelog": "^3.3.0",
+    "del-cli": "^4.0.1",
+    "eslint": "^8.8.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-adonis": "^2.1.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "github-label-sync": "^2.0.2",
+    "husky": "^7.0.4",
+    "japa": "^4.0.0",
+    "mrm": "^3.0.10",
+    "np": "^7.6.0",
+    "prettier": "^2.5.1",
+    "typescript": "^4.5.5"
+  },
+  "mrmConfig": {
+    "core": false,
+    "license": "MIT",
+    "services": [
+      "github-actions"
+    ],
+    "minNodeVersion": "16.13.1",
+    "probotApps": [
+      "stale",
+      "lock"
+    ],
+    "runGhActionsOnWindows": true
+  },
+  "eslintConfig": {
+    "extends": [
+      "plugin:adonis/typescriptPackage",
+      "prettier"
+    ],
+    "plugins": [
+      "prettier"
+    ],
+    "rules": {
+      "prettier/prettier": [
+        "error",
+        {
+          "endOfLine": "auto"
+        }
+      ]
+    }
+  },
+  "eslintIgnore": [
+    "build"
+  ],
+  "prettier": {
+    "trailingComma": "es5",
+    "semi": false,
+    "singleQuote": true,
+    "useTabs": false,
+    "quoteProps": "consistent",
+    "bracketSpacing": true,
+    "arrowParens": "always",
+    "printWidth": 100
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
+  },
+  "np": {
+    "contents": ".",
+    "anyBranch": false
+  }
+}

@@ -1,0 +1,8 @@
+build
+docs
+*.md
+config.json
+.eslintrc.json
+package.json
+*.html
+*.txt
