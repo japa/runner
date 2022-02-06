@@ -110,5 +110,9 @@
     "fast-glob": "^3.2.11",
     "getopts": "^2.3.0",
     "inclusion": "^1.0.1"
+  },
+  "publishConfig": {
+    "access": "public",
+    "tag": "latest"
   }
 }
