@@ -13,13 +13,17 @@ import { processCliArgs } from '../index'
 test.group('processCliArgs', () => {
   test('process comma separated values', (assert) => {
     assert.deepEqual(processCliArgs(['--files=maths-add.spec,maths-subtract.spec']), {
-      files: ['maths-add.spec', 'maths-subtract.spec'],
+      filters: {
+        files: ['maths-add.spec', 'maths-subtract.spec'],
+      },
     })
   })
 
   test('process repeated flags as an array', (assert) => {
     assert.deepEqual(processCliArgs(['--files=maths-add.spec', '--files=maths-subtract.spec']), {
-      files: ['maths-add.spec', 'maths-subtract.spec'],
+      filters: {
+        files: ['maths-add.spec', 'maths-subtract.spec'],
+      },
     })
   })
 
@@ -33,10 +37,12 @@ test.group('processCliArgs', () => {
         '--ignore-tags=@subtract',
       ]),
       {
-        files: ['maths-add.spec'],
-        groups: ['Maths.add'],
-        tests: ['add two numbers'],
-        tags: ['@maths', '!@subtract'],
+        filters: {
+          files: ['maths-add.spec'],
+          groups: ['Maths.add'],
+          tests: ['add two numbers'],
+          tags: ['@maths', '!@subtract'],
+        },
       }
     )
   })

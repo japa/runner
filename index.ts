@@ -12,12 +12,13 @@ import { extname } from 'path'
 import fastGlob from 'fast-glob'
 import inclusion from 'inclusion'
 import { Hooks } from '@poppinss/hooks'
+import { ErrorsPrinter } from '@japa/errors-printer'
 import { Emitter, Refiner, Suite, Runner, TestExecutor } from '@japa/core'
 
 import { Test, TestContext, Group } from './src/Core'
 import { ConfigureOptions, Filters } from './src/Contracts'
 
-export { Test, TestContext, Group } from './src/Core'
+export { Test, TestContext, Group }
 
 /**
  * Filtering layers allowed by the refiner
@@ -84,10 +85,17 @@ async function endTests(runner: Runner) {
 }
 
 /**
- * Process command line args to an array of strings
+ * Process command line argument into a string value
  */
-function processArg(flag: string | string[]): string[] {
-  return (Array.isArray(flag) ? flag : flag.split(',')).map((tag: string) => tag.trim())
+function processAsString(
+  argv: Record<string, any>,
+  flagName: string,
+  onMatch: (value: string[]) => any
+): void {
+  const flag = argv[flagName]
+  if (flag) {
+    onMatch((Array.isArray(flag) ? flag : flag.split(',')).map((tag: string) => tag.trim()))
+  }
 }
 
 /**
@@ -127,7 +135,7 @@ export function configure(options: ConfigureOptions) {
 /**
  * Add a new test
  */
-export default function test(title: string, callback?: TestExecutor<TestContext, undefined>) {
+export function test(title: string, callback?: TestExecutor<TestContext, undefined>) {
   ensureIsConfigured('Cannot add test without configuring the test runner')
 
   const testInstance = new Test<TestContext, undefined>(
@@ -227,10 +235,7 @@ export async function run() {
     runnerOptions.reporters.forEach((reporter) => runner.registerReporter(reporter))
 
     /**
-     * Step 3: Run runner hooks.
-     *
-     * We run hooks before importing test files. It allows hooks
-     * to setup the app environment for the test files
+     * Step 3: Configure runner hooks.
      */
     runnerOptions.setup.forEach((hook) => hooks.add('setup', hook))
     runnerOptions.teardown.forEach((hook) => hooks.add('teardown', hook))
@@ -239,6 +244,10 @@ export async function run() {
 
     /**
      * Step 3.1: Run setup hooks
+     *
+     * We run the setup hooks before importing test files. It
+     * allows hooks to setup the app environment for the
+     * test files.
      */
     await setupRunner.run(runner)
 
@@ -289,9 +298,11 @@ export async function run() {
     await runner.exec()
 
     /**
-     * Step 7.3: Run teardown hooks
+     * Step 7.3: Run cleanup and teardown hooks
      */
+    await setupRunner.cleanup(runner)
     await teardownRunner.run(runner)
+    await teardownRunner.cleanup(runner)
 
     /**
      * Step 7.4: End or wait for process to exit
@@ -307,8 +318,6 @@ export async function run() {
     }
 
     runnerOptions.forceExit && process.exit()
-    await setupRunner.cleanup(runner)
-    await teardownRunner.cleanup(runner)
   } catch (error) {
     if (setupRunner! && setupRunner.isCleanupPending) {
       await setupRunner.cleanup(error, runner)
@@ -317,46 +326,57 @@ export async function run() {
       await teardownRunner.cleanup(error, runner)
     }
 
+    const printer = new ErrorsPrinter()
+    await printer.printError(error)
+
     process.exitCode = 1
     runnerOptions.forceExit && process.exit()
   }
 }
 
 /**
- * Process CLI arguments into filters
+ * Process CLI arguments into configuration options. The following
+ * command line arguments are processed.
+ *
+ * * --tests=Specify test titles
+ * * --tags=Specify test tags
+ * * --groups=Specify group titles
+ * * --ignore-tags=Specify negated tags
+ * * --files=Specify files to match and run
+ * * --force-exit=Enable/disable force exit
+ * * --timeout=Define timeout for all the tests
  */
-export function processCliArgs(argv: string[]): Filters {
+export function processCliArgs(argv: string[]): Partial<ConfigureOptions> {
   const parsed = getopts(argv, {
-    string: ['tests', 'tags', 'groups', 'ignoreTags', 'files'],
+    string: ['tests', 'tags', 'groups', 'ignoreTags', 'files', 'timeout'],
+    boolean: ['forceExit'],
     alias: {
       ignoreTags: 'ignore-tags',
+      forceExit: 'force-exit',
     },
   })
 
-  const filters: Filters = {}
-
-  if (parsed.tags) {
-    filters.tags = processArg(parsed.tags)
+  const config: { filters: Filters; timeout?: number; forceExit?: boolean } = {
+    filters: {},
   }
 
-  if (parsed.ignoreTags) {
-    filters.tags = filters.tags || []
-    processArg(parsed.ignoreTags).forEach((tag) => {
-      filters.tags!.push(`!${tag}`)
-    })
+  processAsString(parsed, 'tags', (tags) => (config.filters.tags = tags))
+  processAsString(parsed, 'ignoreTags', (tags) => {
+    tags.forEach((tag) => config.filters.tags!.push(`!${tag}`))
+  })
+  processAsString(parsed, 'groups', (groups) => (config.filters.groups = groups))
+  processAsString(parsed, 'tests', (tests) => (config.filters.tests = tests))
+  processAsString(parsed, 'files', (files) => (config.filters.files = files))
+
+  if (parsed.timeout) {
+    const value = Number(parsed.timeout)
+    if (!isNaN(value)) {
+      config.timeout = value
+    }
+  }
+  if (parsed.forceExit) {
+    config.forceExit = true
   }
 
-  if (parsed.groups) {
-    filters.groups = processArg(parsed.groups)
-  }
-
-  if (parsed.tests) {
-    filters.tests = processArg(parsed.tests)
-  }
-
-  if (parsed.files) {
-    filters.files = processArg(parsed.files)
-  }
-
-  return filters
+  return config
 }
