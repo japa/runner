@@ -50,7 +50,7 @@ const emitter = new Emitter()
 /**
  * The default suite for registering tests
  */
-const suite = new Suite('default', emitter)
+const suite = new Suite<TestContext>('default', emitter)
 
 /**
  * Currently active group
@@ -75,7 +75,7 @@ function ensureIsConfigured(message: string) {
  * End tests. We wait for the "beforeExit" event when
  * forceExit is not set to true
  */
-async function endTests(runner: Runner) {
+async function endTests(runner: Runner<TestContext>) {
   if (runnerOptions.forceExit) {
     await runner.end()
   } else {
@@ -215,7 +215,7 @@ test.group = function (title: string, callback: (group: Group<TestContext>) => v
  * Run japa tests
  */
 export async function run() {
-  const runner = new Runner(emitter)
+  const runner = new Runner<TestContext>(emitter)
   runner.add(suite).manageUnHandledExceptions()
 
   const hooks = new Hooks()

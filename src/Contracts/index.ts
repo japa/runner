@@ -15,14 +15,14 @@ import { Test, Group, TestContext } from '../Core'
  */
 export declare type RunnerHooksCleanupHandler = (
   error: null | any,
-  runner: Runner
+  runner: Runner<TestContext>
 ) => Promise<any> | any
 
 /**
  * The function that can be registered as a runner hook
  */
 export declare type RunnerHooksHandler = (
-  runner: Runner
+  runner: Runner<TestContext>
 ) => Promise<any> | any | RunnerHooksCleanupHandler | Promise<RunnerHooksCleanupHandler>
 
 /**
@@ -37,7 +37,7 @@ export type Filters = FilteringOptions & {
  */
 export type PluginFn = (
   config: Required<ConfigureOptions>,
-  runner: Runner,
+  runner: Runner<TestContext>,
   classes: {
     Test: typeof Test
     TestContext: typeof TestContext
