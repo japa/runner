@@ -116,7 +116,6 @@
     "access": "public",
     "tag": "latest"
   },
-  "types": "./build/index.d.ts",
   "directories": {
     "test": "test"
   },
