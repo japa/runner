@@ -16,9 +16,15 @@ import { ErrorsPrinter } from '@japa/errors-printer'
 import { Emitter, Refiner, Suite, Runner, TestExecutor } from '@japa/core'
 
 import { Test, TestContext, Group } from './src/Core'
-import { ConfigureOptions, Filters } from './src/Contracts'
+import {
+  Filters,
+  PluginFn,
+  ConfigureOptions,
+  RunnerHooksHandler,
+  RunnerHooksCleanupHandler,
+} from './src/Contracts'
 
-export { Test, TestContext, Group }
+export { Test, TestContext, Group, PluginFn, RunnerHooksCleanupHandler, RunnerHooksHandler }
 
 /**
  * Filtering layers allowed by the refiner
