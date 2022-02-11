@@ -3,7 +3,9 @@
 
 [![github-actions-image]][github-actions-url] [![npm-image]][npm-url] [![license-image]][license-url] [![typescript-image]][typescript-url]
 
-Japa is an API-first testing framework. It focuses only on testing Node.js (backend) applications, thus resulting in a fast, small, and simple tests runner.
+Japa is an API first testing framework. It focuses only on testing Node.js (backend) applications, thus resulting in a fast, small, and a simple tests runner.
+
+#### 💁 Please visit https://japa.dev for documentation
 
 [github-actions-image]: https://img.shields.io/github/workflow/status/japa/runner/test?style=for-the-badge "github-actions"
 
