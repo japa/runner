@@ -41,7 +41,7 @@
     "cz-conventional-changelog": "^3.3.0",
     "del-cli": "^4.0.1",
     "eslint": "^8.9.0",
-    "eslint-config-prettier": "^8.3.0",
+    "eslint-config-prettier": "^8.4.0",
     "eslint-plugin-adonis": "^2.1.0",
     "eslint-plugin-prettier": "^4.0.0",
     "github-label-sync": "^2.0.2",
@@ -105,9 +105,9 @@
     "anyBranch": false
   },
   "dependencies": {
-    "@japa/core": "^5.1.0",
-    "@japa/errors-printer": "^1.3.2",
-    "@poppinss/hooks": "^6.0.1-0",
+    "@japa/core": "^5.1.1",
+    "@japa/errors-printer": "^1.3.3",
+    "@poppinss/hooks": "^6.0.2-0",
     "fast-glob": "^3.2.11",
     "getopts": "^2.3.0",
     "inclusion": "^1.0.1"
