@@ -1,6 +1,6 @@
 {
   "name": "@japa/runner",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "description": "Runner for Japa testing framework",
   "main": "build/index.js",
   "files": [
