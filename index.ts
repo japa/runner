@@ -13,7 +13,7 @@ import fastGlob from 'fast-glob'
 import inclusion from 'inclusion'
 import { Hooks } from '@poppinss/hooks'
 import { ErrorsPrinter } from '@japa/errors-printer'
-import { Emitter, Refiner, Suite, Runner, TestExecutor } from '@japa/core'
+import { Emitter, Refiner, Suite, Runner, TestExecutor, ReporterContract } from '@japa/core'
 
 import { Test, TestContext, Group } from './src/Core'
 import {
@@ -24,7 +24,15 @@ import {
   RunnerHooksCleanupHandler,
 } from './src/Contracts'
 
-export { Test, TestContext, Group, PluginFn, RunnerHooksCleanupHandler, RunnerHooksHandler }
+export {
+  Test,
+  TestContext,
+  Group,
+  PluginFn,
+  RunnerHooksCleanupHandler,
+  RunnerHooksHandler,
+  ReporterContract,
+}
 
 /**
  * Filtering layers allowed by the refiner
@@ -48,9 +56,9 @@ const getContext = (testInstance: Test<TestContext, any>) => new TestContext(tes
 const emitter = new Emitter()
 
 /**
- * The default suite for registering tests
+ * Active suite for tests
  */
-const suite = new Suite<TestContext>('default', emitter)
+let activeSuite = new Suite<TestContext>('default', emitter)
 
 /**
  * Currently active group
@@ -119,11 +127,24 @@ function isFileAllowed(filePath: string, filters: string[]): boolean {
 }
 
 /**
+ * Returns "true" when no filters are applied or the name is part
+ * of the applied filter
+ */
+function isSuiteAllowed(name: string, filters?: string[]) {
+  if (!filters || !filters.length) {
+    return true
+  }
+
+  return filters.includes(name)
+}
+
+/**
  * Configure the tests runner
  */
 export function configure(options: ConfigureOptions) {
   const defaultOptions: Required<ConfigureOptions> = {
     files: [],
+    suites: [],
     plugins: [],
     reporters: [],
     timeout: 2000,
@@ -176,7 +197,7 @@ export function test(title: string, callback?: TestExecutor<TestContext, undefin
   if (activeGroup) {
     activeGroup.add(testInstance)
   } else {
-    suite.add(testInstance)
+    activeSuite.add(testInstance)
   }
 
   return testInstance
@@ -207,8 +228,39 @@ test.group = function (title: string, callback: (group: Group<TestContext>) => v
   /**
    * Add group to the default suite
    */
-  suite.add(activeGroup)
+  activeSuite.add(activeGroup)
   activeGroup = undefined
+}
+
+/**
+ * Collect files using the files collector function or by processing
+ * the glob pattern
+ */
+async function collectFiles(files: string | string[] | (() => string[] | Promise<string[]>)) {
+  if (Array.isArray(files) || typeof files === 'string') {
+    return await fastGlob(files, { absolute: true, onlyFiles: true })
+  } else if (typeof files === 'function') {
+    return await files()
+  }
+
+  throw new Error('Invalid value for "files" property. Expected a string, array or a function')
+}
+
+/**
+ * Import test files using the configured importer. Also
+ * filter files using the file filter. (if mentioned).
+ */
+async function importFiles(files: string[]) {
+  for (let file of files) {
+    recentlyImportedFile = file
+    if (runnerOptions.filters.files && runnerOptions.filters.files.length) {
+      if (isFileAllowed(file, runnerOptions.filters.files)) {
+        await runnerOptions.importer(file)
+      }
+    } else {
+      await runnerOptions.importer(file)
+    }
+  }
 }
 
 /**
@@ -216,7 +268,7 @@ test.group = function (title: string, callback: (group: Group<TestContext>) => v
  */
 export async function run() {
   const runner = new Runner<TestContext>(emitter)
-  runner.add(suite).manageUnHandledExceptions()
+  runner.manageUnHandledExceptions()
 
   const hooks = new Hooks()
   let setupRunner: ReturnType<Hooks['runner']>
@@ -258,26 +310,27 @@ export async function run() {
     await setupRunner.run(runner)
 
     /**
-     * Step 4: Collect all test files
+     * Step 4: Entertain files property and import test files
+     * as part of the default suite
      */
-    let files: string[] = []
-    if (Array.isArray(runnerOptions.files)) {
-      files = await fastGlob(runnerOptions.files, { absolute: true, onlyFiles: true })
-    } else if (typeof runnerOptions.files === 'function') {
-      files = await runnerOptions.files()
+    if ('files' in runnerOptions && runnerOptions.files.length) {
+      const files = await collectFiles(runnerOptions.files)
+      runner.add(activeSuite)
+      await importFiles(files)
     }
 
     /**
-     * Step 5: Import files
+     * Step 5: Entertain suites property and import test files
+     * for the filtered suites.
      */
-    for (let file of files) {
-      recentlyImportedFile = file
-      if (runnerOptions.filters.files && runnerOptions.filters.files.length) {
-        if (isFileAllowed(file, runnerOptions.filters.files)) {
-          await runnerOptions.importer(file)
+    if ('suites' in runnerOptions) {
+      for (let suite of runnerOptions.suites) {
+        if (isSuiteAllowed(suite.name, runnerOptions.filters.suites)) {
+          activeSuite = new Suite(suite.name, emitter)
+          const files = await collectFiles(suite.files)
+          runner.add(activeSuite)
+          await importFiles(files)
         }
-      } else {
-        await runnerOptions.importer(file)
       }
     }
 
@@ -354,7 +407,7 @@ export async function run() {
  */
 export function processCliArgs(argv: string[]): Partial<ConfigureOptions> {
   const parsed = getopts(argv, {
-    string: ['tests', 'tags', 'groups', 'ignoreTags', 'files', 'timeout'],
+    string: ['tests', 'tags', 'groups', 'ignoreTags', 'files', 'timeout', 'suites'],
     boolean: ['forceExit'],
     alias: {
       ignoreTags: 'ignore-tags',
@@ -373,6 +426,7 @@ export function processCliArgs(argv: string[]): Partial<ConfigureOptions> {
   processAsString(parsed, 'groups', (groups) => (config.filters.groups = groups))
   processAsString(parsed, 'tests', (tests) => (config.filters.tests = tests))
   processAsString(parsed, 'files', (files) => (config.filters.files = files))
+  processAsString(parsed, 'suites', (suites) => (config.filters.suites = suites))
 
   if (parsed.timeout) {
     const value = Number(parsed.timeout)

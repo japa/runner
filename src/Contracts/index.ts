@@ -30,6 +30,7 @@ export declare type RunnerHooksHandler = (
  */
 export type Filters = FilteringOptions & {
   files?: string[]
+  suites?: string[]
 }
 
 /**
@@ -46,10 +47,9 @@ export type PluginFn = (
 ) => void | Promise<void>
 
 /**
- * Configuration options
+ * Base configuration options
  */
-export type ConfigureOptions = {
-  files: string[] | (() => string[] | Promise<string[]>)
+export type BaseConfigureOptions = {
   timeout?: number
   plugins?: PluginFn[]
   filters?: Filters
@@ -60,3 +60,20 @@ export type ConfigureOptions = {
   refiner?: Refiner
   forceExit?: boolean
 }
+
+/**
+ * Configuration options
+ */
+export type ConfigureOptions = BaseConfigureOptions &
+  (
+    | {
+        files: string[] | (() => string[] | Promise<string[]>)
+      }
+    | {
+        suites: {
+          name: string
+          files: string | string[] | (() => string[] | Promise<string[]>)
+          timeout?: number
+        }[]
+      }
+  )
