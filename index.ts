@@ -46,6 +46,12 @@ const refinerFilteringLayers = ['tests', 'groups', 'tags'] as const
 let recentlyImportedFile: string
 
 /**
+ * Global timeout for tests. Fetched from runner options or suites
+ * options
+ */
+let globalTimeout: number
+
+/**
  * Function to create the test context for the test
  */
 const getContext = (testInstance: Test<TestContext, any>) => new TestContext(testInstance)
@@ -154,6 +160,7 @@ export function configure(options: ConfigureOptions) {
     importer: (filePath) => inclusion(filePath),
     refiner: new Refiner({}),
     forceExit: false,
+    configureSuite: () => {},
   }
 
   runnerOptions = Object.assign(defaultOptions, options)
@@ -180,8 +187,8 @@ export function test(title: string, callback?: TestExecutor<TestContext, undefin
   /**
    * Define timeout on the test when exists globally
    */
-  if (runnerOptions.timeout !== undefined) {
-    testInstance.timeout(runnerOptions.timeout)
+  if (globalTimeout !== undefined) {
+    testInstance.timeout(globalTimeout)
   }
 
   /**
@@ -269,6 +276,7 @@ async function importFiles(files: string[]) {
 export async function run() {
   const runner = new Runner<TestContext>(emitter)
   runner.manageUnHandledExceptions()
+  runner.onSuite(runnerOptions.configureSuite)
 
   const hooks = new Hooks()
   let setupRunner: ReturnType<Hooks['runner']>
@@ -315,6 +323,7 @@ export async function run() {
      */
     if ('files' in runnerOptions && runnerOptions.files.length) {
       const files = await collectFiles(runnerOptions.files)
+      globalTimeout = runnerOptions.timeout
       runner.add(activeSuite)
       await importFiles(files)
     }
@@ -326,6 +335,12 @@ export async function run() {
     if ('suites' in runnerOptions) {
       for (let suite of runnerOptions.suites) {
         if (isSuiteAllowed(suite.name, runnerOptions.filters.suites)) {
+          if (suite.timeout !== undefined) {
+            globalTimeout = suite.timeout
+          } else {
+            globalTimeout = runnerOptions.timeout
+          }
+
           activeSuite = new Suite(suite.name, emitter)
           const files = await collectFiles(suite.files)
           runner.add(activeSuite)

@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-import { Runner, Refiner, FilteringOptions, ReporterContract } from '@japa/core'
+import { Runner, Refiner, FilteringOptions, ReporterContract, Suite } from '@japa/core'
 import { Test, Group, TestContext } from '../Core'
 
 /**
@@ -53,6 +53,7 @@ export type BaseConfigureOptions = {
   timeout?: number
   plugins?: PluginFn[]
   filters?: Filters
+  configureSuite?: (suite: Suite<TestContext>) => void
   setup?: RunnerHooksHandler[]
   teardown?: RunnerHooksHandler[]
   reporters?: ReporterContract[]
