@@ -13,9 +13,9 @@ import fastGlob from 'fast-glob'
 import inclusion from 'inclusion'
 import { Hooks } from '@poppinss/hooks'
 import { ErrorsPrinter } from '@japa/errors-printer'
-import { Emitter, Refiner, Suite, Runner, TestExecutor, ReporterContract } from '@japa/core'
+import { Emitter, Refiner, TestExecutor, ReporterContract } from '@japa/core'
 
-import { Test, TestContext, Group } from './src/Core'
+import { Test, TestContext, Group, Suite, Runner } from './src/Core'
 import {
   Filters,
   PluginFn,
@@ -54,7 +54,7 @@ let globalTimeout: number
 /**
  * Function to create the test context for the test
  */
-const getContext = (testInstance: Test<TestContext, any>) => new TestContext(testInstance)
+const getContext = (testInstance: Test<any>) => new TestContext(testInstance)
 
 /**
  * The global reference to the tests emitter
@@ -64,12 +64,12 @@ const emitter = new Emitter()
 /**
  * Active suite for tests
  */
-let activeSuite = new Suite<TestContext>('default', emitter)
+let activeSuite = new Suite('default', emitter)
 
 /**
  * Currently active group
  */
-let activeGroup: Group<TestContext> | undefined
+let activeGroup: Group | undefined
 
 /**
  * Configuration options
@@ -89,7 +89,7 @@ function ensureIsConfigured(message: string) {
  * End tests. We wait for the "beforeExit" event when
  * forceExit is not set to true
  */
-async function endTests(runner: Runner<TestContext>) {
+async function endTests(runner: Runner) {
   if (runnerOptions.forceExit) {
     await runner.end()
   } else {
@@ -172,12 +172,7 @@ export function configure(options: ConfigureOptions) {
 export function test(title: string, callback?: TestExecutor<TestContext, undefined>) {
   ensureIsConfigured('Cannot add test without configuring the test runner')
 
-  const testInstance = new Test<TestContext, undefined>(
-    title,
-    getContext,
-    emitter,
-    runnerOptions.refiner
-  )
+  const testInstance = new Test<undefined>(title, getContext, emitter, runnerOptions.refiner)
 
   /**
    * Set filename
@@ -213,7 +208,7 @@ export function test(title: string, callback?: TestExecutor<TestContext, undefin
 /**
  * Define test group
  */
-test.group = function (title: string, callback: (group: Group<TestContext>) => void) {
+test.group = function (title: string, callback: (group: Group) => void) {
   ensureIsConfigured('Cannot add test group without configuring the test runner')
 
   /**
@@ -274,7 +269,7 @@ async function importFiles(files: string[]) {
  * Run japa tests
  */
 export async function run() {
-  const runner = new Runner<TestContext>(emitter)
+  const runner = new Runner(emitter)
   runner.manageUnHandledExceptions()
   runner.onSuite(runnerOptions.configureSuite)
 

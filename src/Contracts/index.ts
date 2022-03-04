@@ -7,22 +7,22 @@
  * file that was distributed with this source code.
  */
 
-import { Runner, Refiner, FilteringOptions, ReporterContract, Suite } from '@japa/core'
-import { Test, Group, TestContext } from '../Core'
+import { Refiner, FilteringOptions, ReporterContract } from '@japa/core'
+import { Test, Group, TestContext, Runner, Suite } from '../Core'
 
 /**
  * The cleanup function for runner hooks
  */
 export declare type RunnerHooksCleanupHandler = (
   error: null | any,
-  runner: Runner<TestContext>
+  runner: Runner
 ) => Promise<any> | any
 
 /**
  * The function that can be registered as a runner hook
  */
 export declare type RunnerHooksHandler = (
-  runner: Runner<TestContext>
+  runner: Runner
 ) => Promise<any> | any | RunnerHooksCleanupHandler | Promise<RunnerHooksCleanupHandler>
 
 /**
@@ -38,7 +38,7 @@ export type Filters = FilteringOptions & {
  */
 export type PluginFn = (
   config: Required<ConfigureOptions>,
-  runner: Runner<TestContext>,
+  runner: Runner,
   classes: {
     Test: typeof Test
     TestContext: typeof TestContext
@@ -47,20 +47,26 @@ export type PluginFn = (
 ) => void | Promise<void>
 
 /**
+ * Runner hooks
+ */
+export type RunnerHooks = {
+  setup: RunnerHooksHandler[]
+  teardown: RunnerHooksHandler[]
+}
+
+/**
  * Base configuration options
  */
 export type BaseConfigureOptions = {
   timeout?: number
   plugins?: PluginFn[]
   filters?: Filters
-  configureSuite?: (suite: Suite<TestContext>) => void
-  setup?: RunnerHooksHandler[]
-  teardown?: RunnerHooksHandler[]
+  configureSuite?: (suite: Suite) => void
   reporters?: ReporterContract[]
   importer?: (filePath: string) => void | Promise<void>
   refiner?: Refiner
   forceExit?: boolean
-}
+} & Partial<RunnerHooks>
 
 /**
  * Configuration options
