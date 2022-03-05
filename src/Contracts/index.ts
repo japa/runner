@@ -66,7 +66,6 @@ export type BaseConfig = {
   importer?: (filePath: string) => void | Promise<void>
   refiner?: Refiner
   forceExit?: boolean
-  debug?: boolean
 } & Partial<RunnerHooks>
 
 /**

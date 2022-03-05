@@ -12,7 +12,6 @@ import { extname } from 'path'
 import fastGlob from 'fast-glob'
 import inclusion from 'inclusion'
 import { Hooks } from '@poppinss/hooks'
-import { logger } from '@poppinss/cliui'
 import { ErrorsPrinter } from '@japa/errors-printer'
 import { Emitter, Refiner, TestExecutor, ReporterContract } from '@japa/core'
 import { Test, TestContext, Group, Suite, Runner } from './src/Core'
@@ -110,38 +109,6 @@ function validateSuitesFilter() {
 }
 
 /**
- * Print applied filter values to the console
- */
-function printConfig(title: string, values?: string | string[]) {
-  if (values && values.length) {
-    console.log(title)
-    if (Array.isArray(values)) {
-      values.forEach((value) => {
-        console.log(logger.colors.dim(`  - ${value}`))
-      })
-    } else {
-      console.log(logger.colors.dim(`  - ${values}`))
-    }
-  }
-}
-
-/**
- * Debug options
- */
-function debug() {
-  console.log(logger.colors.cyan('Debugging...'))
-  printConfig('filters.files', runnerOptions.filters.files)
-  printConfig('filters.suites', runnerOptions.filters.suites)
-  printConfig('filters.groups', runnerOptions.filters.groups)
-  printConfig('filters.tags', runnerOptions.filters.tags)
-  printConfig('filters.tests', runnerOptions.filters.tests)
-
-  if (runnerOptions.timeout !== undefined) {
-    printConfig('timeout', String(runnerOptions.timeout))
-  }
-}
-
-/**
  * End tests. We wait for the "beforeExit" event when
  * forceExit is not set to true
  */
@@ -216,7 +183,6 @@ export function configure(options: Config) {
     importer: (filePath) => inclusion(filePath),
     refiner: new Refiner({}),
     forceExit: false,
-    debug: false,
     configureSuite: () => {},
   }
 
@@ -350,13 +316,6 @@ export async function run() {
     validateSuitesFilter()
 
     /**
-     * Debug config
-     */
-    if (runnerOptions.debug) {
-      debug()
-    }
-
-    /**
      * Step 2: Notify runner about reporters
      */
     runnerOptions.reporters.forEach((reporter) => runner.registerReporter(reporter))
@@ -484,14 +443,14 @@ export async function run() {
 export function processCliArgs(argv: string[]): Partial<Config> {
   const parsed = getopts(argv, {
     string: ['tests', 'tags', 'groups', 'ignoreTags', 'files', 'timeout'],
-    boolean: ['forceExit', 'debug'],
+    boolean: ['forceExit'],
     alias: {
       ignoreTags: 'ignore-tags',
       forceExit: 'force-exit',
     },
   })
 
-  const config: { filters: Filters; timeout?: number; forceExit?: boolean; debug?: boolean } = {
+  const config: { filters: Filters; timeout?: number; forceExit?: boolean } = {
     filters: {},
   }
 
@@ -525,13 +484,6 @@ export function processCliArgs(argv: string[]): Partial<Config> {
    */
   if (parsed.forceExit) {
     config.forceExit = true
-  }
-
-  /**
-   * Get debug flag
-   */
-  if (parsed.debug) {
-    config.debug = true
   }
 
   return config
