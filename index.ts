@@ -17,21 +17,22 @@ import { Emitter, Refiner, TestExecutor, ReporterContract } from '@japa/core'
 
 import { Test, TestContext, Group, Suite, Runner } from './src/Core'
 import {
+  Config,
   Filters,
   PluginFn,
-  ConfigureOptions,
   RunnerHooksHandler,
   RunnerHooksCleanupHandler,
 } from './src/Contracts'
 
 export {
   Test,
-  TestContext,
+  Config,
   Group,
   PluginFn,
-  RunnerHooksCleanupHandler,
-  RunnerHooksHandler,
+  TestContext,
   ReporterContract,
+  RunnerHooksHandler,
+  RunnerHooksCleanupHandler,
 }
 
 /**
@@ -74,7 +75,7 @@ let activeGroup: Group | undefined
 /**
  * Configuration options
  */
-let runnerOptions: Required<ConfigureOptions>
+let runnerOptions: Required<Config>
 
 /**
  * Ensure the configure method has been called
@@ -147,8 +148,8 @@ function isSuiteAllowed(name: string, filters?: string[]) {
 /**
  * Configure the tests runner
  */
-export function configure(options: ConfigureOptions) {
-  const defaultOptions: Required<ConfigureOptions> = {
+export function configure(options: Config) {
+  const defaultOptions: Required<Config> = {
     files: [],
     suites: [],
     plugins: [],
@@ -317,8 +318,8 @@ export async function run() {
      * as part of the default suite
      */
     if ('files' in runnerOptions && runnerOptions.files.length) {
-      const files = await collectFiles(runnerOptions.files)
       globalTimeout = runnerOptions.timeout
+      const files = await collectFiles(runnerOptions.files)
       runner.add(activeSuite)
       await importFiles(files)
     }
@@ -415,9 +416,9 @@ export async function run() {
  * * --force-exit=Enable/disable force exit
  * * --timeout=Define timeout for all the tests
  */
-export function processCliArgs(argv: string[]): Partial<ConfigureOptions> {
+export function processCliArgs(argv: string[]): Partial<Config> {
   const parsed = getopts(argv, {
-    string: ['tests', 'tags', 'groups', 'ignoreTags', 'files', 'timeout', 'suites'],
+    string: ['tests', 'tags', 'groups', 'ignoreTags', 'files', 'timeout'],
     boolean: ['forceExit'],
     alias: {
       ignoreTags: 'ignore-tags',
@@ -436,7 +437,10 @@ export function processCliArgs(argv: string[]): Partial<ConfigureOptions> {
   processAsString(parsed, 'groups', (groups) => (config.filters.groups = groups))
   processAsString(parsed, 'tests', (tests) => (config.filters.tests = tests))
   processAsString(parsed, 'files', (files) => (config.filters.files = files))
-  processAsString(parsed, 'suites', (suites) => (config.filters.suites = suites))
+
+  if (parsed._.length) {
+    processAsString({ suites: parsed._ }, 'suites', (suites) => (config.filters.suites = suites))
+  }
 
   if (parsed.timeout) {
     const value = Number(parsed.timeout)
@@ -444,6 +448,7 @@ export function processCliArgs(argv: string[]): Partial<ConfigureOptions> {
       config.timeout = value
     }
   }
+
   if (parsed.forceExit) {
     config.forceExit = true
   }

@@ -34,9 +34,11 @@ test.group('processCliArgs', () => {
         '--groups=Maths.add',
         '--tests=add two numbers',
         '--tags=@maths',
+        '--timeout=4000',
         '--ignore-tags=@subtract',
       ]),
       {
+        timeout: 4000,
         filters: {
           files: ['maths-add.spec'],
           groups: ['Maths.add'],
@@ -45,5 +47,19 @@ test.group('processCliArgs', () => {
         },
       }
     )
+  })
+
+  test('ignore timeout when is not a number', (assert) => {
+    assert.deepEqual(processCliArgs(['--timeout=foo']), {
+      filters: {},
+    })
+  })
+
+  test('collect suites from the CLI args', (assert) => {
+    assert.deepEqual(processCliArgs(['unit', 'functional', '--timeout=foo']), {
+      filters: {
+        suites: ['unit', 'functional'],
+      },
+    })
   })
 })

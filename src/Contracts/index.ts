@@ -37,7 +37,7 @@ export type Filters = FilteringOptions & {
  * Shape of the plugin function
  */
 export type PluginFn = (
-  config: Required<ConfigureOptions>,
+  config: Required<Config>,
   runner: Runner,
   classes: {
     Test: typeof Test
@@ -57,7 +57,7 @@ export type RunnerHooks = {
 /**
  * Base configuration options
  */
-export type BaseConfigureOptions = {
+export type BaseConfig = {
   timeout?: number
   plugins?: PluginFn[]
   filters?: Filters
@@ -71,7 +71,7 @@ export type BaseConfigureOptions = {
 /**
  * Configuration options
  */
-export type ConfigureOptions = BaseConfigureOptions &
+export type Config = BaseConfig &
   (
     | {
         files: string[] | (() => string[] | Promise<string[]>)
