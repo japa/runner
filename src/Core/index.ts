@@ -26,7 +26,7 @@ export class Test<TestData extends DataSetNode = undefined> extends BaseTest<
   TestContext,
   TestData
 > {
-  public static disposeCallback = []
+  public static disposeCallbacks = []
 }
 
 export class Group extends BaseGroup<TestContext> {}
