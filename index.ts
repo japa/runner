@@ -362,6 +362,10 @@ export async function run() {
           }
 
           activeSuite = new Suite(suite.name, emitter)
+          if (typeof suite.configure === 'function') {
+            suite.configure(activeSuite)
+          }
+
           const files = await collectFiles(suite.files)
           runner.add(activeSuite)
           await importFiles(files)

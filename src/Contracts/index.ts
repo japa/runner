@@ -80,6 +80,7 @@ export type Config = BaseConfig &
         suites: {
           name: string
           files: string | string[] | (() => string[] | Promise<string[]>)
+          configure?: (suite: Suite) => void
           timeout?: number
         }[]
       }
