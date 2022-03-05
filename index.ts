@@ -12,9 +12,9 @@ import { extname } from 'path'
 import fastGlob from 'fast-glob'
 import inclusion from 'inclusion'
 import { Hooks } from '@poppinss/hooks'
+import { logger } from '@poppinss/cliui'
 import { ErrorsPrinter } from '@japa/errors-printer'
 import { Emitter, Refiner, TestExecutor, ReporterContract } from '@japa/core'
-
 import { Test, TestContext, Group, Suite, Runner } from './src/Core'
 import {
   Config,
@@ -83,6 +83,61 @@ let runnerOptions: Required<Config>
 function ensureIsConfigured(message: string) {
   if (!runnerOptions) {
     throw new Error(message)
+  }
+}
+
+/**
+ * Validate suites filter to ensure a wrong suite is not
+ * mentioned
+ */
+function validateSuitesFilter() {
+  if (!('suites' in runnerOptions)) {
+    return
+  }
+
+  if (!runnerOptions.filters.suites || !runnerOptions.filters.suites.length) {
+    return
+  }
+
+  const suites = runnerOptions.suites.map(({ name }) => name)
+  const invalidSuites = runnerOptions.filters.suites.filter((suite) => !suites.includes(suite))
+
+  if (invalidSuites.length) {
+    throw new Error(
+      `Unrecognized suite "${invalidSuites[0]}". Make sure to define it in the config first`
+    )
+  }
+}
+
+/**
+ * Print applied filter values to the console
+ */
+function printConfig(title: string, values?: string | string[]) {
+  if (values && values.length) {
+    console.log(title)
+    if (Array.isArray(values)) {
+      values.forEach((value) => {
+        console.log(logger.colors.dim(`  - ${value}`))
+      })
+    } else {
+      console.log(logger.colors.dim(`  - ${values}`))
+    }
+  }
+}
+
+/**
+ * Debug options
+ */
+function debug() {
+  console.log(logger.colors.cyan('Debugging...'))
+  printConfig('filters.files', runnerOptions.filters.files)
+  printConfig('filters.suites', runnerOptions.filters.suites)
+  printConfig('filters.groups', runnerOptions.filters.groups)
+  printConfig('filters.tags', runnerOptions.filters.tags)
+  printConfig('filters.tests', runnerOptions.filters.tests)
+
+  if (runnerOptions.timeout !== undefined) {
+    printConfig('timeout', String(runnerOptions.timeout))
   }
 }
 
@@ -161,6 +216,7 @@ export function configure(options: Config) {
     importer: (filePath) => inclusion(filePath),
     refiner: new Refiner({}),
     forceExit: false,
+    debug: false,
     configureSuite: () => {},
   }
 
@@ -291,6 +347,15 @@ export async function run() {
       await plugin(runnerOptions, runner, { Test, TestContext, Group })
     }
 
+    validateSuitesFilter()
+
+    /**
+     * Debug config
+     */
+    if (runnerOptions.debug) {
+      debug()
+    }
+
     /**
      * Step 2: Notify runner about reporters
      */
@@ -419,14 +484,14 @@ export async function run() {
 export function processCliArgs(argv: string[]): Partial<Config> {
   const parsed = getopts(argv, {
     string: ['tests', 'tags', 'groups', 'ignoreTags', 'files', 'timeout'],
-    boolean: ['forceExit'],
+    boolean: ['forceExit', 'debug'],
     alias: {
       ignoreTags: 'ignore-tags',
       forceExit: 'force-exit',
     },
   })
 
-  const config: { filters: Filters; timeout?: number; forceExit?: boolean } = {
+  const config: { filters: Filters; timeout?: number; forceExit?: boolean; debug?: boolean } = {
     filters: {},
   }
 
@@ -438,10 +503,16 @@ export function processCliArgs(argv: string[]): Partial<Config> {
   processAsString(parsed, 'tests', (tests) => (config.filters.tests = tests))
   processAsString(parsed, 'files', (files) => (config.filters.files = files))
 
+  /**
+   * Get suites
+   */
   if (parsed._.length) {
     processAsString({ suites: parsed._ }, 'suites', (suites) => (config.filters.suites = suites))
   }
 
+  /**
+   * Get timeout
+   */
   if (parsed.timeout) {
     const value = Number(parsed.timeout)
     if (!isNaN(value)) {
@@ -449,8 +520,18 @@ export function processCliArgs(argv: string[]): Partial<Config> {
     }
   }
 
+  /**
+   * Get forceExit
+   */
   if (parsed.forceExit) {
     config.forceExit = true
+  }
+
+  /**
+   * Get debug flag
+   */
+  if (parsed.debug) {
+    config.debug = true
   }
 
   return config
