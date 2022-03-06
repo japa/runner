@@ -26,6 +26,8 @@ import {
 export {
   Test,
   Config,
+  Suite,
+  Runner,
   Group,
   PluginFn,
   TestContext,
