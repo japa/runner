@@ -11,6 +11,7 @@ import getopts from 'getopts'
 import { extname } from 'path'
 import fastGlob from 'fast-glob'
 import inclusion from 'inclusion'
+import { pathToFileURL } from 'url'
 import { Hooks } from '@poppinss/hooks'
 import { ErrorsPrinter } from '@japa/errors-printer'
 import { Emitter, Refiner, TestExecutor, ReporterContract } from '@japa/core'
@@ -282,10 +283,10 @@ async function importFiles(files: string[]) {
     recentlyImportedFile = file
     if (runnerOptions.filters.files && runnerOptions.filters.files.length) {
       if (isFileAllowed(file, runnerOptions.filters.files)) {
-        await runnerOptions.importer(file)
+        await runnerOptions.importer(pathToFileURL(file).href)
       }
     } else {
-      await runnerOptions.importer(file)
+      await runnerOptions.importer(pathToFileURL(file).href)
     }
   }
 }
