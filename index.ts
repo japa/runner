@@ -183,7 +183,7 @@ export function configure(options: Config) {
     filters: {},
     setup: [],
     teardown: [],
-    importer: (filePath) => inclusion(filePath),
+    importer: (filePath) => inclusion(pathToFileURL(filePath).href),
     refiner: new Refiner({}),
     forceExit: false,
     configureSuite: () => {},
@@ -283,10 +283,10 @@ async function importFiles(files: string[]) {
     recentlyImportedFile = file
     if (runnerOptions.filters.files && runnerOptions.filters.files.length) {
       if (isFileAllowed(file, runnerOptions.filters.files)) {
-        await runnerOptions.importer(pathToFileURL(file).href)
+        await runnerOptions.importer(file)
       }
     } else {
-      await runnerOptions.importer(pathToFileURL(file).href)
+      await runnerOptions.importer(file)
     }
   }
 }
