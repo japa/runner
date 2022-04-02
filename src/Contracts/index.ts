@@ -58,6 +58,7 @@ export type RunnerHooks = {
  * Base configuration options
  */
 export type BaseConfig = {
+  cwd?: string
   timeout?: number
   plugins?: PluginFn[]
   filters?: Filters

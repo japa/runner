@@ -175,6 +175,7 @@ function isSuiteAllowed(name: string, filters?: string[]) {
  */
 export function configure(options: Config) {
   const defaultOptions: Required<Config> = {
+    cwd: process.cwd(),
     files: [],
     suites: [],
     plugins: [],
@@ -266,7 +267,7 @@ test.group = function (title: string, callback: (group: Group) => void) {
  */
 async function collectFiles(files: string | string[] | (() => string[] | Promise<string[]>)) {
   if (Array.isArray(files) || typeof files === 'string') {
-    return await fastGlob(files, { absolute: true, onlyFiles: true })
+    return await fastGlob(files, { absolute: true, onlyFiles: true, cwd: runnerOptions.cwd })
   } else if (typeof files === 'function') {
     return await files()
   }
