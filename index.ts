@@ -464,6 +464,7 @@ export function processCliArgs(argv: string[]): Partial<Config> {
 
   processAsString(parsed, 'tags', (tags) => (config.filters.tags = tags))
   processAsString(parsed, 'ignoreTags', (tags) => {
+    config.filters.tags = config.filters.tags || []
     tags.forEach((tag) => config.filters.tags!.push(`!${tag}`))
   })
   processAsString(parsed, 'groups', (groups) => (config.filters.groups = groups))
