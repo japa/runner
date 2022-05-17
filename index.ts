@@ -252,12 +252,12 @@ test.group = function (title: string, callback: (group: Group) => void) {
    */
   activeGroup.options.meta.fileName = recentlyImportedFile
 
-  callback(activeGroup)
-
   /**
    * Add group to the default suite
    */
   activeSuite.add(activeGroup)
+
+  callback(activeGroup)
   activeGroup = undefined
 }
 
