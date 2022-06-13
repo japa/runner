@@ -19,3 +19,8 @@ Japa is an API first testing framework. It focuses only on testing Node.js (back
 
 [typescript-image]: https://img.shields.io/badge/Typescript-294E80.svg?style=for-the-badge&logo=typescript
 [typescript-url]:  "typescript"
+
+<br />
+<hr>
+
+![](./sponsorkit/sponsors.png)
