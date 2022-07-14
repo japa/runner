@@ -7,6 +7,11 @@ Japa is an API first testing framework. It focuses only on testing Node.js (back
 
 #### 💁 Please visit https://japa.dev for documentation
 
+<br />
+<hr>
+
+![](https://cdn.jsdelivr.net/gh/thetutlage/static/sponsorkit/sponsors.png)
+
 [github-actions-image]: https://img.shields.io/github/workflow/status/japa/runner/test?style=for-the-badge "github-actions"
 
 [github-actions-url]: https://github.com/japa/runner/actions/workflows/test.yml
@@ -19,8 +24,3 @@ Japa is an API first testing framework. It focuses only on testing Node.js (back
 
 [typescript-image]: https://img.shields.io/badge/Typescript-294E80.svg?style=for-the-badge&logo=typescript
 [typescript-url]:  "typescript"
-
-<br />
-<hr>
-
-![](./sponsorkit/sponsors.png)
