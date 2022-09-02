@@ -69,7 +69,7 @@ const emitter = new Emitter()
 /**
  * Active suite for tests
  */
-let activeSuite = new Suite('default', emitter)
+let activeSuite: Suite
 
 /**
  * Currently active group
@@ -354,6 +354,10 @@ export async function run() {
      * as part of the default suite
      */
     if ('files' in runnerOptions && runnerOptions.files.length) {
+      /**
+       * Create a default suite for files with no suite
+       */
+      activeSuite = new Suite('default', emitter, runnerOptions.refiner)
       globalTimeout = runnerOptions.timeout
       const files = await collectFiles(runnerOptions.files)
       runner.add(activeSuite)
@@ -373,7 +377,7 @@ export async function run() {
             globalTimeout = runnerOptions.timeout
           }
 
-          activeSuite = new Suite(suite.name, emitter)
+          activeSuite = new Suite(suite.name, emitter, runnerOptions.refiner)
           if (typeof suite.configure === 'function') {
             suite.configure(activeSuite)
           }
