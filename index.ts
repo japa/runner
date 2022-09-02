@@ -457,8 +457,6 @@ Options:
 Examples:
   ${grey('$ node bin/test.js --tags="@github"')}
   ${grey('$ node bin/test.js --files="example.spec.js" --force-exit')}`)
-
-  process.exit(0)
 }
 
 /**
@@ -503,6 +501,7 @@ export function processCliArgs(argv: string[]): Partial<Config> {
    */
   if (parsed.help) {
     showHelp()
+    process.exit(0)
   }
 
   /**
