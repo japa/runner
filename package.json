@@ -37,20 +37,20 @@
     "@adonisjs/mrm-preset": "^5.0.3",
     "@adonisjs/require-ts": "^2.0.12",
     "@types/node": "^17.0.40",
-    "commitizen": "^4.2.4",
+    "commitizen": "^4.2.5",
     "cz-conventional-changelog": "^3.3.0",
     "del-cli": "^4.0.1",
-    "eslint": "^8.17.0",
+    "eslint": "^8.23.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-adonis": "^2.1.0",
-    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-prettier": "^4.2.1",
     "github-label-sync": "^2.2.0",
     "husky": "^8.0.1",
     "japa": "^4.0.0",
-    "mrm": "^4.0.0",
-    "np": "^7.6.1",
-    "prettier": "^2.6.2",
-    "typescript": "^4.7.3"
+    "mrm": "^4.1.0",
+    "np": "^7.6.2",
+    "prettier": "^2.7.1",
+    "typescript": "^4.8.2"
   },
   "mrmConfig": {
     "core": false,
@@ -105,7 +105,7 @@
     "anyBranch": false
   },
   "dependencies": {
-    "@japa/core": "^6.0.6",
+    "@japa/core": "^6.0.7",
     "@japa/errors-printer": "^1.3.9",
     "@poppinss/cliui": "^3.0.2",
     "@poppinss/hooks": "^6.0.2-0",
