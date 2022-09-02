@@ -201,7 +201,13 @@ export function configure(options: Config) {
 export function test(title: string, callback?: TestExecutor<TestContext, undefined>) {
   ensureIsConfigured('Cannot add test without configuring the test runner')
 
-  const testInstance = new Test<undefined>(title, getContext, emitter, runnerOptions.refiner)
+  const testInstance = new Test<undefined>(
+    title,
+    getContext,
+    emitter,
+    runnerOptions.refiner,
+    activeGroup
+  )
 
   /**
    * Set filename
