@@ -70,19 +70,29 @@ export type BaseConfig = {
 } & Partial<RunnerHooks>
 
 /**
+ * Type for the "config.files" property
+ */
+export type ConfigFiles = string[] | (() => string[] | Promise<string[]>)
+
+/**
+ * Type for the "config.suite" property
+ */
+export type ConfigSuite = {
+  name: string
+  files: string | string[] | (() => string[] | Promise<string[]>)
+  configure?: (suite: Suite) => void
+  timeout?: number
+}
+
+/**
  * Configuration options
  */
 export type Config = BaseConfig &
   (
     | {
-        files: string[] | (() => string[] | Promise<string[]>)
+        files: ConfigFiles
       }
     | {
-        suites: {
-          name: string
-          files: string | string[] | (() => string[] | Promise<string[]>)
-          configure?: (suite: Suite) => void
-          timeout?: number
-        }[]
+        suites: ConfigSuite[]
       }
   )
