@@ -13,7 +13,6 @@ import fastGlob from 'fast-glob'
 import inclusion from 'inclusion'
 import { pathToFileURL } from 'url'
 import { Hooks } from '@poppinss/hooks'
-import { version } from './package.json'
 import { logger } from '@poppinss/cliui'
 import { ErrorsPrinter } from '@japa/errors-printer'
 import { Test, TestContext, Group, Suite, Runner } from './src/Core'
@@ -216,7 +215,7 @@ function showHelp() {
   const green = logger.colors.green.bind(logger.colors)
   const grey = logger.colors.grey.bind(logger.colors)
 
-  console.log(`@japa/runner v${version}
+  console.log(`@japa/runner v2.1.1
 
 Options:
   ${green('--tests')}                     ${grey('Specify test titles')}
