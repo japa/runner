@@ -62,4 +62,11 @@ test.group('processCliArgs', () => {
       },
     })
   })
+
+  test('collect reporters from the CLI args', (assert) => {
+    assert.deepEqual(processCliArgs(['--reporters=foo,bar']), {
+      filters: {},
+      defaultsReporters: ['foo', 'bar'],
+    })
+  })
 })

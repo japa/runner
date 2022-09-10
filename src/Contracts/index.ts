@@ -7,7 +7,13 @@
  * file that was distributed with this source code.
  */
 
-import { Refiner, FilteringOptions, ReporterContract } from '@japa/core'
+import {
+  Refiner,
+  FilteringOptions,
+  ReporterContract,
+  NamedReporterContract,
+  ReporterHandlerContract,
+} from '@japa/core'
 import { Test, Group, TestContext, Runner, Suite } from '../Core'
 
 /**
@@ -54,16 +60,31 @@ export type RunnerHooks = {
   teardown: RunnerHooksHandler[]
 }
 
+export type MaybeArray<T> = T | T[]
+
+/**
+ * Type for the `runners.reporters` property. Pass it void when you don't known
+ * the content of `runners.reporter`.
+ */
+export type ReportersConfig<ReporterList extends ReporterContract[] | void> =
+  | ReporterHandlerContract[]
+  | {
+      defaults: ReporterList extends NamedReporterContract[]
+        ? MaybeArray<ReporterList[number]['name']>
+        : MaybeArray<string>
+      list: ReporterList extends NamedReporterContract[] ? ReporterList : NamedReporterContract[]
+    }
+
 /**
  * Base configuration options
  */
-export type BaseConfig = {
+export type BaseConfig<ReporterList extends ReporterContract[] | void> = {
   cwd?: string
   timeout?: number
   plugins?: PluginFn[]
   filters?: Filters
   configureSuite?: (suite: Suite) => void
-  reporters?: ReporterContract[]
+  reporters?: ReportersConfig<ReporterList>
   importer?: (filePath: string) => void | Promise<void>
   refiner?: Refiner
   forceExit?: boolean
@@ -87,7 +108,7 @@ export type ConfigSuite = {
 /**
  * Configuration options
  */
-export type Config = BaseConfig &
+export type Config<R extends ReporterContract[] | void = void> = BaseConfig<R> &
   (
     | {
         files: ConfigFiles
@@ -96,3 +117,17 @@ export type Config = BaseConfig &
         suites: ConfigSuite[]
       }
   )
+
+export type NormalizedConfig = Required<Config> & {
+  reporters: {
+    defaults: string[]
+    list: NamedReporterContract[]
+  }
+}
+
+/**
+ * Type for the output of the "processCliArgs" function
+ */
+export type ProcessedCliArgs = Partial<Config> & {
+  defaultsReporters?: string[]
+}

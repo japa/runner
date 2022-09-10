@@ -8,7 +8,7 @@
  */
 import getopts from 'getopts'
 import { logger } from '@poppinss/cliui'
-import { Config, Filters } from '../Contracts'
+import { Filters, ProcessedCliArgs } from '../Contracts'
 
 /**
  * Process command line argument into a string value
@@ -41,6 +41,7 @@ Options:
   ${green('--files')}                     ${grey('Specify files to match and run')}
   ${green('--force-exit')}                ${grey('Enable/disable force exit')}
   ${green('--timeout')}                   ${grey('Define timeout for all the tests')}
+  ${green('--reporters')}                  ${grey('Define reporters to use')}
   ${green('-h, --help')}                  ${grey('Display this message')}
 
 Examples:
@@ -59,11 +60,12 @@ Examples:
  * * --files=Specify files to match and run
  * * --force-exit=Enable/disable force exit
  * * --timeout=Define timeout for all the tests
+ * * --reporters=Define reporters to use
  * * -h, --help=Show help
  */
-export function processCliArgs(argv: string[]): Partial<Config> {
+export function processCliArgs(argv: string[]): ProcessedCliArgs {
   const parsed = getopts(argv, {
-    string: ['tests', 'tags', 'groups', 'ignoreTags', 'files', 'timeout'],
+    string: ['tests', 'tags', 'groups', 'ignoreTags', 'files', 'timeout', 'reporters'],
     boolean: ['forceExit', 'help'],
     alias: {
       ignoreTags: 'ignore-tags',
@@ -76,6 +78,7 @@ export function processCliArgs(argv: string[]): Partial<Config> {
     filters: Filters
     timeout?: number
     forceExit?: boolean
+    defaultsReporters?: string[]
   } = { filters: {} }
 
   processAsString(parsed, 'tags', (tags) => (config.filters.tags = tags))
@@ -86,6 +89,7 @@ export function processCliArgs(argv: string[]): Partial<Config> {
   processAsString(parsed, 'groups', (groups) => (config.filters.groups = groups))
   processAsString(parsed, 'tests', (tests) => (config.filters.tests = tests))
   processAsString(parsed, 'files', (files) => (config.filters.files = files))
+  processAsString(parsed, 'reporters', (reporters) => (config.defaultsReporters = reporters))
 
   /**
    * Show help

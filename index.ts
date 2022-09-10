@@ -9,12 +9,10 @@
 
 import { extname } from 'path'
 import fastGlob from 'fast-glob'
-import inclusion from 'inclusion'
-import { pathToFileURL } from 'url'
 import { Hooks } from '@poppinss/hooks'
 import { ErrorsPrinter } from '@japa/errors-printer'
 import { Test, TestContext, Group, Suite, Runner } from './src/Core'
-import { Emitter, Refiner, TestExecutor, ReporterContract } from '@japa/core'
+import { Emitter, TestExecutor, ReporterContract } from '@japa/core'
 import {
   Config,
   Filters,
@@ -22,8 +20,11 @@ import {
   RunnerHooksHandler,
   RunnerHooksCleanupHandler,
   ConfigSuite,
+  NormalizedConfig,
 } from './src/Contracts'
+import { resolveConfig } from './src/ConfigResolver'
 
+export { processCliArgs } from './src/CliProcessor'
 export {
   Test,
   Config,
@@ -77,7 +78,7 @@ let activeGroup: Group | undefined
 /**
  * Configuration options
  */
-let runnerOptions: Required<Config>
+let runnerOptions: Required<NormalizedConfig>
 
 /**
  * Ensure the configure method has been called
@@ -195,24 +196,8 @@ async function endTests(runner: Runner) {
 /**
  * Configure the tests runner
  */
-export function configure(options: Config) {
-  const defaultOptions: Required<Config> = {
-    cwd: process.cwd(),
-    files: [],
-    suites: [],
-    plugins: [],
-    reporters: [],
-    timeout: 2000,
-    filters: {},
-    setup: [],
-    teardown: [],
-    importer: (filePath) => inclusion(pathToFileURL(filePath).href),
-    refiner: new Refiner({}),
-    forceExit: false,
-    configureSuite: () => {},
-  }
-
-  runnerOptions = Object.assign(defaultOptions, options)
+export function configure<R extends ReporterContract[]>(options: Config<R>) {
+  runnerOptions = resolveConfig(options)
 }
 
 /**
@@ -243,9 +228,18 @@ export async function run() {
     validateSuitesFilter()
 
     /**
-     * Step 2: Notify runner about reporters
+     * Step 2: Notify runner about reporters that are enabled
      */
-    runnerOptions.reporters.forEach((reporter) => runner.registerReporter(reporter))
+    const enabledReporters = runnerOptions.reporters.defaults.map((reporterName) => {
+      const reporter = runnerOptions.reporters.list.find(({ name }) => name === reporterName)
+      if (!reporter) {
+        const message = `"${reporterName}" is not a valid reporter. Make sure to define a reporter with the same name.`
+        throw new Error(message)
+      }
+      return reporter
+    })
+
+    enabledReporters.forEach((reporter) => runner.registerReporter(reporter))
 
     /**
      * Step 3: Configure runner hooks.
@@ -449,5 +443,3 @@ test.group = function (title: string, callback: (group: Group) => void) {
   callback(activeGroup)
   activeGroup = undefined
 }
-
-export { processCliArgs } from './src/CliProcessor'
