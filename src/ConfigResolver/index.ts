@@ -6,7 +6,7 @@ import { Config, NormalizedConfig } from '../Contracts'
 /**
  * Wrap the value inside an array if it's not one
  */
-function arrayify<T>(value: T | T[]): T[] {
+function toArray<T>(value: T | T[]): T[] {
   return Array.isArray(value) ? value : [value]
 }
 
@@ -41,7 +41,7 @@ function buildReportersConfig(
     let defaultsReporters = options.cliReporters || options.reporters.defaults || []
 
     return {
-      defaults: arrayify(defaultsReporters),
+      defaults: toArray(defaultsReporters),
       list: buildReporterConfig(options.reporters.list),
     }
   }
