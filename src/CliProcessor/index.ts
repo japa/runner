@@ -78,7 +78,7 @@ export function processCliArgs(argv: string[]): ProcessedCliArgs {
     filters: Filters
     timeout?: number
     forceExit?: boolean
-    defaultsReporters?: string[]
+    cliReporters?: string[]
   } = { filters: {} }
 
   processAsString(parsed, 'tags', (tags) => (config.filters.tags = tags))
@@ -89,7 +89,7 @@ export function processCliArgs(argv: string[]): ProcessedCliArgs {
   processAsString(parsed, 'groups', (groups) => (config.filters.groups = groups))
   processAsString(parsed, 'tests', (tests) => (config.filters.tests = tests))
   processAsString(parsed, 'files', (files) => (config.filters.files = files))
-  processAsString(parsed, 'reporters', (reporters) => (config.defaultsReporters = reporters))
+  processAsString(parsed, 'reporters', (reporters) => (config.cliReporters = reporters))
 
   /**
    * Show help

@@ -32,13 +32,13 @@ function buildReporterConfig(reporters: ReporterContract[]): NamedReporterContra
  * Build the normalized `reporters` configuration
  */
 function buildReportersConfig(
-  options: Config & { defaultsReporters?: string[] }
+  options: Config & { cliReporters?: string[] }
 ): NormalizedConfig['reporters'] {
   /**
    * Handle the new runner.reporters API
    */
   if (options.reporters && 'list' in options.reporters) {
-    let defaultsReporters = options.defaultsReporters || options.reporters.defaults || []
+    let defaultsReporters = options.cliReporters || options.reporters.defaults || []
 
     return {
       defaults: arrayify(defaultsReporters),
@@ -64,9 +64,9 @@ function buildReportersConfig(
  * Build the config object from the user defined config
  */
 export function resolveConfig<R extends ReporterContract[]>(
-  options: Config<R> & { defaultsReporters?: string[] }
+  options: Config<R> & { cliReporters?: string[] }
 ): NormalizedConfig {
-  const defaultOptions: Required<Config> & { defaultsReporters?: string[] } = {
+  const defaultOptions: Required<Config> & { cliReporters?: string[] } = {
     cwd: process.cwd(),
     files: [],
     suites: [],

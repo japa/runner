@@ -129,5 +129,5 @@ export type NormalizedConfig = Required<Config> & {
  * Type for the output of the "processCliArgs" function
  */
 export type ProcessedCliArgs = Partial<Config> & {
-  defaultsReporters?: string[]
+  cliReporters?: string[]
 }

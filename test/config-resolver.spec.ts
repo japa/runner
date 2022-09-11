@@ -22,7 +22,7 @@ test.group('resolveConfig', () => {
         list: [{ name: 'spec' as const, handler: firstReporter }],
       },
       files: ['foo.spec.ts'],
-      defaultsReporters: ['my-reporter'],
+      cliReporters: ['my-reporter'],
     })
 
     assert.deepEqual(config.reporters, {
