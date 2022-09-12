@@ -18,16 +18,13 @@ import {
 } from '@japa/core'
 
 export class TestContext extends BaseTestContext {
+  public cleanup: (handler: TestHooksCleanupHandler<this>) => void
+
   constructor(public test: Test) {
     super()
-  }
-
-  /**
-   * Define a test cleanup hook
-   */
-  public cleanup(handler: TestHooksCleanupHandler<this>): this {
-    this.test.cleanup(handler)
-    return this
+    this.cleanup = (handler: TestHooksCleanupHandler<this>) => {
+      test.cleanup(handler)
+    }
   }
 }
 
