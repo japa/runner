@@ -13,12 +13,21 @@ import {
   Group as BaseGroup,
   Suite as BaseSuite,
   Runner as BaseRunner,
+  TestHooksCleanupHandler,
   TestContext as BaseTestContext,
 } from '@japa/core'
 
 export class TestContext extends BaseTestContext {
   constructor(public test: Test) {
     super()
+  }
+
+  /**
+   * Define a test cleanup hook
+   */
+  public cleanup(handler: TestHooksCleanupHandler<this>): this {
+    this.test.cleanup(handler)
+    return this
   }
 }
 
