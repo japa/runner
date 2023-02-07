@@ -1,14 +1,14 @@
 /*
  * @japa/runner
  *
- * (c) Harminder Virk <virk@adonisjs.com>
+ * (c) Japa.dev
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
 import { Refiner, FilteringOptions, ReporterContract } from '@japa/core'
-import { Test, Group, TestContext, Runner, Suite } from '../Core'
+import { Test, Group, TestContext, Runner, Suite } from './core/main'
 
 /**
  * The cleanup function for runner hooks

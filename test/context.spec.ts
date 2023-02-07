@@ -1,15 +1,15 @@
 /*
  * @japa/runner
  *
- * (c) Japa
+ * (c) Japa.dev
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-import { Emitter, Refiner } from '@japa/core'
 import test from 'japa'
-import { TestContext, Test } from '../src/Core'
+import { Emitter, Refiner } from '@japa/core'
+import { TestContext, Test } from '../src/core/main'
 
 test('forward cleanup handlers from context to test', async (assert) => {
   const emitter = new Emitter()

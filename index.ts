@@ -1,7 +1,7 @@
 /*
  * @japa/runner
  *
- * (c) Harminder Virk <virk@adonisjs.com>
+ * (c) Japa.dev
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -15,8 +15,9 @@ import { pathToFileURL } from 'url'
 import { Hooks } from '@poppinss/hooks'
 import { logger } from '@poppinss/cliui'
 import { ErrorsPrinter } from '@japa/errors-printer'
-import { Test, TestContext, Group, Suite, Runner } from './src/Core'
 import { Emitter, Refiner, TestExecutor, ReporterContract } from '@japa/core'
+
+import { Test, TestContext, Group, Suite, Runner } from './src/core/main'
 import {
   Config,
   Filters,
@@ -24,7 +25,7 @@ import {
   RunnerHooksHandler,
   RunnerHooksCleanupHandler,
   ConfigSuite,
-} from './src/Contracts'
+} from './src/types'
 
 export {
   Test,
