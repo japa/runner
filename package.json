@@ -36,21 +36,21 @@
   "devDependencies": {
     "@adonisjs/mrm-preset": "^5.0.3",
     "@adonisjs/require-ts": "^2.0.13",
-    "@types/node": "^18.11.0",
-    "commitizen": "^4.2.5",
+    "@types/node": "^18.11.19",
+    "commitizen": "^4.3.0",
     "cz-conventional-changelog": "^3.3.0",
     "del-cli": "^5.0.0",
-    "eslint": "^8.25.0",
-    "eslint-config-prettier": "^8.5.0",
+    "eslint": "^8.33.0",
+    "eslint-config-prettier": "^8.6.0",
     "eslint-plugin-adonis": "^2.1.1",
     "eslint-plugin-prettier": "^4.2.1",
     "github-label-sync": "^2.2.0",
-    "husky": "^8.0.1",
+    "husky": "^8.0.3",
     "japa": "^4.0.0",
-    "mrm": "^4.1.7",
-    "np": "^7.6.2",
-    "prettier": "^2.7.1",
-    "typescript": "^4.8.4"
+    "mrm": "^4.1.13",
+    "np": "^7.6.3",
+    "prettier": "^2.8.3",
+    "typescript": "^4.9.5"
   },
   "mrmConfig": {
     "core": false,
@@ -105,9 +105,9 @@
     "anyBranch": false
   },
   "dependencies": {
-    "@japa/core": "^7.3.0",
-    "@japa/errors-printer": "^2.0.1",
-    "@poppinss/cliui": "^3.0.4",
+    "@japa/core": "^7.3.1",
+    "@japa/errors-printer": "^2.1.0",
+    "@poppinss/cliui": "^3.0.5",
     "@poppinss/hooks": "^6.0.2-0",
     "fast-glob": "^3.2.12",
     "getopts": "^2.3.0",
