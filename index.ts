@@ -216,7 +216,7 @@ function showHelp() {
   const green = logger.colors.green.bind(logger.colors)
   const grey = logger.colors.grey.bind(logger.colors)
 
-  console.log(`@japa/runner v2.2.4
+  console.log(`@japa/runner v2.3.0
 
 Options:
   ${green('--tests')}                     ${grey('Specify test titles')}
