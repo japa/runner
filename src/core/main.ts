@@ -18,6 +18,25 @@ import {
 } from '@japa/core'
 
 export class TestContext extends BaseTestContext {
+  /**
+   * Methods to call after the test context instance
+   * is created
+   */
+  public static createdCallbacks: ((context: TestContext) => void)[] = []
+
+  /**
+   * Register a function to get notified when an instance of test
+   * context is created. The callback must be synchronous
+   */
+  public static created(callback: (context: TestContext) => void) {
+    this.createdCallbacks.push(callback)
+    return this
+  }
+
+  /**
+   * Register a cleanup function. Cleanup functions are called after
+   * the test finishes
+   */
   public cleanup: (handler: TestHooksCleanupHandler<this>) => void
 
   constructor(public test: Test) {
@@ -25,6 +44,12 @@ export class TestContext extends BaseTestContext {
     this.cleanup = (handler: TestHooksCleanupHandler<this>) => {
       test.cleanup(handler)
     }
+
+    /**
+     * Invoke ready callbacks
+     */
+    const Constructor = this.constructor as unknown as typeof TestContext
+    Constructor.createdCallbacks.forEach((callback) => callback(this))
   }
 }
 
