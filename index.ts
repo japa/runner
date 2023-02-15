@@ -504,8 +504,9 @@ export function test(title: string, callback?: TestExecutor<TestContext, undefin
   )
 
   /**
-   * Set filename
+   * Set filename and suite
    */
+  testInstance.options.meta.suite = activeSuite
   testInstance.options.meta.fileName = recentlyImportedFile
 
   /**
@@ -550,8 +551,9 @@ test.group = function (title: string, callback: (group: Group) => void) {
   activeGroup = new Group(title, emitter, runnerOptions.refiner)
 
   /**
-   * Set filename
+   * Set filename and suite
    */
+  activeGroup.options.meta.suite = activeSuite
   activeGroup.options.meta.fileName = recentlyImportedFile
 
   /**
