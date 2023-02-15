@@ -61,5 +61,22 @@ export class Test<TestData extends DataSetNode = undefined> extends BaseTest<
 }
 
 export class Group extends BaseGroup<TestContext> {}
-export class Suite extends BaseSuite<TestContext> {}
-export class Runner extends BaseRunner<TestContext> {}
+
+export class Suite extends BaseSuite<TestContext> {
+  public onGroup(callback: (group: Group) => void): this {
+    super.onGroup(callback)
+    return this
+  }
+
+  public onTest(callback: (test: Test<any>) => void): this {
+    super.onTest(callback)
+    return this
+  }
+}
+
+export class Runner extends BaseRunner<TestContext> {
+  public onSuite(callback: (suite: Suite) => void): this {
+    super.onSuite(callback)
+    return this
+  }
+}
