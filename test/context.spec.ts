@@ -58,4 +58,29 @@ test.group('Context', () => {
 
     assert.deepEqual(stack, ['callback 1', 'callback 2'])
   })
+
+  test('add macro to TestContext', async (assert) => {
+    const emitter = new Emitter()
+    const refiner = new Refiner()
+    const stack: string[] = []
+
+    TestContext.macro('title', function () {
+      return this.test.title
+    })
+
+    const t = new Test(
+      '2 + 2 = 4',
+      (testInstance) => new TestContext(testInstance),
+      emitter,
+      refiner
+    )
+
+    t.run((ctx) => {
+      stack.push((ctx as any).title())
+    })
+
+    await t.exec()
+    TestContext.hydrate()
+    assert.deepEqual(stack, ['2 + 2 = 4'])
+  })
 })
