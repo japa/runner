@@ -238,6 +238,7 @@ Examples:
  */
 export function configure(options: Config) {
   const defaultOptions: Required<Config> = {
+    cliArgs: {},
     cwd: process.cwd(),
     files: [],
     suites: [],
@@ -280,8 +281,14 @@ export function processCliArgs(argv: string[]): Partial<Config> {
     },
   })
 
-  const config: { filters: Filters; timeout?: number; forceExit?: boolean } = {
+  const config: {
+    filters: Filters
+    timeout?: number
+    forceExit?: boolean
+    cliArgs?: Record<string, any>
+  } = {
     filters: {},
+    cliArgs: parsed,
   }
 
   processAsString(parsed, 'tags', (tags) => (config.filters.tags = tags))

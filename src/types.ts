@@ -58,6 +58,7 @@ export type RunnerHooks = {
  * Base configuration options
  */
 export type BaseConfig = {
+  cliArgs?: Record<string, any>
   cwd?: string
   timeout?: number
   plugins?: PluginFn[]
