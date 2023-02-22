@@ -17,6 +17,13 @@ import {
   TestContext as BaseTestContext,
 } from '@japa/core'
 
+import debug from '../debug'
+
+/**
+ * Runner specific test context. Here we extend the test context to register
+ * cleanup methods with the test and register hooks to get notified when
+ * a new instance of test context is created.
+ */
 export class TestContext extends BaseTestContext {
   /**
    * Methods to call after the test context instance
@@ -29,6 +36,7 @@ export class TestContext extends BaseTestContext {
    * context is created. The callback must be synchronous
    */
   public static created(callback: (context: TestContext) => void) {
+    debug('registering test context created hook "%s"', callback)
     this.createdCallbacks.push(callback)
     return this
   }
@@ -53,6 +61,9 @@ export class TestContext extends BaseTestContext {
   }
 }
 
+/**
+ * Runner specific Test with a fixed TestContext static type.
+ */
 export class Test<TestData extends DataSetNode = undefined> extends BaseTest<
   TestContext,
   TestData
@@ -60,8 +71,14 @@ export class Test<TestData extends DataSetNode = undefined> extends BaseTest<
   public static disposeCallbacks = []
 }
 
+/**
+ * Runner specific Group with a fixed TestContext static type.
+ */
 export class Group extends BaseGroup<TestContext> {}
 
+/**
+ * Runner specific Suite with a fixed TestContext static type.
+ */
 export class Suite extends BaseSuite<TestContext> {
   public onGroup(callback: (group: Group) => void): this {
     super.onGroup(callback)
@@ -74,6 +91,9 @@ export class Suite extends BaseSuite<TestContext> {
   }
 }
 
+/**
+ * Runner specific tests Runner with a fixed TestContext static type.
+ */
 export class Runner extends BaseRunner<TestContext> {
   public onSuite(callback: (suite: Suite) => void): this {
     super.onSuite(callback)

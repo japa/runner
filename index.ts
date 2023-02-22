@@ -22,10 +22,11 @@ import {
   Config,
   Filters,
   PluginFn,
+  ConfigSuite,
   RunnerHooksHandler,
   RunnerHooksCleanupHandler,
-  ConfigSuite,
 } from './src/types'
+import debug from './src/debug'
 
 export {
   Test,
@@ -196,11 +197,14 @@ async function importFiles(files: string[]) {
  */
 async function endTests(runner: Runner) {
   if (runnerOptions.forceExit) {
+    debug('force exiting tests after executing them')
     await runner.end()
   } else {
+    debug('executed tests and waiting for "process.beforeExit" event')
     return new Promise<void>((resolve) => {
       async function beforeExit() {
         process.removeListener('beforeExit', beforeExit)
+        debug('received "process.beforeExit" event, ending tests')
         await runner.end()
         resolve()
       }
@@ -357,6 +361,7 @@ export async function run() {
      * running plugins only
      */
     for (let plugin of runnerOptions.plugins) {
+      debug('running plugin "%s"', plugin.name || 'anonymous')
       await plugin(runnerOptions, runner, { Test, TestContext, Group })
     }
 
@@ -365,7 +370,10 @@ export async function run() {
     /**
      * Step 2: Notify runner about reporters
      */
-    runnerOptions.reporters.forEach((reporter) => runner.registerReporter(reporter))
+    runnerOptions.reporters.forEach((reporter) => {
+      debug('registering reporter "%s"', reporter.name || 'anonymous')
+      runner.registerReporter(reporter)
+    })
 
     /**
      * Step 3: Configure runner hooks.
@@ -389,6 +397,8 @@ export async function run() {
      * as part of the default suite
      */
     if ('files' in runnerOptions && runnerOptions.files.length) {
+      debug('collecting files for %O globs', runnerOptions.files)
+
       /**
        * Create a default suite for files with no suite
        */
@@ -418,6 +428,7 @@ export async function run() {
             globalTimeout = runnerOptions.timeout
           }
 
+          debug('collecting "%s" suite files for %O globs', suite.name, suite.files)
           const files = await collectFiles(suite.files)
 
           /**

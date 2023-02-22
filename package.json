@@ -14,7 +14,7 @@
   "scripts": {
     "mrm": "mrm --preset=@adonisjs/mrm-preset",
     "pretest": "npm run lint",
-    "test": "node .bin/test.js",
+    "test": "cross-env NODE_DEBUG=japa:runner node .bin/test.js",
     "clean": "del-cli build",
     "compile": "npm run lint && npm run clean && tsc",
     "build": "npm run compile",
@@ -38,6 +38,7 @@
     "@adonisjs/require-ts": "^2.0.13",
     "@types/node": "^18.14.0",
     "commitizen": "^4.3.0",
+    "cross-env": "^7.0.3",
     "cz-conventional-changelog": "^3.3.0",
     "del-cli": "^5.0.0",
     "eslint": "^8.33.0",
