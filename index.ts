@@ -141,11 +141,14 @@ function isFileAllowed(filePath: string, filters: Filters): boolean {
   }
 
   return !!filters.files.find((matcher) => {
-    if (filePath.endsWith(matcher)) {
-      return true
-    }
+    const filePathWithoutExt = filePath.replace(new RegExp(`${extname(filePath)}$`), '')
+    const filePathWithoutSpec = filePathWithoutExt.replace(/\.spec$/, '')
 
-    return filePath.replace(extname(filePath), '').endsWith(matcher)
+    return (
+      filePath.endsWith(matcher) ||
+      filePathWithoutExt.endsWith(matcher) ||
+      filePathWithoutSpec.endsWith(matcher)
+    )
   })
 }
 
