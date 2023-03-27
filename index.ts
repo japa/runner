@@ -34,6 +34,8 @@ export {
   Suite,
   Runner,
   Group,
+  Emitter,
+  Refiner,
   PluginFn,
   TestContext,
   ReporterContract,
