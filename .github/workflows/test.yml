@@ -3,37 +3,9 @@ on:
   - push
   - pull_request
 jobs:
-  linux:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version:
-          - 16.13.1
-          - 17.x
-    steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node-version }}
-      - name: Install
-        run: npm install
-      - name: Run tests
-        run: npm test
-  windows:
-    runs-on: windows-latest
-    strategy:
-      matrix:
-        node-version:
-          - 16.13.1
-          - 17.x
-    steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node-version }}
-      - name: Install
-        run: npm install
-      - name: Run tests
-        run: npm test
+  test:
+    uses: japa/.github/.github/workflows/test.yml@main
+  lint:
+    uses: japa/.github/.github/workflows/lint.yml@main
+  typecheck:
+    uses: japa/.github/.github/workflows/typecheck.yml@main
