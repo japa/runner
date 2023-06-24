@@ -18,12 +18,17 @@ import { CliParser } from './src/cli_parser.js'
 import type { CLIArgs, Config } from './src/types.js'
 import { ConfigManager } from './src/config_manager.js'
 import { createTest, createTestGroup } from './src/create_test.js'
-import { Emitter, Group, Runner, Suite, TestContext } from './modules/core/main.js'
+import { Emitter, Group, Runner, Suite, Test, TestContext } from './modules/core/main.js'
 
 /**
  * Global emitter instance used by the test
  */
 const emitter = new Emitter()
+
+/**
+ * The current active test
+ */
+let activeTest: Test<any> | undefined
 
 /**
  * Parsed commandline arguments
@@ -59,6 +64,13 @@ export function test(title: string, callback?: TestExecutor<TestContext, undefin
   validator.ensureIsInPlanningPhase(executionPlanState.phase)
 
   const testInstance = createTest(title, emitter, runnerConfig!.refiner, executionPlanState)
+  testInstance.setup((t) => {
+    activeTest = t
+    return () => {
+      activeTest = undefined
+    }
+  })
+
   if (callback) {
     testInstance.run(callback)
   }
@@ -97,6 +109,17 @@ export function processCLIArgs(argv: string[]) {
  */
 export function configure(options: Config) {
   runnerConfig = new ConfigManager(options, cliArgs || {}).hydrate()
+}
+
+/**
+ * Create a resource that has access to the current test
+ */
+export function resource<T>(callback: (test: Test<any> | null) => T) {
+  return {
+    create(): T {
+      return callback(activeTest || null)
+    },
+  }
 }
 
 /**

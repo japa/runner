@@ -49,7 +49,12 @@ export class Test<TestData extends DataSetNode = undefined> extends BaseTest<
   /**
    * @inheritdoc
    */
-  static disposeCallbacks = []
+  static executedCallbacks = []
+
+  /**
+   * @inheritdoc
+   */
+  static executingCallbacks = []
 }
 
 /**
