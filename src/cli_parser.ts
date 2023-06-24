@@ -9,7 +9,7 @@
 
 // @ts-ignore-error
 import getopts from 'getopts'
-import { colors } from '@poppinss/cliui'
+import colors from '@poppinss/colors'
 import type { CLIArgs } from './types.js'
 
 const ansi = colors.ansi()
