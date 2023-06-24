@@ -93,6 +93,13 @@ test.group = function (title: string, callback: (group: Group) => void) {
 }
 
 /**
+ * Get the test of currently running test
+ */
+export function getActiveTest() {
+  return activeTest
+}
+
+/**
  * Make Japa process command line arguments. Later the parsed output
  * will be used by Japa to compute the configuration
  */
@@ -109,17 +116,6 @@ export function processCLIArgs(argv: string[]) {
  */
 export function configure(options: Config) {
   runnerConfig = new ConfigManager(options, cliArgs || {}).hydrate()
-}
-
-/**
- * Create a resource that has access to the current test
- */
-export function resource<T>(callback: (test: Test<any> | null) => T) {
-  return {
-    create(): T {
-      return callback(activeTest || null)
-    },
-  }
 }
 
 /**
