@@ -14,11 +14,13 @@
   },
   "exports": {
     ".": "./build/index.js",
-    "./types": "./build/src/types.js"
+    "./types": "./build/src/types.js",
+    "./core": "./build/modules/core/main.js"
   },
   "scripts": {
     "pretest": "npm run lint",
-    "test": "glob -c \"node --loader=ts-node/esm --test\" \"test/**/*.spec.ts\"",
+    "test": "cross-env NODE_ENV=japa:runner c8 npm run quick:test",
+    "quick:test": "glob -c \"node --enable-source-maps --loader=ts-node/esm --test\" \"tests/*.spec.ts\"",
     "clean": "del build",
     "typecheck": "tsc --noEmit",
     "compile": "npm run lint && npm run clean && tsc",
@@ -45,11 +47,17 @@
     "@commitlint/cli": "^17.6.5",
     "@commitlint/config-conventional": "^17.6.5",
     "@swc/core": "^1.3.66",
+    "@types/chai": "^4.3.5",
+    "@types/chai-subset": "^1.3.3",
     "@types/node": "^20.3.1",
+    "c8": "^8.0.0",
+    "chai": "^4.3.7",
+    "chai-subset": "^1.6.0",
     "cross-env": "^7.0.3",
     "del-cli": "^5.0.0",
     "eslint": "^8.36.0",
     "github-label-sync": "^2.3.1",
+    "glob": "^10.3.0",
     "husky": "^8.0.3",
     "japa": "^4.0.0",
     "np": "^8.0.4",
@@ -58,13 +66,12 @@
     "typescript": "^5.1.3"
   },
   "dependencies": {
-    "@japa/core": "^7.3.3",
-    "@japa/errors-printer": "^2.1.0",
-    "@poppinss/cliui": "^3.0.5",
+    "@japa/core": "^8.0.0-1",
+    "@japa/errors-printer": "^3.0.0-0",
+    "@poppinss/cliui": "^6.1.1-2",
     "@poppinss/hooks": "^7.1.1-3",
     "fast-glob": "^3.2.12",
-    "getopts": "^2.3.0",
-    "inclusion": "^1.0.1"
+    "getopts": "^2.3.0"
   },
   "directories": {
     "test": "test"
@@ -95,5 +102,15 @@
   "prettier": "@adonisjs/prettier-config",
   "eslintConfig": {
     "extends": "@adonisjs/eslint-config/package"
+  },
+  "c8": {
+    "reporter": [
+      "text",
+      "html"
+    ],
+    "exclude": [
+      "tests/**",
+      "tests_helpers/**"
+    ]
   }
 }

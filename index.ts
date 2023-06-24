@@ -1,589 +1,202 @@
 /*
  * @japa/runner
  *
- * (c) Japa.dev
+ * (c) Japa
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-import getopts from 'getopts'
-import { extname } from 'path'
-import fastGlob from 'fast-glob'
-import inclusion from 'inclusion'
-import { pathToFileURL } from 'url'
-import { Hooks } from '@poppinss/hooks'
-import { logger } from '@poppinss/cliui'
 import { ErrorsPrinter } from '@japa/errors-printer'
-import { Emitter, Refiner, TestExecutor, ReporterContract } from '@japa/core'
+import type { TestExecutor } from '@japa/core/types'
 
-import { Test, TestContext, Group, Suite, Runner } from './src/core/main'
-import {
-  Config,
-  Filters,
-  PluginFn,
-  ConfigSuite,
-  RunnerHooksHandler,
-  RunnerHooksCleanupHandler,
-} from './src/types'
-import debug from './src/debug'
-
-export {
-  Test,
-  Config,
-  Suite,
-  Runner,
-  Group,
-  Emitter,
-  Refiner,
-  PluginFn,
-  TestContext,
-  ReporterContract,
-  RunnerHooksHandler,
-  RunnerHooksCleanupHandler,
-}
+import debug from './src/debug.js'
+import validator from './src/validator.js'
+import { Planner } from './src/planner.js'
+import { GlobalHooks } from './src/hooks.js'
+import { CliParser } from './src/cli_parser.js'
+import type { CLIArgs, Config } from './src/types.js'
+import { ConfigManager } from './src/config_manager.js'
+import { createTest, createTestGroup } from './src/create_test.js'
+import { Emitter, Group, Runner, Suite, TestContext } from './modules/core/main.js'
 
 /**
- * Filtering layers allowed by the refiner
- */
-const refinerFilteringLayers = ['tests', 'groups', 'tags'] as const
-
-/**
- * Reference to the recently imported file. We pass it to the
- * test and the group both
- */
-let recentlyImportedFile: string
-
-/**
- * Global timeout for tests. Fetched from runner options or suites
- * options
- */
-let globalTimeout: number
-
-/**
- * Function to create the test context for the test
- */
-const getContext = (testInstance: Test<any>) => new TestContext(testInstance)
-
-/**
- * The global reference to the tests emitter
+ * Global emitter instance used by the test
  */
 const emitter = new Emitter()
 
 /**
- * Active suite for tests
+ * Parsed commandline arguments
  */
-let activeSuite: Suite
+let cliArgs: CLIArgs | undefined
 
 /**
- * Currently active group
+ * Hydrated config
  */
-let activeGroup: Group | undefined
+let runnerConfig: Required<Config> | undefined
 
 /**
- * Configuration options
+ * The state refers to the phase where we configure suites and import
+ * test files. We stick this metadata to the test instance one can
+ * later reference within the test.
  */
-let runnerOptions: Required<Config>
+const executionPlanState: {
+  phase: 'idle' | 'planning' | 'executing'
+  file?: string
+  suite?: Suite
+  group?: Group
+  timeout?: number
+  retries?: number
+} = {
+  phase: 'idle',
+}
 
 /**
- * Ensure the configure method has been called
+ * Create a Japa test. Defining a test without the callback
+ * will create a todo test.
  */
-function ensureIsConfigured(message: string) {
-  if (!runnerOptions) {
-    throw new Error(message)
+export function test(title: string, callback?: TestExecutor<TestContext, undefined>) {
+  validator.ensureIsInPlanningPhase(executionPlanState.phase)
+
+  const testInstance = createTest(title, emitter, runnerConfig!.refiner, executionPlanState)
+  if (callback) {
+    testInstance.run(callback)
   }
 }
 
 /**
- * Validate suites filter to ensure a wrong suite is not
- * mentioned
+ * Create a Japa test group
  */
-function validateSuitesFilter() {
-  if (!('suites' in runnerOptions)) {
-    return
-  }
+test.group = function (title: string, callback: (group: Group) => void) {
+  validator.ensureIsInPlanningPhase(executionPlanState.phase)
 
-  if (!runnerOptions.filters.suites || !runnerOptions.filters.suites.length) {
-    return
-  }
-
-  const suites = runnerOptions.suites.map(({ name }) => name)
-  const invalidSuites = runnerOptions.filters.suites.filter((suite) => !suites.includes(suite))
-
-  if (invalidSuites.length) {
-    throw new Error(
-      `Unrecognized suite "${invalidSuites[0]}". Make sure to define it in the config first`
-    )
-  }
+  executionPlanState.group = createTestGroup(
+    title,
+    emitter,
+    runnerConfig!.refiner,
+    executionPlanState
+  )
+  callback(executionPlanState.group)
+  executionPlanState.group = undefined
 }
 
 /**
- * Process command line argument into a string value
+ * Make Japa process command line arguments. Later the parsed output
+ * will be used by Japa to compute the configuration
  */
-function processAsString(
-  argv: Record<string, any>,
-  flagName: string,
-  onMatch: (value: string[]) => any
-): void {
-  const flag = argv[flagName]
-  if (flag) {
-    onMatch((Array.isArray(flag) ? flag : flag.split(',')).map((tag: string) => tag.trim()))
-  }
+export function processCLIArgs(argv: string[]) {
+  cliArgs = new CliParser(argv).parse()
 }
 
 /**
- * Find if the file path matches the files filter array.
- * The ending of the file is matched
- */
-function isFileAllowed(filePath: string, filters: Filters): boolean {
-  if (!filters.files || !filters.files.length) {
-    return true
-  }
-
-  return !!filters.files.find((matcher) => {
-    const filePathWithoutExt = filePath.replace(new RegExp(`${extname(filePath)}$`), '')
-    const filePathWithoutSpec = filePathWithoutExt.replace(/\.spec$/, '')
-
-    return (
-      filePath.endsWith(matcher) ||
-      filePathWithoutExt.endsWith(matcher) ||
-      filePathWithoutSpec.endsWith(matcher)
-    )
-  })
-}
-
-/**
- * Returns "true" when no filters are applied or the name is part
- * of the applied filter.
- */
-function isSuiteAllowed(suite: ConfigSuite, filters: Filters) {
-  if (!filters.suites || !filters.suites.length) {
-    return true
-  }
-
-  return filters.suites.includes(suite.name)
-}
-
-/**
- * Collect files using the files collector function or by processing
- * the glob pattern.
+ * Configure the tests runner with inline configuration. You must
+ * call configure method before the run method.
  *
- * The return value is further filtered against the `--files` filter.
- */
-async function collectFiles(files: string | string[] | (() => string[] | Promise<string[]>)) {
-  if (Array.isArray(files) || typeof files === 'string') {
-    const collectedFiles = await fastGlob(files, {
-      absolute: true,
-      onlyFiles: true,
-      cwd: runnerOptions.cwd,
-    })
-    return collectedFiles.filter((file) => isFileAllowed(file, runnerOptions.filters))
-  } else if (typeof files === 'function') {
-    const collectedFiles = await files()
-    return collectedFiles.filter((file) => isFileAllowed(file, runnerOptions.filters))
-  }
-
-  throw new Error('Invalid value for "files" property. Expected a string, array or a function')
-}
-
-/**
- * Import test files using the configured importer.
- */
-async function importFiles(files: string[]) {
-  for (let file of files) {
-    recentlyImportedFile = file
-    await runnerOptions.importer(file)
-  }
-}
-
-/**
- * End tests. We wait for the "beforeExit" event when
- * forceExit is not set to true
- */
-async function endTests(runner: Runner) {
-  if (runnerOptions.forceExit) {
-    debug('force exiting tests after executing them')
-    await runner.end()
-  } else {
-    debug('executed tests and waiting for "process.beforeExit" event')
-    return new Promise<void>((resolve) => {
-      async function beforeExit() {
-        process.removeListener('beforeExit', beforeExit)
-        debug('received "process.beforeExit" event, ending tests')
-        await runner.end()
-        resolve()
-      }
-      process.on('beforeExit', beforeExit)
-    })
-  }
-}
-
-/**
- * Show help output in stdout.
- */
-function showHelp() {
-  const green = logger.colors.green.bind(logger.colors)
-  const grey = logger.colors.grey.bind(logger.colors)
-
-  console.log(`@japa/runner v2.3.0
-
-Options:
-  ${green('--tests')}                     ${grey('Specify test titles')}
-  ${green('--tags')}                      ${grey('Specify test tags')}
-  ${green('--groups')}                    ${grey('Specify group titles')}
-  ${green('--ignore-tags')}               ${grey('Specify negated tags')}
-  ${green('--files')}                     ${grey('Specify files to match and run')}
-  ${green('--force-exit')}                ${grey('Enable/disable force exit')}
-  ${green('--timeout')}                   ${grey('Define timeout for all the tests')}
-  ${green('-h, --help')}                  ${grey('Display this message')}
-
-Examples:
-  ${grey('$ node bin/test.js --tags="@github"')}
-  ${grey('$ node bin/test.js --files="example.spec.js" --force-exit')}`)
-}
-
-/**
- * Configure the tests runner
+ * Do note: The CLI flags will overwrite the options provided
+ * to the configure method.
  */
 export function configure(options: Config) {
-  const defaultOptions: Required<Config> = {
-    cliArgs: {},
-    cwd: process.cwd(),
-    files: [],
-    suites: [],
-    plugins: [],
-    reporters: [],
-    timeout: 2000,
-    filters: {},
-    setup: [],
-    teardown: [],
-    importer: (filePath) => inclusion(pathToFileURL(filePath).href),
-    refiner: new Refiner({}),
-    forceExit: false,
-    configureSuite: () => {},
-  }
-
-  runnerOptions = Object.assign(defaultOptions, options)
+  runnerConfig = new ConfigManager(options, cliArgs || {}).hydrate()
 }
 
 /**
- * Process CLI arguments into configuration options. The following
- * command line arguments are processed.
- *
- * * --tests=Specify test titles
- * * --tags=Specify test tags
- * * --groups=Specify group titles
- * * --ignore-tags=Specify negated tags
- * * --files=Specify files to match and run
- * * --force-exit=Enable/disable force exit
- * * --timeout=Define timeout for all the tests
- * * -h, --help=Show help
- */
-export function processCliArgs(argv: string[]): Partial<Config> {
-  const parsed = getopts(argv, {
-    string: ['tests', 'tags', 'groups', 'ignoreTags', 'files', 'timeout'],
-    boolean: ['forceExit', 'help'],
-    alias: {
-      ignoreTags: 'ignore-tags',
-      forceExit: 'force-exit',
-      help: 'h',
-    },
-  })
-
-  const config: {
-    filters: Filters
-    timeout?: number
-    forceExit?: boolean
-    cliArgs?: Record<string, any>
-  } = {
-    filters: {},
-    cliArgs: parsed,
-  }
-
-  processAsString(parsed, 'tags', (tags) => (config.filters.tags = tags))
-  processAsString(parsed, 'ignoreTags', (tags) => {
-    config.filters.tags = config.filters.tags || []
-    tags.forEach((tag) => config.filters.tags!.push(`!${tag}`))
-  })
-  processAsString(parsed, 'groups', (groups) => (config.filters.groups = groups))
-  processAsString(parsed, 'tests', (tests) => (config.filters.tests = tests))
-  processAsString(parsed, 'files', (files) => (config.filters.files = files))
-
-  /**
-   * Show help
-   */
-  if (parsed.help) {
-    showHelp()
-    process.exit(0)
-  }
-
-  /**
-   * Get suites
-   */
-  if (parsed._.length) {
-    processAsString({ suites: parsed._ }, 'suites', (suites) => (config.filters.suites = suites))
-  }
-
-  /**
-   * Get timeout
-   */
-  if (parsed.timeout) {
-    const value = Number(parsed.timeout)
-    if (!isNaN(value)) {
-      config.timeout = value
-    }
-  }
-
-  /**
-   * Get forceExit
-   */
-  if (parsed.forceExit) {
-    config.forceExit = true
-  }
-
-  return config
-}
-
-/**
- * Run japa tests
+ * Execute Japa tests. Calling this function will import the test
+ * files behind the scenes
  */
 export async function run() {
-  const runner = new Runner(emitter)
-  runner.manageUnHandledExceptions()
-  runner.onSuite(runnerOptions.configureSuite)
+  validator.ensureIsConfigured(runnerConfig)
 
-  const hooks = new Hooks()
-  let setupRunner: ReturnType<Hooks['runner']>
-  let teardownRunner: ReturnType<Hooks['runner']>
+  executionPlanState.phase = 'planning'
+  const runner = new Runner(emitter)
+  const globalHooks = new GlobalHooks()
 
   try {
-    ensureIsConfigured('Cannot run tests without configuring the tests runner')
-
     /**
-     * Step 1: Run all plugins
-     *
-     * Plugins can also mutate config. So we process the config after
-     * running plugins only
+     * Step 1: Executing plugins before creating a plan, so that it can mutate
+     * the config
      */
-    for (let plugin of runnerOptions.plugins) {
-      debug('running plugin "%s"', plugin.name || 'anonymous')
-      await plugin(runnerOptions, runner, { Test, TestContext, Group })
+    for (let plugin of runnerConfig!.plugins) {
+      debug('executing "%s" plugin', plugin.name || 'anonymous')
+      await plugin({ runner, emitter, cliArgs: cliArgs || {}, config: runnerConfig! })
     }
 
-    validateSuitesFilter()
+    /**
+     * Step 2: Creating an execution plan. The output is the result of
+     * applying all the filters and validations.
+     */
+    const { config, reporters, suites, refinerFilters } = await new Planner(runnerConfig!).plan()
 
     /**
-     * Step 2: Notify runner about reporters
+     * Step 3: Registering reporters and filters with the runner
      */
-    runnerOptions.reporters.forEach((reporter) => {
-      debug('registering reporter "%s"', reporter.name || 'anonymous')
+    reporters.forEach((reporter) => {
+      debug('registering "%s" reporter', reporter.name)
       runner.registerReporter(reporter)
     })
-
-    /**
-     * Step 3: Configure runner hooks.
-     */
-    runnerOptions.setup.forEach((hook) => hooks.add('setup', hook))
-    runnerOptions.teardown.forEach((hook) => hooks.add('teardown', hook))
-    setupRunner = hooks.runner('setup')
-    teardownRunner = hooks.runner('teardown')
-
-    /**
-     * Step 3.1: Run setup hooks
-     *
-     * We run the setup hooks before importing test files. It
-     * allows hooks to setup the app environment for the
-     * test files.
-     */
-    await setupRunner.run(runner)
-
-    /**
-     * Step 4: Entertain files property and import test files
-     * as part of the default suite
-     */
-    if ('files' in runnerOptions && runnerOptions.files.length) {
-      debug('collecting files for %O globs', runnerOptions.files)
-
-      /**
-       * Create a default suite for files with no suite
-       */
-      globalTimeout = runnerOptions.timeout
-      const files = await collectFiles(runnerOptions.files)
-
-      /**
-       * Create and register suite when files are collected.
-       */
-      if (files.length) {
-        activeSuite = new Suite('default', emitter, runnerOptions.refiner)
-        runner.add(activeSuite)
-        await importFiles(files)
-      }
-    }
-
-    /**
-     * Step 5: Entertain suites property and import test files
-     * for the filtered suites.
-     */
-    if ('suites' in runnerOptions) {
-      for (let suite of runnerOptions.suites) {
-        if (isSuiteAllowed(suite, runnerOptions.filters)) {
-          if (suite.timeout !== undefined) {
-            globalTimeout = suite.timeout
-          } else {
-            globalTimeout = runnerOptions.timeout
-          }
-
-          debug('collecting "%s" suite files for %O globs', suite.name, suite.files)
-          const files = await collectFiles(suite.files)
-
-          /**
-           * Only register the suite and import files when the suite
-           * files glob + filter has returned one or more files.
-           */
-          if (files.length) {
-            activeSuite = new Suite(suite.name, emitter, runnerOptions.refiner)
-            if (typeof suite.configure === 'function') {
-              suite.configure(activeSuite)
-            }
-
-            runner.add(activeSuite)
-            await importFiles(files)
-          }
-        }
-      }
-    }
-
-    /**
-     * Step 6: Add filters to the refiner
-     */
-    Object.keys(runnerOptions.filters).forEach((layer: 'tests' | 'groups' | 'tags') => {
-      if (refinerFilteringLayers.includes(layer)) {
-        const values = runnerOptions.filters[layer]
-        if (values) {
-          runnerOptions.refiner.add(layer, values)
-        }
-      }
+    refinerFilters.forEach((filter) => {
+      debug('apply %s filters "%O" ', filter.layer, filter.filters)
+      config.refiner.add(filter.layer, filter.filters)
     })
 
     /**
-     * Step 7.1: Start the tests runner
+     * Step 4: Running the setup hooks
      */
-    await runner.start()
+    debug('executing global hooks')
+    globalHooks.apply(config)
+    await globalHooks.setup(runner)
 
     /**
-     * Step 7.2: Execute all the tests
+     * Step 5: Register suites and import test files
      */
+    for (let suite of suites) {
+      /**
+       * Creating and configuring the suite
+       */
+      executionPlanState.suite = new Suite(suite.name, emitter, config.refiner)
+      if (typeof suite.configure === 'function') {
+        suite.configure(executionPlanState.suite)
+      }
+      runner.add(executionPlanState.suite)
+
+      /**
+       * Importing suite files
+       */
+      for (let fileURL of suite.filesURLs) {
+        await config.importer(fileURL)
+      }
+
+      /**
+       * Resetting global state
+       */
+      executionPlanState.suite = undefined
+    }
+
+    /**
+     * Onto execution phase
+     */
+    executionPlanState.phase = 'executing'
+
+    await runner.start()
     await runner.exec()
 
-    /**
-     * Step 7.3: Run cleanup and teardown hooks
-     */
-    await setupRunner.cleanup(runner)
-    await teardownRunner.run(runner)
-    await teardownRunner.cleanup(runner)
+    await globalHooks.teardown(null, runner)
+    await runner.end()
 
-    /**
-     * Step 7.4: End or wait for process to exit
-     */
-    await endTests(runner)
-
-    /**
-     * Step 8: Update the process exit code
-     */
     const summary = runner.getSummary()
     if (summary.hasError) {
       process.exitCode = 1
     }
-
-    runnerOptions.forceExit && process.exit()
+    if (config.forceExit) {
+      process.exit()
+    }
   } catch (error) {
-    if (setupRunner! && setupRunner.isCleanupPending) {
-      await setupRunner.cleanup(error, runner)
-    }
-    if (teardownRunner! && teardownRunner.isCleanupPending) {
-      await teardownRunner.cleanup(error, runner)
-    }
-
+    await globalHooks.teardown(error, runner)
     const printer = new ErrorsPrinter()
     await printer.printError(error)
 
     process.exitCode = 1
-    runnerOptions.forceExit && process.exit()
+    if (runnerConfig!.forceExit) {
+      process.exit()
+    }
   }
-}
-
-/**
- * Add a new test
- */
-export function test(title: string, callback?: TestExecutor<TestContext, undefined>) {
-  ensureIsConfigured('Cannot add test without configuring the test runner')
-
-  const testInstance = new Test<undefined>(
-    title,
-    getContext,
-    emitter,
-    runnerOptions.refiner,
-    activeGroup
-  )
-
-  /**
-   * Set filename and suite
-   */
-  testInstance.options.meta.suite = activeSuite
-  testInstance.options.meta.fileName = recentlyImportedFile
-
-  /**
-   * Define timeout on the test when exists globally
-   */
-  if (globalTimeout !== undefined) {
-    testInstance.timeout(globalTimeout)
-  }
-
-  /**
-   * Define test executor function
-   */
-  if (callback) {
-    testInstance.run(callback)
-  }
-
-  /**
-   * Add test to the group or suite
-   */
-  if (activeGroup) {
-    activeGroup.add(testInstance)
-  } else {
-    activeSuite.add(testInstance)
-  }
-
-  return testInstance
-}
-
-/**
- * Define test group
- */
-test.group = function (title: string, callback: (group: Group) => void) {
-  ensureIsConfigured('Cannot add test group without configuring the test runner')
-
-  /**
-   * Disallow nested groups
-   */
-  if (activeGroup) {
-    throw new Error('Cannot create nested test groups')
-  }
-
-  activeGroup = new Group(title, emitter, runnerOptions.refiner)
-
-  /**
-   * Set filename and suite
-   */
-  activeGroup.options.meta.suite = activeSuite
-  activeGroup.options.meta.fileName = recentlyImportedFile
-
-  /**
-   * Add group to the default suite
-   */
-  activeSuite.add(activeGroup)
-
-  callback(activeGroup)
-  activeGroup = undefined
 }
