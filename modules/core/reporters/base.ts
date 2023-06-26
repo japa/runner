@@ -50,7 +50,7 @@ export abstract class BaseReporter {
   currentGroupName?: string
 
   constructor(options: BaseReporterOptions = {}) {
-    this.#options = options
+    this.#options = Object.assign({ stackLinesCount: 2 }, options)
   }
 
   /**
