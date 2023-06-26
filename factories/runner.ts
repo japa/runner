@@ -136,6 +136,12 @@ export class RunnerFactory {
     usersListGroup.setup(() => {
       throw new Error('Unable to cleanup database')
     })
+    createTest(
+      'A test that will never because the group hooks fails',
+      this.#emitter,
+      this.#refiner,
+      { group: usersListGroup }
+    )
 
     createTest('A top level test inside functional suite', this.#emitter, this.#refiner, {
       suite,
