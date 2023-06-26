@@ -7,8 +7,9 @@
  * file that was distributed with this source code.
  */
 
-import { SpecReporter } from './spec.js'
 import { DotReporter } from './dot.js'
+import { SpecReporter } from './spec.js'
+import { NdJSONReporter } from './ndjson.js'
 import type { BaseReporterOptions, NamedReporterContract } from '../types.js'
 
 /**
@@ -28,5 +29,15 @@ export const dot: (options?: BaseReporterOptions) => NamedReporterContract = (op
   return {
     name: 'dot',
     handler: (...args) => new DotReporter(options).boot(...args),
+  }
+}
+
+/**
+ * Create an instance of the ndjson reporter
+ */
+export const ndjson: (options?: BaseReporterOptions) => NamedReporterContract = (options) => {
+  return {
+    name: 'ndjson',
+    handler: (...args) => new NdJSONReporter(options).boot(...args),
   }
 }
