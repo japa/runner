@@ -16,6 +16,7 @@ import validator from './src/validator.js'
 import { Planner } from './src/planner.js'
 import { GlobalHooks } from './src/hooks.js'
 import { CliParser } from './src/cli_parser.js'
+import { retryPlugin } from './src/plugins/retry.js'
 import type { CLIArgs, Config } from './src/types.js'
 import { ConfigManager } from './src/config_manager.js'
 import { createTest, createTestGroup } from './src/create_test.js'
@@ -131,6 +132,8 @@ export async function run() {
   const globalHooks = new GlobalHooks()
 
   try {
+    await retryPlugin({ config: runnerConfig!, runner, emitter, cliArgs: cliArgs || {} })
+
     /**
      * Step 1: Executing plugins before creating a plan, so that it can mutate
      * the config

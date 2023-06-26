@@ -11,11 +11,12 @@ import assert from 'node:assert'
 import { fileURLToPath } from 'node:url'
 
 import { Planner } from '../src/planner.js'
+import { GlobalHooks } from '../src/hooks.js'
 import { CliParser } from '../src/cli_parser.js'
 import { CLIArgs, Config } from '../src/types.js'
 import { ConfigManager } from '../src/config_manager.js'
 import { createTest, createTestGroup } from '../src/create_test.js'
-import { Group, Suite, Runner, Emitter, Refiner } from '../modules/core/main.js'
+import { Group, Suite, Runner, Emitter } from '../modules/core/main.js'
 
 /**
  * Runner factory exposes the API to run dummy suites, groups and tests.
@@ -24,11 +25,14 @@ import { Group, Suite, Runner, Emitter, Refiner } from '../modules/core/main.js'
  */
 export class RunnerFactory {
   #emitter = new Emitter()
-  #refiner = new Refiner()
   #config?: Required<Config>
   #cliArgs?: CLIArgs
   #suites?: Suite[]
   #file = fileURLToPath(import.meta.url)
+
+  get #refiner() {
+    return this.#config!.refiner
+  }
 
   /**
    * Creating unit and functional suites
@@ -166,7 +170,7 @@ export class RunnerFactory {
   /**
    * Configure runner
    */
-  configure(config: Config, argv?: []) {
+  configure(config: Config, argv?: string[]) {
     this.#cliArgs = new CliParser(argv || []).parse()
     this.#config = new ConfigManager(config, this.#cliArgs).hydrate()
     return this
@@ -182,13 +186,25 @@ export class RunnerFactory {
   }
 
   /**
+   * Define a custom emitter instance to use
+   */
+  useEmitter(emitter: Emitter) {
+    this.#emitter = emitter
+    return this
+  }
+
+  /**
    * Run dummy tests. You might use
    */
   async run() {
     const runner = new Runner(this.#emitter)
-    this.#registerPlugins(runner)
+
+    await this.#registerPlugins(runner)
 
     const { config, reporters, refinerFilters } = await new Planner(this.#config!).plan()
+    const globalHooks = new GlobalHooks()
+    globalHooks.apply(config)
+
     reporters.forEach((reporter) => {
       runner.registerReporter(reporter)
     })
@@ -208,9 +224,11 @@ export class RunnerFactory {
       runner.add(functional)
     }
 
+    await globalHooks.setup(runner)
     await runner.start()
     await runner.exec()
     await runner.end()
+    await globalHooks.teardown(null, runner)
 
     return runner.getSummary()
   }

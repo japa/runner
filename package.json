@@ -51,6 +51,7 @@
     "@swc/core": "^1.3.66",
     "@types/chai": "^4.3.5",
     "@types/chai-subset": "^1.3.3",
+    "@types/find-cache-dir": "^3.2.1",
     "@types/ms": "^0.7.31",
     "@types/node": "^20.3.1",
     "c8": "^8.0.0",
@@ -74,6 +75,7 @@
     "@poppinss/cliui": "^6.1.1-2",
     "@poppinss/hooks": "^7.1.1-3",
     "fast-glob": "^3.2.12",
+    "find-cache-dir": "^4.0.0",
     "getopts": "^2.3.0",
     "ms": "^2.1.3"
   },
@@ -115,6 +117,7 @@
     "exclude": [
       "tests/**",
       "tests_helpers/**",
+      "factories/**",
       "modules/core/**",
       "src/reporters/**"
     ]

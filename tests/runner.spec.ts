@@ -10,10 +10,12 @@
 import { assert } from 'chai'
 import { test } from 'node:test'
 
+import { runner } from '../factories/main.js'
 import { GlobalHooks } from '../src/hooks.js'
 import { ConfigManager } from '../src/config_manager.js'
 import { wrapAssertions } from '../tests_helpers/main.js'
 import { createTest, createTestGroup } from '../src/create_test.js'
+import { clearCache, getFailedTests, retryPlugin } from '../src/plugins/retry.js'
 import { Emitter, Refiner, Runner, Suite } from '../modules/core/main.js'
 
 test.describe('Runner | create tests and groups', () => {
@@ -229,5 +231,205 @@ test.describe('Runner | global hooks', () => {
     await wrapAssertions(() => {
       assert.deepEqual(stack, ['setup', 'teardown', 'teardown cleanup'])
     })
+  })
+})
+
+test.describe('Runner | retryPlugin', () => {
+  test('store failing tests inside the cache dir', async () => {
+    const stack: string[] = []
+
+    const emitter = new Emitter()
+    const refiner = new Refiner()
+
+    const suite = new Suite('same', emitter, refiner)
+    createTest('failing test', emitter, refiner, { suite }).run(() => {
+      stack.push('executing failing test')
+      throw new Error('Failing')
+    })
+    createTest('passing test', emitter, refiner, { suite }).run(() => {
+      stack.push('executing passing test')
+    })
+
+    await runner()
+      .configure({
+        files: [],
+        refiner,
+        reporters: {
+          activated: [],
+          list: [],
+        },
+        plugins: [retryPlugin],
+      })
+      .useEmitter(emitter)
+      .withSuites([suite])
+      .run()
+
+    await wrapAssertions(async () => {
+      assert.deepEqual(await getFailedTests(), { tests: ['failing test'] })
+      assert.deepEqual(stack, ['executing failing test', 'executing passing test'])
+    })
+
+    await clearCache()
+  })
+
+  test('run only failed tests when retry flag is used', async () => {
+    const stack: string[] = []
+
+    const emitter = new Emitter()
+    const refiner = new Refiner()
+
+    function getSuite() {
+      const suite = new Suite('same', emitter, refiner)
+      createTest('failing test', emitter, refiner, { suite }).run(() => {
+        stack.push('executing failing test')
+        throw new Error('Failing')
+      })
+      createTest('passing test', emitter, refiner, { suite }).run(() => {
+        stack.push('executing passing test')
+      })
+
+      return suite
+    }
+
+    function getExecutor(argv?: string[]) {
+      return runner()
+        .configure(
+          {
+            files: [],
+            refiner,
+            reporters: {
+              activated: [],
+              list: [],
+            },
+            plugins: [retryPlugin],
+          },
+          argv
+        )
+        .useEmitter(emitter)
+        .withSuites([getSuite()])
+    }
+
+    await getExecutor().run()
+    await wrapAssertions(async () => {
+      assert.deepEqual(await getFailedTests(), { tests: ['failing test'] })
+      assert.deepEqual(stack, ['executing failing test', 'executing passing test'])
+    })
+
+    await getExecutor(['--retry']).run()
+    await wrapAssertions(async () => {
+      assert.deepEqual(await getFailedTests(), { tests: ['failing test'] })
+      assert.deepEqual(stack, [
+        'executing failing test',
+        'executing passing test',
+        'executing failing test',
+      ])
+    })
+
+    await clearCache()
+  })
+
+  test('run all tests when retry flag is not used', async () => {
+    const stack: string[] = []
+
+    const emitter = new Emitter()
+    const refiner = new Refiner()
+
+    function getSuite() {
+      const suite = new Suite('same', emitter, refiner)
+      createTest('failing test', emitter, refiner, { suite }).run(() => {
+        stack.push('executing failing test')
+        throw new Error('Failing')
+      })
+      createTest('passing test', emitter, refiner, { suite }).run(() => {
+        stack.push('executing passing test')
+      })
+
+      return suite
+    }
+
+    function getExecutor(argv?: string[]) {
+      return runner()
+        .configure(
+          {
+            files: [],
+            refiner,
+            reporters: {
+              activated: [],
+              list: [],
+            },
+            plugins: [retryPlugin],
+          },
+          argv
+        )
+        .useEmitter(emitter)
+        .withSuites([getSuite()])
+    }
+
+    await getExecutor().run()
+    await wrapAssertions(async () => {
+      assert.deepEqual(await getFailedTests(), { tests: ['failing test'] })
+      assert.deepEqual(stack, ['executing failing test', 'executing passing test'])
+    })
+
+    await getExecutor([]).run()
+    await wrapAssertions(async () => {
+      assert.deepEqual(await getFailedTests(), { tests: ['failing test'] })
+      assert.deepEqual(stack, [
+        'executing failing test',
+        'executing passing test',
+        'executing failing test',
+        'executing passing test',
+      ])
+    })
+
+    await clearCache()
+  })
+
+  test('run all tests when there are no failing tests', async () => {
+    const stack: string[] = []
+
+    const emitter = new Emitter()
+    const refiner = new Refiner()
+
+    function getSuite() {
+      const suite = new Suite('same', emitter, refiner)
+      createTest('passing test', emitter, refiner, { suite }).run(() => {
+        stack.push('executing passing test')
+      })
+
+      return suite
+    }
+
+    function getExecutor(argv?: string[]) {
+      return runner()
+        .configure(
+          {
+            files: [],
+            refiner,
+            reporters: {
+              activated: [],
+              list: [],
+            },
+            plugins: [retryPlugin],
+          },
+          argv
+        )
+        .useEmitter(emitter)
+        .withSuites([getSuite()])
+    }
+
+    await getExecutor().run()
+    await wrapAssertions(async () => {
+      assert.deepEqual(await getFailedTests(), { tests: [] })
+      assert.deepEqual(stack, ['executing passing test'])
+    })
+
+    await getExecutor(['--retry']).run()
+    await wrapAssertions(async () => {
+      assert.deepEqual(await getFailedTests(), { tests: [] })
+      assert.deepEqual(stack, ['executing passing test', 'executing passing test'])
+    })
+
+    await clearCache()
   })
 })
