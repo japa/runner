@@ -8,6 +8,7 @@
  */
 
 import debug from './debug.js'
+import { spec } from './reporters/main.js'
 import { Refiner } from '../modules/core/main.js'
 import type { CLIArgs, Config, Filters } from './types.js'
 
@@ -22,7 +23,7 @@ const DEFAULTS = {
   plugins: [],
   reporters: {
     activated: ['spec'],
-    list: [{ name: 'spec', handler: {} as any }],
+    list: [spec()],
   },
   importer: (filePath) => import(filePath.href),
   configureSuite: () => {},

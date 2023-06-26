@@ -459,7 +459,7 @@ test.describe('Planner | reporters', () => {
     await wrapAssertions(() => {
       assert.deepEqual(reporters, [
         {
-          handler: {} as any,
+          handler: reporters[0].handler,
           name: 'spec',
         },
       ])

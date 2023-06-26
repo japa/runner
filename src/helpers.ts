@@ -7,9 +7,5 @@
  * file that was distributed with this source code.
  */
 
-export * from '@japa/core/types'
-
-export type BaseReporterOptions = {
-  stackLinesCount?: number
-  framesMaxLimit?: number
-}
+import { cliui } from '@poppinss/cliui'
+export default cliui()

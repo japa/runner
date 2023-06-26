@@ -21,6 +21,7 @@ import type {
   GroupStartNode,
   SuiteStartNode,
   RunnerStartNode,
+  BaseReporterOptions,
 } from '../types.js'
 import { Emitter, Runner } from '../main.js'
 
@@ -30,15 +31,7 @@ const ansi = colors.ansi()
  * Base reporter to build custom reporters on top of
  */
 export abstract class BaseReporter {
-  #options: {
-    stackLinesCount?: number
-    framesMaxLimit?: number
-  }
-
-  /**
-   * Reference to the tests runner. Available after the
-   * boot method is invoked
-   */
+  #options: BaseReporterOptions
   runner?: Runner
 
   /**
@@ -51,7 +44,12 @@ export abstract class BaseReporter {
    */
   currentSuiteName?: string
 
-  constructor(options: { stackLinesCount?: number; framesMaxLimit?: number } = {}) {
+  /**
+   * Group for which the tests are getting executed
+   */
+  currentGroupName?: string
+
+  constructor(options: BaseReporterOptions = {}) {
     this.#options = options
   }
 
@@ -207,11 +205,13 @@ export abstract class BaseReporter {
     })
 
     emitter.on('group:start', (payload) => {
+      this.currentGroupName = payload.title
       this.currentFileName = payload.meta.fileName
       this.onGroupStart(payload)
     })
 
     emitter.on('group:end', (payload) => {
+      this.currentGroupName = undefined
       this.onGroupEnd(payload)
     })
 

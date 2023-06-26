@@ -7,6 +7,7 @@
  * file that was distributed with this source code.
  */
 
+import { fileURLToPath } from 'node:url'
 import { ErrorsPrinter } from '@japa/errors-printer'
 import type { TestExecutor } from '@japa/core/types'
 
@@ -181,6 +182,7 @@ export async function run() {
        * Importing suite files
        */
       for (let fileURL of suite.filesURLs) {
+        executionPlanState.file = fileURLToPath(fileURL)
         await config.importer(fileURL)
       }
 
