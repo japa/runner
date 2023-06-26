@@ -13,7 +13,7 @@ import { test } from 'node:test'
 import { runner } from '../factories/main.js'
 import { GlobalHooks } from '../src/hooks.js'
 import { ConfigManager } from '../src/config_manager.js'
-import { wrapAssertions } from '../tests_helpers/main.js'
+import { pEvent, wrapAssertions } from '../tests_helpers/main.js'
 import { createTest, createTestGroup } from '../src/create_test.js'
 import { clearCache, getFailedTests, retryPlugin } from '../src/plugins/retry.js'
 import { Emitter, Refiner, Runner, Suite } from '../modules/core/main.js'
@@ -92,6 +92,112 @@ test.describe('Runner | create tests and groups', () => {
     await wrapAssertions(() => {
       assert.deepEqual(stack, ['executed'])
     })
+  })
+
+  test('assert test throws an exception', async () => {
+    const emitter = new Emitter()
+    const refiner = new Refiner()
+    const t = createTest('', emitter, refiner, {})
+    t.run(() => {
+      throw new Error('Failed')
+    }).throws('Failed')
+
+    const [event] = await Promise.all([pEvent(emitter, 'test:end'), t.exec()])
+    assert.equal(event!.hasError, false)
+  })
+
+  test('assert error matches the regular expression', async () => {
+    const emitter = new Emitter()
+    const refiner = new Refiner()
+    const t = createTest('', emitter, refiner, {})
+    t.run(() => {
+      throw new Error('Failed')
+    }).throws(/ed?/)
+
+    const [event] = await Promise.all([pEvent(emitter, 'test:end'), t.exec()])
+    assert.equal(event!.hasError, false)
+  })
+
+  test('throw error when test does not have a callback defined', async () => {
+    const emitter = new Emitter()
+    const refiner = new Refiner()
+    const t = createTest('', emitter, refiner, {})
+
+    await wrapAssertions(() => {
+      assert.throws(
+        () => t.throws(/ed?/),
+        'Cannot use "test.throws" method without a test callback'
+      )
+    })
+  })
+
+  test('assert test throws an instance of a given class', async () => {
+    const emitter = new Emitter()
+    const refiner = new Refiner()
+    const t = createTest('', emitter, refiner, {})
+    t.run(() => {
+      throw new Error('Failed')
+    }).throws('Failed', Error)
+
+    const [event] = await Promise.all([pEvent(emitter, 'test:end'), t.exec()])
+    assert.equal(event!.hasError, false)
+  })
+
+  test('fail when test does not throw an exception', async () => {
+    const emitter = new Emitter()
+    const refiner = new Refiner()
+    const t = createTest('', emitter, refiner, {})
+    t.run(() => {}).throws('Failed', Error)
+
+    const [event] = await Promise.all([pEvent(emitter, 'test:end'), t.exec()])
+    assert.equal(event!.hasError, true)
+    assert.equal(event!.errors[0].error.message, 'Expected test to throw an exception')
+  })
+
+  test('fail when error constructor mismatch', async () => {
+    class Exception {}
+    const emitter = new Emitter()
+    const refiner = new Refiner()
+    const t = createTest('', emitter, refiner, {})
+    t.run(() => {
+      throw new Error('Failed')
+    }).throws('Failed', Exception)
+
+    const [event] = await Promise.all([pEvent(emitter, 'test:end'), t.exec()])
+    assert.equal(event!.hasError, true)
+    assert.equal(event!.errors[0].error.message, 'Expected test to throw "[class Exception]"')
+  })
+
+  test('fail when error message mismatch', async () => {
+    const emitter = new Emitter()
+    const refiner = new Refiner()
+    const t = createTest('', emitter, refiner, {})
+    t.run(() => {
+      throw new Error('Failed')
+    }).throws('Failure')
+
+    const [event] = await Promise.all([pEvent(emitter, 'test:end'), t.exec()])
+    assert.equal(event!.hasError, true)
+    assert.equal(
+      event!.errors[0].error.message,
+      'Expected test to throw "Failure". Instead received "Failed"'
+    )
+  })
+
+  test('fail when error does not match the regular expression', async () => {
+    const emitter = new Emitter()
+    const refiner = new Refiner()
+    const t = createTest('', emitter, refiner, {})
+    t.run(() => {
+      throw new Error('Failed')
+    }).throws(/lure?/)
+
+    const [event] = await Promise.all([pEvent(emitter, 'test:end'), t.exec()])
+    assert.equal(event!.hasError, true)
+    assert.equal(
+      event!.errors[0].error.message,
+      'Expected test error to match "/lure?/" regular expression'
+    )
   })
 })
 

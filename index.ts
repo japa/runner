@@ -76,6 +76,8 @@ export function test(title: string, callback?: TestExecutor<TestContext, undefin
   if (callback) {
     testInstance.run(callback)
   }
+
+  return testInstance
 }
 
 /**

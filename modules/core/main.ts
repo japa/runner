@@ -16,8 +16,19 @@ import {
   Runner as BaseRunner,
   TestContext as BaseTestContext,
 } from '@japa/core'
+import { inspect } from 'node:util'
+import { AssertionError } from 'node:assert'
 import { BaseReporter } from './reporters/base.js'
 import type { DataSetNode, TestHooksCleanupHandler } from './types.js'
+
+declare module '@japa/core' {
+  interface Test<Context extends Record<any, any>, TestData extends DataSetNode = undefined> {
+    throws(message: string | RegExp, errorConstructor?: any): this
+  }
+  interface TestContext {
+    cleanup: (cleanupCallback: TestHooksCleanupHandler<TestContext>) => void
+  }
+}
 
 export { Emitter, Refiner, BaseReporter }
 
@@ -56,6 +67,76 @@ export class Test<TestData extends DataSetNode = undefined> extends BaseTest<
    * @inheritdoc
    */
   static executingCallbacks = []
+
+  /**
+   * Assert the test callback throws an exception when a certain
+   * error message and optionally is an instance of a given
+   * Error class.
+   */
+  throws(message: string | RegExp, errorConstructor?: any) {
+    const errorInPoint = new AssertionError({})
+    const existingExecutor = this.options.executor
+    if (!existingExecutor) {
+      throw new Error('Cannot use "test.throws" method without a test callback')
+    }
+
+    /**
+     * Overwriting existing callback
+     */
+    this.options.executor = async (...args: [any, any, any]) => {
+      let raisedException: any
+      try {
+        await existingExecutor(...args)
+      } catch (error) {
+        raisedException = error
+      }
+
+      /**
+       * Notify no exception has been raised
+       */
+      if (!raisedException) {
+        errorInPoint.message = 'Expected test to throw an exception'
+        throw errorInPoint
+      }
+
+      /**
+       * Constructor mis-match
+       */
+      if (errorConstructor && !(raisedException instanceof errorConstructor)) {
+        errorInPoint.message = `Expected test to throw "${inspect(errorConstructor)}"`
+        throw errorInPoint
+      }
+
+      /**
+       * Error does not have a message property
+       */
+      const exceptionMessage: unknown = raisedException.message
+      if (!exceptionMessage || typeof exceptionMessage !== 'string') {
+        errorInPoint.message = 'Expected test to throw an exception with message property'
+        throw errorInPoint
+      }
+
+      /**
+       * Message does not match
+       */
+      if (typeof message === 'string') {
+        if (exceptionMessage !== message) {
+          errorInPoint.message = `Expected test to throw "${message}". Instead received "${raisedException.message}"`
+          errorInPoint.actual = raisedException.message
+          errorInPoint.expected = message
+          throw errorInPoint
+        }
+        return
+      }
+
+      if (!message.test(exceptionMessage)) {
+        errorInPoint.message = `Expected test error to match "${message}" regular expression`
+        throw errorInPoint
+      }
+    }
+
+    return this
+  }
 }
 
 /**
