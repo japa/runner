@@ -16,6 +16,7 @@
     ".": "./build/index.js",
     "./types": "./build/src/types.js",
     "./reporters": "./build/src/reporters/main.js",
+    "./factories": "./build/factories/main.js",
     "./core": "./build/modules/core/main.js"
   },
   "scripts": {

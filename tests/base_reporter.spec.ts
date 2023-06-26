@@ -69,6 +69,8 @@ test.describe('Base reporter', () => {
 
       protected onTestStart(t: TestStartNode): void {
         assert.equal(t.title.expanded, '2 + 2')
+        assert.equal(this.currentSuiteName, 'unit')
+        assert.equal(this.currentGroupName, 'default')
         stack.push('test started')
       }
 
@@ -80,6 +82,7 @@ test.describe('Base reporter', () => {
 
       protected onGroupStart(g: GroupOptions): void {
         assert.equal(g.title, 'default')
+        assert.equal(this.currentSuiteName, 'unit')
         stack.push('group started')
       }
 
@@ -90,12 +93,12 @@ test.describe('Base reporter', () => {
       }
 
       protected onSuiteStart(s: SuiteStartNode): void {
-        assert.equal(s.name, 'default')
+        assert.equal(s.name, 'unit')
         stack.push('suite started')
       }
 
       protected onSuiteEnd(s: SuiteEndNode): void {
-        assert.equal(s.name, 'default')
+        assert.equal(s.name, 'unit')
         stack.push('suite ended')
       }
     }
@@ -103,7 +106,7 @@ test.describe('Base reporter', () => {
     const emitter = new Emitter()
     const runner = new Runner(emitter)
     const refiner = new Refiner()
-    const suite = new Suite('default', emitter, refiner)
+    const suite = new Suite('unit', emitter, refiner)
     const group = new Group('default', emitter, refiner)
     const t = new Test('2 + 2', (_t) => new TestContext(_t), emitter, refiner, group)
 
