@@ -24,6 +24,7 @@ test.describe('Planner | files', () => {
           name: 'default',
           files: ['tests/**/*.spec.ts'],
           filesURLs: [
+            new URL('../tests/base_reporter.spec.ts', import.meta.url),
             new URL('../tests/cli_parser.spec.ts', import.meta.url),
             new URL('../tests/config_manager.spec.ts', import.meta.url),
             new URL('../tests/core.spec.ts', import.meta.url),
@@ -68,6 +69,7 @@ test.describe('Planner | files', () => {
           name: 'default',
           files: ['tests/**/*.spec.ts'],
           filesURLs: [
+            new URL('../tests/base_reporter.spec.ts', import.meta.url),
             new URL('../tests/cli_parser.spec.ts', import.meta.url),
             new URL('../tests/config_manager.spec.ts', import.meta.url),
             new URL('../tests/core.spec.ts', import.meta.url),
@@ -97,6 +99,7 @@ test.describe('Planner | files', () => {
           name: 'default',
           files: ['tests/**/*.spec.ts'],
           filesURLs: [
+            new URL('../tests/base_reporter.spec.ts', import.meta.url),
             new URL('../tests/cli_parser.spec.ts', import.meta.url),
             new URL('../tests/config_manager.spec.ts', import.meta.url),
             new URL('../tests/core.spec.ts', import.meta.url),
@@ -121,6 +124,7 @@ test.describe('Planner | files', () => {
           name: 'default',
           files: ['tests/**/*.spec.ts'],
           filesURLs: [
+            new URL('../tests/base_reporter.spec.ts', import.meta.url),
             new URL('../tests/cli_parser.spec.ts', import.meta.url),
             new URL('../tests/config_manager.spec.ts', import.meta.url),
             new URL('../tests/core.spec.ts', import.meta.url),
@@ -150,6 +154,7 @@ test.describe('Planner | files', () => {
           name: 'default',
           files: ['tests/**/*.spec.ts'],
           filesURLs: [
+            new URL('../tests/base_reporter.spec.ts', import.meta.url),
             new URL('../tests/cli_parser.spec.ts', import.meta.url),
             new URL('../tests/config_manager.spec.ts', import.meta.url),
             new URL('../tests/core.spec.ts', import.meta.url),
@@ -197,6 +202,7 @@ test.describe('Planner | suites', () => {
           name: 'unit',
           files: 'tests/**/*.spec.ts',
           filesURLs: [
+            new URL('../tests/base_reporter.spec.ts', import.meta.url),
             new URL('../tests/cli_parser.spec.ts', import.meta.url),
             new URL('../tests/config_manager.spec.ts', import.meta.url),
             new URL('../tests/core.spec.ts', import.meta.url),
@@ -251,6 +257,7 @@ test.describe('Planner | suites', () => {
           name: 'unit',
           files: 'tests/**/*.spec.ts',
           filesURLs: [
+            new URL('../tests/base_reporter.spec.ts', import.meta.url),
             new URL('../tests/cli_parser.spec.ts', import.meta.url),
             new URL('../tests/config_manager.spec.ts', import.meta.url),
             new URL('../tests/core.spec.ts', import.meta.url),
@@ -281,6 +288,7 @@ test.describe('Planner | suites', () => {
           name: 'unit',
           files: 'tests/**/*.spec.ts',
           filesURLs: [
+            new URL('../tests/base_reporter.spec.ts', import.meta.url),
             new URL('../tests/cli_parser.spec.ts', import.meta.url),
             new URL('../tests/config_manager.spec.ts', import.meta.url),
             new URL('../tests/core.spec.ts', import.meta.url),
@@ -309,6 +317,7 @@ test.describe('Planner | suites', () => {
           name: 'unit',
           files: 'tests/**/*.spec.ts',
           filesURLs: [
+            new URL('../tests/base_reporter.spec.ts', import.meta.url),
             new URL('../tests/cli_parser.spec.ts', import.meta.url),
             new URL('../tests/config_manager.spec.ts', import.meta.url),
             new URL('../tests/core.spec.ts', import.meta.url),
@@ -337,6 +346,7 @@ test.describe('Planner | suites', () => {
           name: 'unit',
           files: 'tests/**/*.spec.ts',
           filesURLs: [
+            new URL('../tests/base_reporter.spec.ts', import.meta.url),
             new URL('../tests/cli_parser.spec.ts', import.meta.url),
             new URL('../tests/config_manager.spec.ts', import.meta.url),
             new URL('../tests/core.spec.ts', import.meta.url),
@@ -424,6 +434,7 @@ test.describe('Planner | suites', () => {
           name: 'functional',
           files: 'tests/**/*.spec.ts',
           filesURLs: [
+            new URL('../tests/base_reporter.spec.ts', import.meta.url),
             new URL('../tests/cli_parser.spec.ts', import.meta.url),
             new URL('../tests/config_manager.spec.ts', import.meta.url),
             new URL('../tests/core.spec.ts', import.meta.url),

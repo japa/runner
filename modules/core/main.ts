@@ -16,9 +16,10 @@ import {
   Runner as BaseRunner,
   TestContext as BaseTestContext,
 } from '@japa/core'
-import type { DataSetNode, TestHooksCleanupHandler } from '@japa/core/types'
+import { BaseReporter } from './reporters/base.js'
+import type { DataSetNode, TestHooksCleanupHandler } from './types.js'
 
-export { Emitter, Refiner }
+export { Emitter, Refiner, BaseReporter }
 
 /**
  * Test context carries context data for a given test.

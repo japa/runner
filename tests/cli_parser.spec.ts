@@ -9,7 +9,7 @@
 
 import { assert } from 'chai'
 import { test } from 'node:test'
-import { colors } from '@poppinss/cliui'
+import colors from '@poppinss/colors'
 
 import type { CLIArgs } from '../src/types.js'
 import { CliParser } from '../src/cli_parser.js'
