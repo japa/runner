@@ -176,6 +176,7 @@ export async function run() {
       config.refiner.add(filter.layer, filter.filters)
     })
     config.refiner.matchAllTags(cliArgs.matchAll ?? false)
+    runner.onSuite(config.configureSuite)
 
     /**
      * Step 4: Running the setup hooks
@@ -192,6 +193,8 @@ export async function run() {
        * Creating and configuring the suite
        */
       executionPlanState.suite = new Suite(suite.name, emitter, config.refiner)
+      executionPlanState.retries = suite.retries
+      executionPlanState.timeout = suite.timeout
       if (typeof suite.configure === 'function') {
         suite.configure(executionPlanState.suite)
       }

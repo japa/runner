@@ -41,7 +41,7 @@ ${ansi.green('--files')}                     ${ansi.dim('Filter tests by the fil
 ${ansi.green('--force-exit')}                ${ansi.dim('Forcefully exit the process')}
 ${ansi.green('--timeout')}                   ${ansi.dim('Define default timeout for all tests')}
 ${ansi.green('--retries')}                   ${ansi.dim('Define default retries for all tests')}
-${ansi.green('--reporter')}                  ${ansi.dim('Active one or more test reporters')}
+${ansi.green('--reporter')}                  ${ansi.dim('Activate one or more test reporters')}
 ${ansi.green('-h, --help')}                  ${ansi.dim('View help')}
 
 ${ansi.yellow('Examples:')}

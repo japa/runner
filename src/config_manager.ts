@@ -108,7 +108,7 @@ export class ConfigManager {
    */
   #getCLIForceExit(): boolean | undefined {
     if (this.#cliArgs.forceExit) {
-      return this.#cliArgs.forceExit === true || this.#cliArgs.forceExit === 'true' ? true : false
+      return true
     }
   }
 

@@ -650,6 +650,32 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       timeout: 2000,
     },
   ],
+  [
+    {
+      files: [],
+      reporters: {
+        activated: ['spec'],
+        list: [spec()],
+      },
+    },
+    new CliParser().parse(['--force-exit=false']),
+    {
+      cwd: process.cwd(),
+      files: [],
+      filters: {},
+      forceExit: false,
+      refiner: new Refiner(),
+      reporters: {
+        activated: ['spec'],
+        list: [spec()],
+      },
+      plugins: [],
+      setup: [],
+      teardown: [],
+      retries: 1,
+      timeout: 2000,
+    },
+  ],
 ]
 
 test.describe('Config manager', () => {

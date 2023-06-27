@@ -21,8 +21,6 @@ const DATASET: [CLIArgs, CLIArgs][] = [
     {
       '_': [] as string[],
       'files': '',
-      'force-exit': false,
-      'forceExit': false,
       'groups': '',
       'reporter': '',
       'h': false,
@@ -40,8 +38,6 @@ const DATASET: [CLIArgs, CLIArgs][] = [
     {
       '_': ['unit', 'functional'] as string[],
       'files': '',
-      'force-exit': false,
-      'forceExit': false,
       'reporter': '',
       'groups': '',
       'h': false,
@@ -59,8 +55,6 @@ const DATASET: [CLIArgs, CLIArgs][] = [
     {
       '_': [] as string[],
       'files': '',
-      'force-exit': false,
-      'forceExit': false,
       'reporter': '',
       'groups': '',
       'h': false,
@@ -78,8 +72,6 @@ const DATASET: [CLIArgs, CLIArgs][] = [
     {
       '_': [] as string[],
       'files': '',
-      'force-exit': false,
-      'forceExit': false,
       'reporter': '',
       'groups': '',
       'h': false,
@@ -97,8 +89,6 @@ const DATASET: [CLIArgs, CLIArgs][] = [
     {
       '_': [] as string[],
       'files': '',
-      'force-exit': false,
-      'forceExit': false,
       'reporter': '',
       'groups': '',
       'h': false,
@@ -136,8 +126,6 @@ const DATASET: [CLIArgs, CLIArgs][] = [
       '_': [] as string[],
       'files': '',
       'browser': ['chrome', 'firefox'],
-      'force-exit': false,
-      'forceExit': false,
       'reporter': '',
       'groups': '',
       'h': false,
@@ -155,8 +143,6 @@ const DATASET: [CLIArgs, CLIArgs][] = [
     {
       '_': [] as string[],
       'files': '',
-      'force-exit': false,
-      'forceExit': false,
       'reporter': 'spec',
       'groups': '',
       'h': false,
@@ -174,8 +160,6 @@ const DATASET: [CLIArgs, CLIArgs][] = [
     {
       '_': [] as string[],
       'files': '',
-      'force-exit': false,
-      'forceExit': false,
       'reporter': ['spec', 'dot'],
       'groups': '',
       'h': false,
@@ -193,8 +177,6 @@ const DATASET: [CLIArgs, CLIArgs][] = [
     {
       '_': [] as string[],
       'files': '',
-      'force-exit': false,
-      'forceExit': false,
       'reporter': 'spec,dot',
       'groups': '',
       'h': false,
@@ -226,19 +208,25 @@ test.describe('CLI parser', () => {
         '',
         ansi.yellow('@japa/runner v2.3.0'),
         '',
-        `${ansi.green('--tests')}                     ${ansi.dim('Filter by test titles')}`,
-        `${ansi.green('--groups')}                    ${ansi.dim('Filter by group titles')}`,
-        `${ansi.green('--tags')}                      ${ansi.dim('Filter by test tags')}`,
-        `${ansi.green('--files')}                     ${ansi.dim('Filter by tests file name')}`,
+        `${ansi.green('--tests')}                     ${ansi.dim(
+          'Filter tests by the test title'
+        )}`,
+        `${ansi.green('--groups')}                    ${ansi.dim(
+          'Filter tests by the group title'
+        )}`,
+        `${ansi.green('--tags')}                      ${ansi.dim('Filter tests by tags')}`,
+        `${ansi.green('--files')}                     ${ansi.dim('Filter tests by the file name')}`,
         `${ansi.green('--force-exit')}                ${ansi.dim('Forcefully exit the process')}`,
         `${ansi.green('--timeout')}                   ${ansi.dim(
-          'Define global timeout for tests'
+          'Define default timeout for all tests'
         )}`,
         `${ansi.green('--retries')}                   ${ansi.dim(
-          'Define global retries for tests'
+          'Define default retries for all tests'
         )}`,
-        `${ansi.green('--reporter')}                  ${ansi.dim('Define reporter(s) to use')}`,
-        `${ansi.green('-h, --help')}                  ${ansi.dim('View commandline help')}`,
+        `${ansi.green('--reporter')}                  ${ansi.dim(
+          'Activate one or more test reporters'
+        )}`,
+        `${ansi.green('-h, --help')}                  ${ansi.dim('View help')}`,
         ``,
         `${ansi.yellow('Examples:')}`,
         `${ansi.dim('node bin/test.js --tags="@github"')}`,
