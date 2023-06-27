@@ -54,22 +54,10 @@ export abstract class BaseReporter {
   }
 
   /**
-   * Prints a key value pair with justified spacing
-   */
-  #printKeyValuePair(key: string, value: string, whitespaceLength: number) {
-    console.log(`${ansi.dim(`${key.padEnd(whitespaceLength + 2)} : `)}${value}`)
-  }
-
-  /**
    * Pretty prints the aggregates
    */
   #printAggregates(summary: RunnerSummary) {
-    const [tests, time]: string[][] = [[], []]
-
-    /**
-     * Set value for time row
-     */
-    time.push(ansi.dim(ms(summary.duration)))
+    const tests: string[] = []
 
     /**
      * Set value for tests row
@@ -90,13 +78,20 @@ export abstract class BaseReporter {
       tests.push(ansi.magenta(`${summary.aggregates.regression} regression`))
     }
 
-    const keysPadding = 5
-    this.#printKeyValuePair(
-      'Tests',
-      `${tests.join(', ')} ${ansi.dim(`(${summary.aggregates.total})`)}`,
-      keysPadding
-    )
-    this.#printKeyValuePair('Time', time.join(''), keysPadding)
+    this.runner!.summaryBuilder.use(() => {
+      return [
+        {
+          key: ansi.dim('Tests'),
+          value: `${tests.join(', ')} ${ansi.dim(`(${summary.aggregates.total})`)}`,
+        },
+        {
+          key: ansi.dim('Time'),
+          value: ansi.dim(ms(summary.duration)),
+        },
+      ]
+    })
+
+    console.log(this.runner!.summaryBuilder.build().join('\n'))
   }
 
   /**
