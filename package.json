@@ -71,7 +71,7 @@
   },
   "dependencies": {
     "@japa/core": "^8.0.0-5",
-    "@japa/errors-printer": "^3.0.0-3",
+    "@japa/errors-printer": "^3.0.0-4",
     "@poppinss/cliui": "^6.1.1-2",
     "@poppinss/hooks": "^7.1.1-3",
     "fast-glob": "^3.2.12",
