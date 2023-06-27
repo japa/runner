@@ -34,10 +34,10 @@ export function createTest(
   testInstance.options.meta.group = options.group
   testInstance.options.meta.fileName = options.file
 
-  if (options.timeout) {
+  if (options.timeout !== undefined) {
     testInstance.timeout(options.timeout)
   }
-  if (options.retries) {
+  if (options.retries !== undefined) {
     testInstance.retry(options.retries)
   }
 

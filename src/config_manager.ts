@@ -18,7 +18,7 @@ import type { CLIArgs, Config, Filters } from './types.js'
 const DEFAULTS = {
   files: [],
   timeout: 2000,
-  retries: 1,
+  retries: 0,
   forceExit: false,
   plugins: [],
   reporters: {
