@@ -171,7 +171,7 @@ export class RunnerFactory {
    * Configure runner
    */
   configure(config: Config, argv?: string[]) {
-    this.#cliArgs = new CliParser(argv || []).parse()
+    this.#cliArgs = new CliParser().parse(argv || [])
     this.#config = new ConfigManager(config, this.#cliArgs).hydrate()
     return this
   }

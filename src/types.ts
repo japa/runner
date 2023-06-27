@@ -46,6 +46,9 @@ export type CLIArgs = {
   timeout?: string
   retries?: string
   reporter?: string | string[]
+  forceExit?: boolean
+  help?: boolean
+  matchAll?: boolean
 } & Record<string, string | string[] | boolean>
 
 /**

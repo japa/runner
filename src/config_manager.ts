@@ -104,6 +104,15 @@ export class ConfigManager {
   }
 
   /**
+   * Returns the forceExit property from the CLI args
+   */
+  #getCLIForceExit(): boolean | undefined {
+    if (this.#cliArgs.forceExit) {
+      return this.#cliArgs.forceExit === true || this.#cliArgs.forceExit === 'true' ? true : false
+    }
+  }
+
+  /**
    * Returns reporters selected using the commandline
    * --reporter flag
    */
@@ -122,6 +131,7 @@ export class ConfigManager {
     const cliRetries = this.#getCLIRetries()
     const cliTimeout = this.#getCLITimeout()
     const cliReporters = this.#getCLIReporters()
+    const cliForceExit = this.#getCLIForceExit()
 
     debug('filters applied using CLI flags %O', cliFilters)
 
@@ -133,7 +143,7 @@ export class ConfigManager {
       retries: cliRetries ?? this.#config.retries ?? DEFAULTS.retries,
       timeout: cliTimeout ?? this.#config.timeout ?? DEFAULTS.timeout,
       plugins: this.#config.plugins ?? DEFAULTS.plugins,
-      forceExit: this.#config.forceExit ?? DEFAULTS.forceExit,
+      forceExit: cliForceExit ?? this.#config.forceExit ?? DEFAULTS.forceExit,
       reporters: this.#config.reporters ?? DEFAULTS.reporters,
       configureSuite: this.#config.configureSuite ?? DEFAULTS.configureSuite,
       setup: this.#config.setup || [],

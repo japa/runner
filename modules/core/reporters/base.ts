@@ -149,7 +149,7 @@ export abstract class BaseReporter {
       framesMaxLimit: this.#options.framesMaxLimit,
     })
 
-    console.log('')
+    errorPrinter.printSectionHeader('ERRORS')
     await errorPrinter.printErrors(this.#aggregateErrors(summary))
   }
 

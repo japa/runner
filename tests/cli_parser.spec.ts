@@ -17,7 +17,7 @@ import { wrapAssertions } from '../tests_helpers/main.js'
 
 const DATASET: [CLIArgs, CLIArgs][] = [
   [
-    new CliParser([]).parse(),
+    new CliParser().parse([]),
     {
       '_': [] as string[],
       'files': '',
@@ -36,7 +36,7 @@ const DATASET: [CLIArgs, CLIArgs][] = [
     },
   ],
   [
-    new CliParser(['unit', 'functional']).parse(),
+    new CliParser().parse(['unit', 'functional']),
     {
       '_': ['unit', 'functional'] as string[],
       'files': '',
@@ -55,7 +55,7 @@ const DATASET: [CLIArgs, CLIArgs][] = [
     },
   ],
   [
-    new CliParser(['--timeout', '1000']).parse(),
+    new CliParser().parse(['--timeout', '1000']),
     {
       '_': [] as string[],
       'files': '',
@@ -74,7 +74,7 @@ const DATASET: [CLIArgs, CLIArgs][] = [
     },
   ],
   [
-    new CliParser(['--timeout', '1000', '--retries', '2']).parse(),
+    new CliParser().parse(['--timeout', '1000', '--retries', '2']),
     {
       '_': [] as string[],
       'files': '',
@@ -93,7 +93,7 @@ const DATASET: [CLIArgs, CLIArgs][] = [
     },
   ],
   [
-    new CliParser(['--match-all']).parse(),
+    new CliParser().parse(['--match-all']),
     {
       '_': [] as string[],
       'files': '',
@@ -112,7 +112,7 @@ const DATASET: [CLIArgs, CLIArgs][] = [
     },
   ],
   [
-    new CliParser(['--force-exit']).parse(),
+    new CliParser().parse(['--force-exit']),
     {
       '_': [] as string[],
       'files': '',
@@ -131,7 +131,7 @@ const DATASET: [CLIArgs, CLIArgs][] = [
     },
   ],
   [
-    new CliParser(['--browser=chrome', '--browser=firefox']).parse(),
+    new CliParser().parse(['--browser=chrome', '--browser=firefox']),
     {
       '_': [] as string[],
       'files': '',
@@ -151,7 +151,7 @@ const DATASET: [CLIArgs, CLIArgs][] = [
     },
   ],
   [
-    new CliParser(['--reporter', 'spec']).parse(),
+    new CliParser().parse(['--reporter', 'spec']),
     {
       '_': [] as string[],
       'files': '',
@@ -170,7 +170,7 @@ const DATASET: [CLIArgs, CLIArgs][] = [
     },
   ],
   [
-    new CliParser(['--reporter', 'spec', '--reporter', 'dot']).parse(),
+    new CliParser().parse(['--reporter', 'spec', '--reporter', 'dot']),
     {
       '_': [] as string[],
       'files': '',
@@ -189,7 +189,7 @@ const DATASET: [CLIArgs, CLIArgs][] = [
     },
   ],
   [
-    new CliParser(['--reporter', 'spec,dot']).parse(),
+    new CliParser().parse(['--reporter', 'spec,dot']),
     {
       '_': [] as string[],
       'files': '',
@@ -220,9 +220,9 @@ test.describe('CLI parser', () => {
 
   test('display help', async () => {
     const ansi = colors.ansi()
-    console.log(new CliParser([]).getHelp())
+    console.log(new CliParser().getHelp())
     await wrapAssertions(() => {
-      assert.deepEqual(new CliParser([]).getHelp().split('\n'), [
+      assert.deepEqual(new CliParser().getHelp().split('\n'), [
         '',
         ansi.yellow('@japa/runner v2.3.0'),
         '',

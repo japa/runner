@@ -224,7 +224,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
     {
       files: [],
     },
-    new CliParser([]).parse(),
+    new CliParser().parse([]),
     {
       cwd: process.cwd(),
       files: [],
@@ -246,7 +246,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
     {
       files: ['tests/unit/**.spec.ts'],
     },
-    new CliParser(['--tags=@slow']).parse(),
+    new CliParser().parse(['--tags=@slow']),
     {
       cwd: process.cwd(),
       files: ['tests/unit/**.spec.ts'],
@@ -271,7 +271,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       files: ['tests/unit/**.spec.ts'],
       timeout: 4000,
     },
-    new CliParser(['--timeout=1000']).parse(),
+    new CliParser().parse(['--timeout=1000']),
     {
       cwd: process.cwd(),
       files: ['tests/unit/**.spec.ts'],
@@ -300,7 +300,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       ],
       timeout: 4000,
     },
-    new CliParser(['--timeout=1000']).parse(),
+    new CliParser().parse(['--timeout=1000']),
     {
       cwd: process.cwd(),
       suites: [
@@ -332,7 +332,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       timeout: 4000,
       retries: 2,
     },
-    new CliParser(['--retries=4']).parse(),
+    new CliParser().parse(['--retries=4']),
     {
       cwd: process.cwd(),
       files: ['tests/unit/**.spec.ts'],
@@ -361,7 +361,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       ],
       retries: 1,
     },
-    new CliParser(['--retries=4']).parse(),
+    new CliParser().parse(['--retries=4']),
     {
       cwd: process.cwd(),
       suites: [
@@ -393,7 +393,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       timeout: 4000,
       retries: 2,
     },
-    new CliParser(['--timeout=1000', '--retries=4']).parse(),
+    new CliParser().parse(['--timeout=1000', '--retries=4']),
     {
       cwd: process.cwd(),
       files: ['tests/unit/**.spec.ts'],
@@ -421,7 +421,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
         tests: ['users list'],
       },
     },
-    new CliParser(['--tags=@slow']).parse(),
+    new CliParser().parse(['--tags=@slow']),
     {
       cwd: process.cwd(),
       files: ['tests/unit/**.spec.ts'],
@@ -453,7 +453,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       },
       forceExit: true,
     },
-    new CliParser(['--tests=users']).parse(),
+    new CliParser().parse(['--tests=users']),
     {
       cwd: process.cwd(),
       files: ['tests/unit/**.spec.ts'],
@@ -485,7 +485,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       },
       forceExit: true,
     },
-    new CliParser(['--groups=customers']).parse(),
+    new CliParser().parse(['--groups=customers']),
     {
       cwd: process.cwd(),
       files: ['tests/unit/**.spec.ts'],
@@ -517,7 +517,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       },
       forceExit: true,
     },
-    new CliParser(['--files=*']).parse(),
+    new CliParser().parse(['--files=*']),
     {
       cwd: process.cwd(),
       files: ['tests/unit/**.spec.ts'],
@@ -550,7 +550,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       },
       forceExit: true,
     },
-    new CliParser(['unit', 'functional']).parse(),
+    new CliParser().parse(['unit', 'functional']),
     {
       cwd: process.cwd(),
       files: ['tests/unit/**.spec.ts'],
@@ -580,7 +580,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
         list: [spec()],
       },
     },
-    new CliParser(['--reporter', 'progress']).parse(),
+    new CliParser().parse(['--reporter', 'progress']),
     {
       cwd: process.cwd(),
       files: [],
@@ -589,6 +589,58 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       refiner: new Refiner(),
       reporters: {
         activated: ['progress'],
+        list: [spec()],
+      },
+      plugins: [],
+      setup: [],
+      teardown: [],
+      retries: 1,
+      timeout: 2000,
+    },
+  ],
+  [
+    {
+      files: [],
+      reporters: {
+        activated: ['spec'],
+        list: [spec()],
+      },
+    },
+    new CliParser().parse(['--force-exit']),
+    {
+      cwd: process.cwd(),
+      files: [],
+      filters: {},
+      forceExit: true,
+      refiner: new Refiner(),
+      reporters: {
+        activated: ['spec'],
+        list: [spec()],
+      },
+      plugins: [],
+      setup: [],
+      teardown: [],
+      retries: 1,
+      timeout: 2000,
+    },
+  ],
+  [
+    {
+      files: [],
+      reporters: {
+        activated: ['spec'],
+        list: [spec()],
+      },
+    },
+    new CliParser().parse(['--force-exit=true']),
+    {
+      cwd: process.cwd(),
+      files: [],
+      filters: {},
+      forceExit: true,
+      refiner: new Refiner(),
+      reporters: {
+        activated: ['spec'],
         list: [spec()],
       },
       plugins: [],

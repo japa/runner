@@ -19,6 +19,7 @@ import { CliParser } from './src/cli_parser.js'
 import { retryPlugin } from './src/plugins/retry.js'
 import type { CLIArgs, Config } from './src/types.js'
 import { ConfigManager } from './src/config_manager.js'
+import { ExceptionsManager } from './src/exceptions_manager.js'
 import { createTest, createTestGroup } from './src/create_test.js'
 import { Emitter, Group, Runner, Suite, Test, TestContext } from './modules/core/main.js'
 
@@ -35,7 +36,7 @@ let activeTest: Test<any> | undefined
 /**
  * Parsed commandline arguments
  */
-let cliArgs: CLIArgs | undefined
+let cliArgs: CLIArgs = {}
 
 /**
  * Hydrated config
@@ -108,7 +109,7 @@ export function getActiveTest() {
  * will be used by Japa to compute the configuration
  */
 export function processCLIArgs(argv: string[]) {
-  cliArgs = new CliParser(argv).parse()
+  cliArgs = new CliParser().parse(argv)
 }
 
 /**
@@ -119,7 +120,7 @@ export function processCLIArgs(argv: string[]) {
  * to the configure method.
  */
 export function configure(options: Config) {
-  runnerConfig = new ConfigManager(options, cliArgs || {}).hydrate()
+  runnerConfig = new ConfigManager(options, cliArgs).hydrate()
 }
 
 /**
@@ -127,14 +128,26 @@ export function configure(options: Config) {
  * files behind the scenes
  */
 export async function run() {
+  /**
+   * Display help when help flag is used
+   */
+  if (cliArgs.help) {
+    console.log(new CliParser().getHelp())
+    return
+  }
+
   validator.ensureIsConfigured(runnerConfig)
 
   executionPlanState.phase = 'planning'
   const runner = new Runner(emitter)
   const globalHooks = new GlobalHooks()
+  const exceptionsManager = new ExceptionsManager()
 
   try {
-    await retryPlugin({ config: runnerConfig!, runner, emitter, cliArgs: cliArgs || {} })
+    /**
+     * Executing the retry plugin as the first thing
+     */
+    await retryPlugin({ config: runnerConfig!, runner, emitter, cliArgs })
 
     /**
      * Step 1: Executing plugins before creating a plan, so that it can mutate
@@ -142,7 +155,7 @@ export async function run() {
      */
     for (let plugin of runnerConfig!.plugins) {
       debug('executing "%s" plugin', plugin.name || 'anonymous')
-      await plugin({ runner, emitter, cliArgs: cliArgs || {}, config: runnerConfig! })
+      await plugin({ runner, emitter, cliArgs, config: runnerConfig! })
     }
 
     /**
@@ -162,6 +175,7 @@ export async function run() {
       debug('apply %s filters "%O" ', filter.layer, filter.filters)
       config.refiner.add(filter.layer, filter.filters)
     })
+    config.refiner.matchAllTags(cliArgs.matchAll ?? false)
 
     /**
      * Step 4: Running the setup hooks
@@ -188,6 +202,7 @@ export async function run() {
        */
       for (let fileURL of suite.filesURLs) {
         executionPlanState.file = fileURLToPath(fileURL)
+        debug('importing test file %s', executionPlanState.file)
         await config.importer(fileURL)
       }
 
@@ -202,14 +217,24 @@ export async function run() {
      */
     executionPlanState.phase = 'executing'
 
+    /**
+     * Monitor for unhandled erorrs and rejections
+     */
+    exceptionsManager.monitor()
+
     await runner.start()
     await runner.exec()
 
     await globalHooks.teardown(null, runner)
     await runner.end()
 
+    /**
+     * Print unhandled errors
+     */
+    await exceptionsManager.flow()
+
     const summary = runner.getSummary()
-    if (summary.hasError) {
+    if (summary.hasError || exceptionsManager.hasErrors) {
       process.exitCode = 1
     }
     if (config.forceExit) {
@@ -219,6 +244,12 @@ export async function run() {
     await globalHooks.teardown(error, runner)
     const printer = new ErrorsPrinter()
     await printer.printError(error)
+
+    /**
+     * Print unhandled errors in case the code inside
+     * the try block never got triggered
+     */
+    await exceptionsManager.flow()
 
     process.exitCode = 1
     if (runnerConfig!.forceExit) {

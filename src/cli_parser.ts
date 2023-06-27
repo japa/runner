@@ -20,7 +20,7 @@ const ansi = colors.ansi()
  */
 const OPTIONS = {
   string: ['tests', 'groups', 'tags', 'files', 'timeout', 'retries', 'reporter'],
-  boolean: ['forceExit', 'help', 'matchAll'],
+  boolean: ['help', 'matchAll'],
   alias: {
     forceExit: 'force-exit',
     matchAll: 'match-all',
@@ -34,15 +34,15 @@ const OPTIONS = {
 const GET_HELP = () => `
 ${ansi.yellow('@japa/runner v2.3.0')}
 
-${ansi.green('--tests')}                     ${ansi.dim('Filter by test titles')}
-${ansi.green('--groups')}                    ${ansi.dim('Filter by group titles')}
-${ansi.green('--tags')}                      ${ansi.dim('Filter by test tags')}
-${ansi.green('--files')}                     ${ansi.dim('Filter by tests file name')}
+${ansi.green('--tests')}                     ${ansi.dim('Filter tests by the test title')}
+${ansi.green('--groups')}                    ${ansi.dim('Filter tests by the group title')}
+${ansi.green('--tags')}                      ${ansi.dim('Filter tests by tags')}
+${ansi.green('--files')}                     ${ansi.dim('Filter tests by the file name')}
 ${ansi.green('--force-exit')}                ${ansi.dim('Forcefully exit the process')}
-${ansi.green('--timeout')}                   ${ansi.dim('Define global timeout for tests')}
-${ansi.green('--retries')}                   ${ansi.dim('Define global retries for tests')}
-${ansi.green('--reporter')}                  ${ansi.dim('Define reporter(s) to use')}
-${ansi.green('-h, --help')}                  ${ansi.dim('View commandline help')}
+${ansi.green('--timeout')}                   ${ansi.dim('Define default timeout for all tests')}
+${ansi.green('--retries')}                   ${ansi.dim('Define default retries for all tests')}
+${ansi.green('--reporter')}                  ${ansi.dim('Active one or more test reporters')}
+${ansi.green('-h, --help')}                  ${ansi.dim('View help')}
 
 ${ansi.yellow('Examples:')}
 ${ansi.dim('node bin/test.js --tags="@github"')}
@@ -65,17 +65,11 @@ ${ansi.yellow('Notes:')}
  * CLI Parser is used to parse the commandline argument
  */
 export class CliParser {
-  #argv: string[]
-
-  constructor(argv: string[]) {
-    this.#argv = argv
-  }
-
   /**
    * Parses command-line arguments
    */
-  parse(): CLIArgs {
-    return getopts(this.#argv, OPTIONS)
+  parse(argv: string[]): CLIArgs {
+    return getopts(argv, OPTIONS)
   }
 
   /**

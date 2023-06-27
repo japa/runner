@@ -53,7 +53,7 @@
     "@types/chai-subset": "^1.3.3",
     "@types/find-cache-dir": "^3.2.1",
     "@types/ms": "^0.7.31",
-    "@types/node": "^20.3.1",
+    "@types/node": "^20.3.2",
     "c8": "^8.0.0",
     "chai": "^4.3.7",
     "chai-subset": "^1.6.0",
@@ -70,8 +70,8 @@
     "typescript": "^5.1.3"
   },
   "dependencies": {
-    "@japa/core": "^8.0.0-4",
-    "@japa/errors-printer": "^3.0.0-2",
+    "@japa/core": "^8.0.0-5",
+    "@japa/errors-printer": "^3.0.0-3",
     "@poppinss/cliui": "^6.1.1-2",
     "@poppinss/hooks": "^7.1.1-3",
     "fast-glob": "^3.2.12",
