@@ -8,7 +8,6 @@
  */
 
 import slash from 'slash'
-import { sep } from 'node:path'
 import fastGlob from 'fast-glob'
 import { pathToFileURL } from 'node:url'
 import type { TestFiles } from './types.js'
@@ -57,7 +56,7 @@ export class FilesManager {
         }
 
         const filterSegments = filter.split('/').reverse()
-        const fileSegments = filenameWithoutTestSuffix.split(sep).reverse()
+        const fileSegments = filenameWithoutTestSuffix.split('/').reverse()
         console.log({ filterSegments, fileSegments })
 
         return filterSegments.every((segment, index) => {
