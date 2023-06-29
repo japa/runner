@@ -121,7 +121,7 @@ const DATASET: [CLIArgs, CLIArgs][] = [
     },
   ],
   [
-    new CliParser().parse(['--browser=chrome', '--browser=firefox']),
+    new CliParser().parse(['--browser', 'chrome', '--browser', 'firefox']),
     {
       '_': [] as string[],
       'files': '',

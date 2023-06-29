@@ -7,6 +7,7 @@
  * file that was distributed with this source code.
  */
 
+import slash from 'slash'
 import { sep } from 'node:path'
 import fastGlob from 'fast-glob'
 import { pathToFileURL } from 'node:url'
@@ -46,7 +47,7 @@ export class FilesManager {
    */
   grep(files: URL[], filters: string[]): URL[] {
     return files.filter((file) => {
-      const filename = file.pathname
+      const filename = slash(file.pathname)
       const filenameWithoutTestSuffix = filename.replace(FILE_SUFFIX_EXPRESSION, '')
 
       return !!filters.find((filter) => {
