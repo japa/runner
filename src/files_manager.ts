@@ -49,6 +49,7 @@ export class FilesManager {
     return files.filter((file) => {
       const filename = slash(file.pathname)
       const filenameWithoutTestSuffix = filename.replace(FILE_SUFFIX_EXPRESSION, '')
+      console.log({ filename })
 
       return !!filters.find((filter) => {
         if (filename.endsWith(filter)) {
@@ -57,6 +58,7 @@ export class FilesManager {
 
         const filterSegments = filter.split('/').reverse()
         const fileSegments = filenameWithoutTestSuffix.split(sep).reverse()
+        console.log({ filterSegments, fileSegments })
 
         return filterSegments.every((segment, index) => {
           return fileSegments[index] && (segment === '*' || fileSegments[index].endsWith(segment))
