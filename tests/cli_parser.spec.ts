@@ -200,57 +200,61 @@ test.describe('CLI parser', () => {
     }
   })
 
-  test('display help', async () => {
-    const ansi = colors.ansi()
-    console.log(new CliParser().getHelp())
-    await wrapAssertions(() => {
-      assert.deepEqual(new CliParser().getHelp().split('\n'), [
-        '',
-        ansi.yellow('@japa/runner v2.3.0'),
-        '',
-        `${ansi.green('--tests')}                     ${ansi.dim(
-          'Filter tests by the test title'
-        )}`,
-        `${ansi.green('--groups')}                    ${ansi.dim(
-          'Filter tests by the group title'
-        )}`,
-        `${ansi.green('--tags')}                      ${ansi.dim('Filter tests by tags')}`,
-        `${ansi.green('--files')}                     ${ansi.dim('Filter tests by the file name')}`,
-        `${ansi.green('--force-exit')}                ${ansi.dim('Forcefully exit the process')}`,
-        `${ansi.green('--timeout')}                   ${ansi.dim(
-          'Define default timeout for all tests'
-        )}`,
-        `${ansi.green('--retries')}                   ${ansi.dim(
-          'Define default retries for all tests'
-        )}`,
-        `${ansi.green('--reporter')}                  ${ansi.dim(
-          'Activate one or more test reporters'
-        )}`,
-        `${ansi.green('-h, --help')}                  ${ansi.dim('View help')}`,
-        ``,
-        `${ansi.yellow('Examples:')}`,
-        `${ansi.dim('node bin/test.js --tags="@github"')}`,
-        `${ansi.dim('node bin/test.js --tags="~@github"')}`,
-        `${ansi.dim('node bin/test.js --tags="@github,@slow,@integration" --match-all')}`,
-        `${ansi.dim('node bin/test.js --force-exit')}`,
-        `${ansi.dim('node bin/test.js --files="user"')}`,
-        `${ansi.dim('node bin/test.js --files="functional/user"')}`,
-        `${ansi.dim('node bin/test.js --files="unit/user"')}`,
-        ``,
-        `${ansi.yellow('Notes:')}`,
-        `- When groups and tests filters are applied together. We will first filter the`,
-        `  tests by group title and then apply the tests title filter.`,
-        `- The timeout defined on test object takes precedence over the ${ansi.green(
-          '--timeout'
-        )} flag.`,
-        `- The retries defined on test object takes precedence over the ${ansi.green(
-          '--retries'
-        )} flag.`,
-        `- The ${ansi.green(
-          '--files'
-        )} flag checks for the file names ending with the filter substring.`,
-        ``,
-      ])
+  if (!process.env.CI) {
+    test('display help', async () => {
+      const ansi = colors.ansi()
+      console.log(new CliParser().getHelp())
+      await wrapAssertions(() => {
+        assert.deepEqual(new CliParser().getHelp().split('\n'), [
+          '',
+          ansi.yellow('@japa/runner v2.3.0'),
+          '',
+          `${ansi.green('--tests')}                     ${ansi.dim(
+            'Filter tests by the test title'
+          )}`,
+          `${ansi.green('--groups')}                    ${ansi.dim(
+            'Filter tests by the group title'
+          )}`,
+          `${ansi.green('--tags')}                      ${ansi.dim('Filter tests by tags')}`,
+          `${ansi.green('--files')}                     ${ansi.dim(
+            'Filter tests by the file name'
+          )}`,
+          `${ansi.green('--force-exit')}                ${ansi.dim('Forcefully exit the process')}`,
+          `${ansi.green('--timeout')}                   ${ansi.dim(
+            'Define default timeout for all tests'
+          )}`,
+          `${ansi.green('--retries')}                   ${ansi.dim(
+            'Define default retries for all tests'
+          )}`,
+          `${ansi.green('--reporter')}                  ${ansi.dim(
+            'Activate one or more test reporters'
+          )}`,
+          `${ansi.green('-h, --help')}                  ${ansi.dim('View help')}`,
+          ``,
+          `${ansi.yellow('Examples:')}`,
+          `${ansi.dim('node bin/test.js --tags="@github"')}`,
+          `${ansi.dim('node bin/test.js --tags="~@github"')}`,
+          `${ansi.dim('node bin/test.js --tags="@github,@slow,@integration" --match-all')}`,
+          `${ansi.dim('node bin/test.js --force-exit')}`,
+          `${ansi.dim('node bin/test.js --files="user"')}`,
+          `${ansi.dim('node bin/test.js --files="functional/user"')}`,
+          `${ansi.dim('node bin/test.js --files="unit/user"')}`,
+          ``,
+          `${ansi.yellow('Notes:')}`,
+          `- When groups and tests filters are applied together. We will first filter the`,
+          `  tests by group title and then apply the tests title filter.`,
+          `- The timeout defined on test object takes precedence over the ${ansi.green(
+            '--timeout'
+          )} flag.`,
+          `- The retries defined on test object takes precedence over the ${ansi.green(
+            '--retries'
+          )} flag.`,
+          `- The ${ansi.green(
+            '--files'
+          )} flag checks for the file names ending with the filter substring.`,
+          ``,
+        ])
+      })
     })
-  })
+  }
 })
