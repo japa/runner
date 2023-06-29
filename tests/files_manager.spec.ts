@@ -76,6 +76,17 @@ const FILTERING_DATASET: { files: URL[]; filters: string[]; output: URL[] }[] = 
       pathToFileURL('tests/unit/users/delete.spec.js'),
     ],
   },
+  {
+    files: [
+      pathToFileURL('tests/unit/users/create.spec.js'),
+      pathToFileURL('tests/unit/users/edit.spec.js'),
+      pathToFileURL('tests/unit/users/delete.spec.js'),
+      pathToFileURL('tests/functional/users.spec.js'),
+      pathToFileURL('tests/functional/register_user.spec.js'),
+    ],
+    filters: ['users/create.spec.js'],
+    output: [pathToFileURL('tests/unit/users/create.spec.js')],
+  },
 ]
 
 test.describe('Files manager | grep', () => {

@@ -46,9 +46,16 @@ export class FilesManager {
    */
   grep(files: URL[], filters: string[]): URL[] {
     return files.filter((file) => {
+      const filename = file.pathname
+      const filenameWithoutTestSuffix = filename.replace(FILE_SUFFIX_EXPRESSION, '')
+
       return !!filters.find((filter) => {
+        if (filename.endsWith(filter)) {
+          return true
+        }
+
         const filterSegments = filter.split('/').reverse()
-        const fileSegments = file.pathname.replace(FILE_SUFFIX_EXPRESSION, '').split(sep).reverse()
+        const fileSegments = filenameWithoutTestSuffix.split(sep).reverse()
 
         return filterSegments.every((segment, index) => {
           return fileSegments[index] && (segment === '*' || fileSegments[index].endsWith(segment))
