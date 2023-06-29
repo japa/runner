@@ -115,7 +115,7 @@ export class SpecReporter extends BaseReporter {
     const message = this.#getTestMessage(payload)
     const prefix = payload.isPinned ? cliui.colors.yellow('[PINNED] ') : ''
     const indentation = this.currentFileName || this.currentGroupName ? '  ' : ''
-    const duration = cliui.colors.dim(`(${ms(payload.duration)})`)
+    const duration = cliui.colors.dim(`(${ms(Number(payload.duration.toFixed(2)))})`)
     const retries =
       payload.retryAttempt && payload.retryAttempt > 1
         ? cliui.colors.dim(`(x${payload.retryAttempt}) `)
