@@ -50,7 +50,7 @@
     "@adonisjs/tsconfig": "^1.1.5",
     "@commitlint/cli": "^17.6.6",
     "@commitlint/config-conventional": "^17.6.6",
-    "@swc/core": "^1.3.66",
+    "@swc/core": "^1.3.67",
     "@types/chai": "^4.3.5",
     "@types/chai-subset": "^1.3.3",
     "@types/find-cache-dir": "^3.2.1",
@@ -63,16 +63,16 @@
     "del-cli": "^5.0.0",
     "eslint": "^8.36.0",
     "github-label-sync": "^2.3.1",
-    "glob": "^10.3.0",
+    "glob": "^10.3.1",
     "husky": "^8.0.3",
     "japa": "^4.0.0",
     "np": "^8.0.4",
     "prettier": "^2.8.8",
     "ts-node": "^10.9.1",
-    "typescript": "^5.1.3"
+    "typescript": "^5.1.6"
   },
   "dependencies": {
-    "@japa/core": "^8.0.0-6",
+    "@japa/core": "^8.0.0-7",
     "@japa/errors-printer": "^3.0.0-4",
     "@poppinss/cliui": "^6.1.1-2",
     "@poppinss/hooks": "^7.1.1-3",
