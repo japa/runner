@@ -50,7 +50,7 @@
     "@adonisjs/tsconfig": "^1.1.7",
     "@commitlint/cli": "^17.6.6",
     "@commitlint/config-conventional": "^17.6.6",
-    "@swc/core": "^1.3.67",
+    "@swc/core": "^1.3.68",
     "@types/chai": "^4.3.5",
     "@types/chai-subset": "^1.3.3",
     "@types/find-cache-dir": "^3.2.1",
