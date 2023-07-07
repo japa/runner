@@ -12,7 +12,7 @@ import chaiSubset from 'chai-subset'
 import { Refiner } from '@japa/core'
 import { assert, default as chai } from 'chai'
 
-import { spec } from '../src/reporters/main.js'
+import { ndjson, spec, dot } from '../src/reporters/main.js'
 import { CliParser } from '../src/cli_parser.js'
 import type { CLIArgs, Config } from '../src/types.js'
 import { ConfigManager } from '../src/config_manager.js'
@@ -33,7 +33,7 @@ const USER_DEFINED_CONFIG_DATASET: [Config, Config][] = [
       refiner: new Refiner(),
       reporters: {
         activated: ['spec'],
-        list: [spec()],
+        list: [spec(), ndjson(), dot()],
       },
       setup: [],
       teardown: [],
@@ -54,7 +54,7 @@ const USER_DEFINED_CONFIG_DATASET: [Config, Config][] = [
       refiner: new Refiner(),
       reporters: {
         activated: ['spec'],
-        list: [spec()],
+        list: [spec(), ndjson(), dot()],
       },
       plugins: [],
       setup: [],
@@ -76,7 +76,7 @@ const USER_DEFINED_CONFIG_DATASET: [Config, Config][] = [
       refiner: new Refiner(),
       reporters: {
         activated: ['spec'],
-        list: [spec()],
+        list: [spec(), ndjson(), dot()],
       },
       plugins: [],
       setup: [],
@@ -99,7 +99,7 @@ const USER_DEFINED_CONFIG_DATASET: [Config, Config][] = [
       refiner: new Refiner(),
       reporters: {
         activated: ['spec'],
-        list: [spec()],
+        list: [spec(), ndjson(), dot()],
       },
       plugins: [],
       setup: [],
@@ -122,7 +122,7 @@ const USER_DEFINED_CONFIG_DATASET: [Config, Config][] = [
       refiner: new Refiner(),
       reporters: {
         activated: ['spec'],
-        list: [spec()],
+        list: [spec(), ndjson(), dot()],
       },
       plugins: [],
       setup: [],
@@ -152,7 +152,7 @@ const USER_DEFINED_CONFIG_DATASET: [Config, Config][] = [
       refiner: new Refiner(),
       reporters: {
         activated: ['spec'],
-        list: [spec()],
+        list: [spec(), ndjson(), dot()],
       },
       plugins: [],
       setup: [],
@@ -183,7 +183,7 @@ const USER_DEFINED_CONFIG_DATASET: [Config, Config][] = [
       refiner: new Refiner(),
       reporters: {
         activated: ['spec'],
-        list: [spec()],
+        list: [spec(), ndjson(), dot()],
       },
       plugins: [],
       setup: [],
@@ -233,7 +233,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       refiner: new Refiner(),
       reporters: {
         activated: ['spec'],
-        list: [spec()],
+        list: [spec(), ndjson(), dot()],
       },
       plugins: [],
       setup: [],
@@ -257,7 +257,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       refiner: new Refiner(),
       reporters: {
         activated: ['spec'],
-        list: [spec()],
+        list: [spec(), ndjson(), dot()],
       },
       plugins: [],
       setup: [],
@@ -280,7 +280,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       refiner: new Refiner(),
       reporters: {
         activated: ['spec'],
-        list: [spec()],
+        list: [spec(), ndjson(), dot()],
       },
       plugins: [],
       setup: [],
@@ -317,7 +317,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       refiner: new Refiner(),
       reporters: {
         activated: ['spec'],
-        list: [spec()],
+        list: [spec(), ndjson(), dot()],
       },
       plugins: [],
       setup: [],
@@ -341,7 +341,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       refiner: new Refiner(),
       reporters: {
         activated: ['spec'],
-        list: [spec()],
+        list: [spec(), ndjson(), dot()],
       },
       plugins: [],
       setup: [],
@@ -378,7 +378,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       refiner: new Refiner(),
       reporters: {
         activated: ['spec'],
-        list: [spec()],
+        list: [spec(), ndjson(), dot()],
       },
       plugins: [],
       setup: [],
@@ -402,7 +402,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       refiner: new Refiner(),
       reporters: {
         activated: ['spec'],
-        list: [spec()],
+        list: [spec(), ndjson(), dot()],
       },
       plugins: [],
       setup: [],
@@ -433,7 +433,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       refiner: new Refiner(),
       reporters: {
         activated: ['spec'],
-        list: [spec()],
+        list: [spec(), ndjson(), dot()],
       },
       plugins: [],
       setup: [],
@@ -465,7 +465,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       refiner: new Refiner(),
       reporters: {
         activated: ['spec'],
-        list: [spec()],
+        list: [spec(), ndjson(), dot()],
       },
       plugins: [],
       setup: [],
@@ -497,7 +497,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       refiner: new Refiner(),
       reporters: {
         activated: ['spec'],
-        list: [spec()],
+        list: [spec(), ndjson(), dot()],
       },
       plugins: [],
       setup: [],
@@ -529,7 +529,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       refiner: new Refiner(),
       reporters: {
         activated: ['spec'],
-        list: [spec()],
+        list: [spec(), ndjson(), dot()],
       },
       plugins: [],
       setup: [],
@@ -563,7 +563,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       refiner: new Refiner(),
       reporters: {
         activated: ['spec'],
-        list: [spec()],
+        list: [spec(), ndjson(), dot()],
       },
       plugins: [],
       setup: [],
@@ -689,6 +689,8 @@ test.describe('Config manager', () => {
       await wrapAssertions(() => {
         const actualReporters = output.reporters
         const expectedReporters = config.reporters
+        const actualReportersList = actualReporters?.list?.map((r) => r.name)
+        const expectedReportersList = expectedReporters?.list?.map((r) => r.name)
 
         delete config.importer
         delete config.configureSuite
@@ -697,6 +699,7 @@ test.describe('Config manager', () => {
 
         assert.deepEqual(config, output)
         assert.deepEqual(actualReporters?.activated, expectedReporters?.activated)
+        assert.deepEqual(actualReportersList, expectedReportersList)
       })
     }
   })
@@ -711,6 +714,8 @@ test.describe('Config manager', () => {
       await wrapAssertions(() => {
         const actualReporters = output.reporters
         const expectedReporters = config.reporters
+        const actualReportersList = actualReporters?.list?.map((r) => r.name)
+        const expectedReportersList = expectedReporters?.list?.map((r) => r.name)
 
         delete config.importer
         delete config.configureSuite
@@ -719,6 +724,7 @@ test.describe('Config manager', () => {
 
         assert.deepEqual(config, output)
         assert.deepEqual(actualReporters?.activated, expectedReporters?.activated)
+        assert.deepEqual(actualReportersList, expectedReportersList)
       })
     }
   })
