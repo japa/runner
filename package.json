@@ -1,7 +1,10 @@
 {
   "name": "@japa/runner",
-  "version": "3.0.0-3",
   "description": "Runner for Japa testing framework",
+  "version": "3.0.0-3",
+  "engines": {
+    "node": ">=18.16.0"
+  },
   "main": "build/index.js",
   "type": "module",
   "files": [
@@ -11,9 +14,6 @@
     "build/index.d.ts",
     "build/index.js"
   ],
-  "engines": {
-    "node": ">=18.16.0"
-  },
   "exports": {
     ".": "./build/index.js",
     "./types": "./build/src/types.js",
@@ -36,13 +36,6 @@
     "version": "npm run build",
     "sync-labels": "github-label-sync --labels .github/labels.json japa/runner"
   },
-  "keywords": [
-    "japa",
-    "tests",
-    "test-runner"
-  ],
-  "author": "virk,japa",
-  "license": "MIT",
   "devDependencies": {
     "@adonisjs/eslint-config": "^1.1.7",
     "@adonisjs/prettier-config": "^1.1.7",
@@ -82,9 +75,9 @@
     "ms": "^2.1.3",
     "slash": "^5.1.0"
   },
-  "directories": {
-    "test": "test"
-  },
+  "author": "virk,japa",
+  "license": "MIT",
+  "homepage": "https://github.com/japa/runner#readme",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/japa/runner.git"
@@ -92,7 +85,23 @@
   "bugs": {
     "url": "https://github.com/japa/runner/issues"
   },
-  "homepage": "https://github.com/japa/runner#readme",
+  "keywords": [
+    "japa",
+    "tests",
+    "test-runner"
+  ],
+  "directories": {
+    "test": "test"
+  },
+  "eslintConfig": {
+    "extends": "@adonisjs/eslint-config/package"
+  },
+  "prettier": "@adonisjs/prettier-config",
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
   "publishConfig": {
     "access": "public",
     "tag": "next"
@@ -102,15 +111,6 @@
     "tag": "next",
     "branch": "main",
     "anyBranch": false
-  },
-  "commitlint": {
-    "extends": [
-      "@commitlint/config-conventional"
-    ]
-  },
-  "prettier": "@adonisjs/prettier-config",
-  "eslintConfig": {
-    "extends": "@adonisjs/eslint-config/package"
   },
   "c8": {
     "reporter": [
