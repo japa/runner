@@ -25,7 +25,7 @@
     "pretest": "npm run lint",
     "test": "cross-env NODE_ENV=japa:runner c8 npm run quick:test",
     "quick:test": "glob -c \"node --enable-source-maps --loader=ts-node/esm --test-reporter=spec --test\" \"tests/*.spec.ts\"",
-    "clean": "del build",
+    "clean": "del-cli build",
     "typecheck": "tsc --noEmit",
     "compile": "npm run lint && npm run clean && tsc",
     "build": "npm run compile",
