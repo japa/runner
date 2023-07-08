@@ -48,7 +48,7 @@
     "@types/chai-subset": "^1.3.3",
     "@types/find-cache-dir": "^3.2.1",
     "@types/ms": "^0.7.31",
-    "@types/node": "^20.3.3",
+    "@types/node": "^20.4.1",
     "c8": "^8.0.0",
     "chai": "^4.3.7",
     "chai-subset": "^1.6.0",
@@ -56,7 +56,7 @@
     "del-cli": "^5.0.0",
     "eslint": "^8.44.0",
     "github-label-sync": "^2.3.1",
-    "glob": "^10.3.1",
+    "glob": "^10.3.2",
     "husky": "^8.0.3",
     "japa": "^4.0.0",
     "np": "^8.0.4",
@@ -65,7 +65,7 @@
     "typescript": "^5.1.6"
   },
   "dependencies": {
-    "@japa/core": "^8.0.0-8",
+    "@japa/core": "^8.0.0-9",
     "@japa/errors-printer": "^3.0.0-4",
     "@poppinss/cliui": "^6.1.1-2",
     "@poppinss/hooks": "^7.1.1-3",
