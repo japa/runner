@@ -107,7 +107,7 @@ export type BaseConfig = {
    */
   reporters?: {
     activated: string[]
-    list: NamedReporterContract[]
+    list?: NamedReporterContract[]
   }
 
   /**

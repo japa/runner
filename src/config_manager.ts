@@ -144,7 +144,12 @@ export class ConfigManager {
       timeout: cliTimeout ?? this.#config.timeout ?? DEFAULTS.timeout,
       plugins: this.#config.plugins ?? DEFAULTS.plugins,
       forceExit: cliForceExit ?? this.#config.forceExit ?? DEFAULTS.forceExit,
-      reporters: this.#config.reporters ?? DEFAULTS.reporters,
+      reporters: this.#config.reporters
+        ? {
+            activated: this.#config.reporters.activated,
+            list: this.#config.reporters.list || DEFAULTS.reporters.list,
+          }
+        : DEFAULTS.reporters,
       configureSuite: this.#config.configureSuite ?? DEFAULTS.configureSuite,
       setup: this.#config.setup || [],
       teardown: this.#config.teardown || [],

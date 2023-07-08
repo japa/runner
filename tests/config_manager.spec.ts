@@ -217,6 +217,30 @@ const USER_DEFINED_CONFIG_DATASET: [Config, Config][] = [
       timeout: 2000,
     },
   ],
+  [
+    {
+      files: [],
+      reporters: {
+        activated: ['dot'],
+      },
+    },
+    {
+      cwd: process.cwd(),
+      files: [],
+      filters: {},
+      forceExit: false,
+      refiner: new Refiner(),
+      reporters: {
+        activated: ['dot'],
+        list: [spec(), ndjson(), dot()],
+      },
+      plugins: [],
+      setup: [],
+      teardown: [],
+      retries: 0,
+      timeout: 2000,
+    },
+  ],
 ]
 
 const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
