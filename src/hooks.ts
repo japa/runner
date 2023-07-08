@@ -11,7 +11,7 @@ import Hooks from '@poppinss/hooks'
 import type { Runner as HooksRunner } from '@poppinss/hooks/types'
 
 import { Runner } from '../modules/core/main.js'
-import type { Config, HooksEvents, SetupHookState, TeardownHookState } from './types.js'
+import type { HooksEvents, SetupHookState, NormalizedConfig, TeardownHookState } from './types.js'
 
 /**
  * Exposes API for working with global hooks
@@ -24,7 +24,7 @@ export class GlobalHooks {
   /**
    * Apply hooks from the config
    */
-  apply(config: Required<Config>) {
+  apply(config: NormalizedConfig) {
     config.setup.forEach((hook) => this.#hooks.add('setup', hook))
     config.teardown.forEach((hook) => this.#hooks.add('teardown', hook))
   }

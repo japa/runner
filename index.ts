@@ -17,7 +17,7 @@ import { Planner } from './src/planner.js'
 import { GlobalHooks } from './src/hooks.js'
 import { CliParser } from './src/cli_parser.js'
 import { retryPlugin } from './src/plugins/retry.js'
-import type { CLIArgs, Config } from './src/types.js'
+import type { CLIArgs, Config, NormalizedConfig } from './src/types.js'
 import { ConfigManager } from './src/config_manager.js'
 import { ExceptionsManager } from './src/exceptions_manager.js'
 import { createTest, createTestGroup } from './src/create_test.js'
@@ -41,7 +41,7 @@ let cliArgs: CLIArgs = {}
 /**
  * Hydrated config
  */
-let runnerConfig: Required<Config> | undefined
+let runnerConfig: NormalizedConfig | undefined
 
 /**
  * The state refers to the phase where we configure suites and import

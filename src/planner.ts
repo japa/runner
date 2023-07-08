@@ -9,7 +9,7 @@
 
 import validator from './validator.js'
 import { FilesManager } from './files_manager.js'
-import type { Config, TestFiles, TestSuite } from './types.js'
+import type { NormalizedConfig, TestFiles, TestSuite } from './types.js'
 
 /**
  * The tests planner is used to plan the tests by doing all
@@ -17,10 +17,10 @@ import type { Config, TestFiles, TestSuite } from './types.js'
  * reporters, filtering tests and so on.
  */
 export class Planner {
-  #config: Required<Config>
+  #config: NormalizedConfig
   #fileManager = new FilesManager()
 
-  constructor(config: Required<Config>) {
+  constructor(config: NormalizedConfig) {
     validator.validateActivatedReporters(config!)
     validator.validateSuitesFilter(config!)
     validator.validateSuitesForUniqueness(config!)

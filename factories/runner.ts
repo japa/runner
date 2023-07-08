@@ -13,7 +13,7 @@ import { fileURLToPath } from 'node:url'
 import { Planner } from '../src/planner.js'
 import { GlobalHooks } from '../src/hooks.js'
 import { CliParser } from '../src/cli_parser.js'
-import { CLIArgs, Config } from '../src/types.js'
+import { CLIArgs, Config, NormalizedConfig } from '../src/types.js'
 import { ConfigManager } from '../src/config_manager.js'
 import { createTest, createTestGroup } from '../src/create_test.js'
 import { Group, Suite, Runner, Emitter } from '../modules/core/main.js'
@@ -25,7 +25,7 @@ import { Group, Suite, Runner, Emitter } from '../modules/core/main.js'
  */
 export class RunnerFactory {
   #emitter = new Emitter()
-  #config?: Required<Config>
+  #config?: NormalizedConfig
   #cliArgs?: CLIArgs
   #suites?: Suite[]
   #file = fileURLToPath(import.meta.url)

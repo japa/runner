@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-import { Config } from './types.js'
+import { NormalizedConfig } from './types.js'
 
 /**
  * Validator encapsulates the validations to perform before running
@@ -17,7 +17,7 @@ class Validator {
   /**
    * Ensures the japa is configured. Otherwise raises an exception
    */
-  ensureIsConfigured(config: Required<Config> | undefined) {
+  ensureIsConfigured(config: NormalizedConfig | undefined) {
     if (!config) {
       throw new Error(
         `Cannot run tests. Make sure to call "configure" method before the "run" method`
@@ -39,7 +39,7 @@ class Validator {
   /**
    * Ensures the suites filter uses a subset of the user configured suites.
    */
-  validateSuitesFilter(config: Required<Config>) {
+  validateSuitesFilter(config: NormalizedConfig) {
     /**
      * Do not perform any validation if no filters are applied
      * in the first place
@@ -70,7 +70,7 @@ class Validator {
   /**
    * Ensure there are unique suites
    */
-  validateSuitesForUniqueness(config: Required<Config>) {
+  validateSuitesForUniqueness(config: NormalizedConfig) {
     if (!('suites' in config)) {
       return
     }
@@ -90,7 +90,7 @@ class Validator {
    * Ensure the activated reporters are in the list of defined
    * reporters
    */
-  validateActivatedReporters(config: Required<Config>) {
+  validateActivatedReporters(config: NormalizedConfig) {
     const reportersList = config.reporters.list.map(({ name }) => name)
     const unknownReporters = config.reporters.activated.filter(
       (name) => !reportersList.includes(name)

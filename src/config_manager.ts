@@ -10,7 +10,9 @@
 import debug from './debug.js'
 import { dot, ndjson, spec } from './reporters/main.js'
 import { Refiner } from '../modules/core/main.js'
-import type { CLIArgs, Config, Filters } from './types.js'
+import type { CLIArgs, Config, Filters, NormalizedBaseConfig, NormalizedConfig } from './types.js'
+
+const NOOP = () => {}
 
 /**
  * Defaults to use for configuration
@@ -126,7 +128,7 @@ export class ConfigManager {
    * Hydrates the config with user defined options and the
    * command-line flags.
    */
-  hydrate(): Required<Config> {
+  hydrate(): NormalizedConfig {
     const cliFilters = this.#getCLIFilters()
     const cliRetries = this.#getCLIRetries()
     const cliTimeout = this.#getCLITimeout()
@@ -135,7 +137,7 @@ export class ConfigManager {
 
     debug('filters applied using CLI flags %O', cliFilters)
 
-    const baseConfig: Omit<Required<Config>, 'files' | 'suites'> = {
+    const baseConfig: NormalizedBaseConfig = {
       cwd: this.#config.cwd ?? process.cwd(),
       filters: Object.assign({}, this.#config.filters ?? {}, cliFilters),
       importer: this.#config.importer ?? DEFAULTS.importer,
@@ -177,7 +179,7 @@ export class ConfigManager {
           files: suite.files,
           timeout: cliTimeout ?? suite.timeout ?? baseConfig.timeout,
           retries: cliRetries ?? suite.retries ?? baseConfig.retries,
-          configure: suite.configure,
+          configure: suite.configure || NOOP,
         }
       }),
       ...baseConfig,

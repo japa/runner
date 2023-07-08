@@ -63,7 +63,7 @@ export type Filters = FilteringOptions & {
  * emitter, config and the hooks
  */
 export type PluginFn = (japa: {
-  config: Required<Config>
+  config: NormalizedConfig
   cliArgs: CLIArgs
   runner: Runner
   emitter: Emitter
@@ -182,6 +182,16 @@ export type TestSuite = {
 }
 
 /**
+ * BaseConfig after normalized by the config manager
+ */
+export type NormalizedBaseConfig = Required<Omit<BaseConfig, 'reporters'>> & {
+  reporters: {
+    activated: string[]
+    list: NamedReporterContract[]
+  }
+}
+
+/**
  * Configuration options
  */
 export type Config = BaseConfig &
@@ -191,5 +201,18 @@ export type Config = BaseConfig &
       }
     | {
         suites: TestSuite[]
+      }
+  )
+
+/**
+ * Config after normalized by the config manager
+ */
+export type NormalizedConfig = NormalizedBaseConfig &
+  (
+    | {
+        files: TestFiles
+      }
+    | {
+        suites: Required<TestSuite>[]
       }
   )
