@@ -15,7 +15,7 @@ import { assert, default as chai } from 'chai'
 import { ndjson, spec, dot } from '../src/reporters/main.js'
 import { CliParser } from '../src/cli_parser.js'
 import type { CLIArgs, Config } from '../src/types.js'
-import { ConfigManager } from '../src/config_manager.js'
+import { ConfigManager, NOOP } from '../src/config_manager.js'
 import { wrapAssertions } from '../tests_helpers/main.js'
 
 chai.use(chaiSubset)
@@ -333,7 +333,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
           files: 'tests/unit/**.spec.ts',
           timeout: 1000,
           retries: 0,
-          configure: undefined,
+          configure: NOOP,
         },
       ],
       filters: {},
@@ -394,7 +394,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
           files: 'tests/unit/**.spec.ts',
           timeout: 2000,
           retries: 4,
-          configure: undefined,
+          configure: NOOP,
         },
       ],
       filters: {},

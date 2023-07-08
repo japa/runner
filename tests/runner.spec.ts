@@ -378,7 +378,7 @@ test.describe('Runner | retryPlugin', () => {
     await clearCache()
   })
 
-  test('run only failed tests when retry flag is used', async () => {
+  test('run only failed tests when failed flag is used', async () => {
     const stack: string[] = []
 
     const emitter = new Emitter()
@@ -421,7 +421,7 @@ test.describe('Runner | retryPlugin', () => {
       assert.deepEqual(stack, ['executing failing test', 'executing passing test'])
     })
 
-    await getExecutor(['--retry']).run()
+    await getExecutor(['--failed']).run()
     await wrapAssertions(async () => {
       assert.deepEqual(await getFailedTests(), { tests: ['failing test'] })
       assert.deepEqual(stack, [
@@ -434,7 +434,7 @@ test.describe('Runner | retryPlugin', () => {
     await clearCache()
   })
 
-  test('run all tests when retry flag is not used', async () => {
+  test('run all tests when failed flag is not used', async () => {
     const stack: string[] = []
 
     const emitter = new Emitter()
@@ -530,7 +530,7 @@ test.describe('Runner | retryPlugin', () => {
       assert.deepEqual(stack, ['executing passing test'])
     })
 
-    await getExecutor(['--retry']).run()
+    await getExecutor(['--failed']).run()
     await wrapAssertions(async () => {
       assert.deepEqual(await getFailedTests(), { tests: [] })
       assert.deepEqual(stack, ['executing passing test', 'executing passing test'])

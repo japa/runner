@@ -19,8 +19,8 @@ const ansi = colors.ansi()
  * will be parsed aswell, but without any normalization
  */
 const OPTIONS = {
-  string: ['tests', 'groups', 'tags', 'files', 'timeout', 'retries', 'reporter'],
-  boolean: ['help', 'matchAll'],
+  string: ['tests', 'groups', 'tags', 'files', 'timeout', 'retries', 'reporter', 'failed'],
+  boolean: ['help', 'matchAll', 'failed'],
   alias: {
     forceExit: 'force-exit',
     matchAll: 'match-all',
@@ -42,6 +42,7 @@ ${ansi.green('--force-exit')}                ${ansi.dim('Forcefully exit the pro
 ${ansi.green('--timeout')}                   ${ansi.dim('Define default timeout for all tests')}
 ${ansi.green('--retries')}                   ${ansi.dim('Define default retries for all tests')}
 ${ansi.green('--reporter')}                  ${ansi.dim('Activate one or more test reporters')}
+${ansi.green('--failed')}                    ${ansi.dim('Run tests failed during the last run')}
 ${ansi.green('-h, --help')}                  ${ansi.dim('View help')}
 
 ${ansi.yellow('Examples:')}

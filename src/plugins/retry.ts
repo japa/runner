@@ -52,7 +52,7 @@ export async function clearCache() {
 }
 
 /**
- * Exposes the API to run failing tests using the "retry" CLI flag.
+ * Exposes the API to run failing tests using the "failed" CLI flag.
  */
 export const retryPlugin: PluginFn = async function retry({ config, cliArgs }) {
   if (!SUMMARY_FILE) {
@@ -64,7 +64,7 @@ export const retryPlugin: PluginFn = async function retry({ config, cliArgs }) {
     await cacheFailedTests(summary.failedTestsTitles)
   })
 
-  if (cliArgs.retry) {
+  if (cliArgs.failed) {
     const { tests } = await getFailedTests()
     if (!tests || !tests.length) {
       console.log(cliui.colors.bgYellow().black(' No failing tests found. Running all the tests '))

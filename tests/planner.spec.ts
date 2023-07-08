@@ -10,7 +10,7 @@
 import { assert } from 'chai'
 import { test } from 'node:test'
 import { Planner } from '../src/planner.js'
-import { ConfigManager } from '../src/config_manager.js'
+import { ConfigManager, NOOP } from '../src/config_manager.js'
 import { wrapAssertions } from '../tests_helpers/main.js'
 
 test.describe('Planner | files', () => {
@@ -212,7 +212,7 @@ test.describe('Planner | suites', () => {
           ],
           retries: 0,
           timeout: 2000,
-          configure: undefined,
+          configure: NOOP,
         },
       ])
     })
@@ -236,7 +236,7 @@ test.describe('Planner | suites', () => {
           ],
           retries: 0,
           timeout: 2000,
-          configure: undefined,
+          configure: NOOP,
         },
       ])
     })
@@ -267,7 +267,7 @@ test.describe('Planner | suites', () => {
           ],
           retries: 0,
           timeout: 1000,
-          configure: undefined,
+          configure: NOOP,
         },
       ])
     })
@@ -298,7 +298,7 @@ test.describe('Planner | suites', () => {
           ],
           retries: 0,
           timeout: 3000,
-          configure: undefined,
+          configure: NOOP,
         },
       ])
     })
@@ -327,7 +327,7 @@ test.describe('Planner | suites', () => {
           ],
           retries: 2,
           timeout: 2000,
-          configure: undefined,
+          configure: NOOP,
         },
       ])
     })
@@ -356,7 +356,7 @@ test.describe('Planner | suites', () => {
           ],
           retries: 3,
           timeout: 2000,
-          configure: undefined,
+          configure: NOOP,
         },
       ])
     })
@@ -444,7 +444,7 @@ test.describe('Planner | suites', () => {
           ],
           retries: 0,
           timeout: 2000,
-          configure: undefined,
+          configure: NOOP,
         },
       ])
     })
