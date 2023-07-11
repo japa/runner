@@ -73,6 +73,7 @@
     "find-cache-dir": "^4.0.0",
     "getopts": "^2.3.0",
     "ms": "^2.1.3",
+    "serialize-error": "^11.0.0",
     "slash": "^5.1.0"
   },
   "author": "virk,japa",

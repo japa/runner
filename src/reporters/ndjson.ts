@@ -9,6 +9,7 @@
 
 import { relative } from 'node:path'
 import { BaseReporter } from '../../modules/core/main.js'
+import { serializeError } from 'serialize-error'
 import type {
   TestEndNode,
   SuiteEndNode,
@@ -29,6 +30,16 @@ export class NdJSONReporter extends BaseReporter {
     return relative(process.cwd(), fileName)
   }
 
+  /**
+   * Serialize errors to JSON
+   */
+  #serializeErrors(errors: TestEndNode['errors']) {
+    return errors.map((error) => ({
+      phase: error.phase,
+      error: serializeError(error.error),
+    }))
+  }
+
   protected onTestEnd(payload: TestEndNode): void {
     console.log(
       JSON.stringify({
@@ -47,7 +58,7 @@ export class NdJSONReporter extends BaseReporter {
         isPinned: payload.isPinned,
         retryAttempt: payload.retryAttempt,
         retries: payload.retries,
-        errors: payload.errors,
+        errors: this.#serializeErrors(payload.errors),
       })
     )
   }
@@ -65,7 +76,7 @@ export class NdJSONReporter extends BaseReporter {
     JSON.stringify({
       event: 'group:end',
       title: payload.title,
-      errors: payload.errors,
+      errors: this.#serializeErrors(payload.errors),
     })
   }
 
