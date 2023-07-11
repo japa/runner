@@ -86,12 +86,15 @@ export class Planner {
    * Returns a list of filters to the passed to the refiner
    */
   #getRefinerFilters() {
-    return Object.keys(this.#config.filters).reduce((result, layer) => {
-      if (layer === 'tests' || layer === 'tags' || layer === 'groups') {
-        result.push({ layer, filters: this.#config.filters[layer]! })
-      }
-      return result
-    }, [] as { layer: 'tags' | 'tests' | 'groups'; filters: string[] }[])
+    return Object.keys(this.#config.filters).reduce(
+      (result, layer) => {
+        if (layer === 'tests' || layer === 'tags' || layer === 'groups') {
+          result.push({ layer, filters: this.#config.filters[layer]! })
+        }
+        return result
+      },
+      [] as { layer: 'tags' | 'tests' | 'groups'; filters: string[] }[]
+    )
   }
 
   /**
