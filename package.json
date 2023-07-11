@@ -1,7 +1,7 @@
 {
   "name": "@japa/runner",
   "description": "Runner for Japa testing framework",
-  "version": "3.0.0-5",
+  "version": "3.0.0-6",
   "engines": {
     "node": ">=18.16.0"
   },
