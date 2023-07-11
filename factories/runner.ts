@@ -75,6 +75,12 @@ export class RunnerFactory {
         assert.equal(2 + 2.2 + 2.1, 6)
       })
       .fails('Have to add support for floating numbers')
+    createTest('A test with an error that is not an AssertionError', this.#emitter, this.#refiner, {
+      group,
+      file: this.#file,
+    }).run(() => {
+      throw new Error('This is an error')
+    })
   }
 
   /**
