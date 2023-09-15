@@ -65,7 +65,7 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "@japa/core": "^8.0.0-9",
+    "@japa/core": "^8.0.0-10",
     "@japa/errors-printer": "^3.0.0-4",
     "@poppinss/cliui": "^6.1.1-2",
     "@poppinss/hooks": "^7.1.1-3",
