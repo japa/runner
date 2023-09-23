@@ -15,8 +15,14 @@ import { GlobalHooks } from '../src/hooks.js'
 import { CliParser } from '../src/cli_parser.js'
 import { ConfigManager } from '../src/config_manager.js'
 import { createTest, createTestGroup } from '../src/create_test.js'
-import { Group, Suite, Runner, Emitter } from '../modules/core/main.js'
-import type { CLIArgs, Config, NormalizedConfig, RunnerSummary } from '../src/types.js'
+import { Group, Suite, Runner, Emitter, TestContext } from '../modules/core/main.js'
+import type {
+  Config,
+  CLIArgs,
+  TestExecutor,
+  RunnerSummary,
+  NormalizedConfig,
+} from '../src/types.js'
 
 /**
  * Runner factory exposes the API to run dummy suites, groups and tests.
@@ -197,6 +203,25 @@ export class RunnerFactory {
   useEmitter(emitter: Emitter) {
     this.#emitter = emitter
     return this
+  }
+
+  /**
+   * Run a test using the runner
+   */
+  async runTest(
+    title: string,
+    callback: TestExecutor<TestContext, undefined>
+  ): Promise<RunnerSummary> {
+    const defaultSuite = new Suite('default', this.#emitter, this.#refiner)
+    const test = createTest(title, this.#emitter, this.#refiner, {
+      suite: defaultSuite,
+      file: this.#file,
+    }).run(callback)
+
+    defaultSuite.add(test)
+
+    this.withSuites([defaultSuite])
+    return this.run()
   }
 
   /**

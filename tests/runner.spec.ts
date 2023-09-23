@@ -15,8 +15,8 @@ import { GlobalHooks } from '../src/hooks.js'
 import { ConfigManager } from '../src/config_manager.js'
 import { pEvent, wrapAssertions } from '../tests_helpers/main.js'
 import { createTest, createTestGroup } from '../src/create_test.js'
-import { clearCache, getFailedTests, retryPlugin } from '../src/plugins/retry.js'
 import { Emitter, Refiner, Runner, Suite } from '../modules/core/main.js'
+import { clearCache, getFailedTests, retryPlugin } from '../src/plugins/retry.js'
 
 test.describe('Runner | create tests and groups', () => {
   test('raise error when defining nested groups', async () => {

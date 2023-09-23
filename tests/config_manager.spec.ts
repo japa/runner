@@ -12,11 +12,11 @@ import chaiSubset from 'chai-subset'
 import { Refiner } from '@japa/core'
 import { assert, default as chai } from 'chai'
 
-import { ndjson, spec, dot } from '../src/reporters/main.js'
 import { CliParser } from '../src/cli_parser.js'
 import type { CLIArgs, Config } from '../src/types.js'
-import { ConfigManager, NOOP } from '../src/config_manager.js'
 import { wrapAssertions } from '../tests_helpers/main.js'
+import { ndjson, spec, dot } from '../src/reporters/main.js'
+import { ConfigManager, NOOP } from '../src/config_manager.js'
 
 chai.use(chaiSubset)
 
