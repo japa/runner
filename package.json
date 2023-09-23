@@ -23,7 +23,7 @@
   },
   "scripts": {
     "pretest": "npm run lint",
-    "test": "cross-env NODE_ENV=japa:runner c8 npm run quick:test",
+    "test": "cross-env NODE_DEBUG=japa:runner c8 npm run quick:test",
     "quick:test": "glob -c \"node --enable-source-maps --loader=ts-node/esm --test-reporter=spec --test\" \"tests/*.spec.ts\"",
     "clean": "del-cli build",
     "typecheck": "tsc --noEmit",
