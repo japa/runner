@@ -8,8 +8,9 @@
  */
 
 import { relative } from 'node:path'
-import { BaseReporter } from '../../modules/core/main.js'
 import { serializeError } from 'serialize-error'
+
+import { BaseReporter } from '../../modules/core/main.js'
 import type {
   TestEndNode,
   SuiteEndNode,

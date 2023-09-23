@@ -9,7 +9,7 @@
 
 import validator from './validator.js'
 import { FilesManager } from './files_manager.js'
-import type { NormalizedConfig, TestFiles, TestSuite } from './types.js'
+import type { NamedReporterContract, NormalizedConfig, TestFiles, TestSuite } from './types.js'
 
 /**
  * The tests planner is used to plan the tests by doing all
@@ -31,7 +31,7 @@ export class Planner {
    * Returns a list of reporters based upon the activated
    * reporters list.
    */
-  #getActivatedReporters() {
+  #getActivatedReporters(): NamedReporterContract[] {
     return this.#config.reporters.activated.map((activated) => {
       return this.#config.reporters.list.find(({ name }) => activated === name)!
     })
@@ -54,7 +54,7 @@ export class Planner {
    * Returns a collection of suites and their associated
    * test files by applying all the filters
    */
-  async #getSuites() {
+  async #getSuites(): Promise<(TestSuite & { filesURLs: URL[] })[]> {
     let suites: (TestSuite & { filesURLs: URL[] })[] = []
     let suitesFilters = this.#config.filters.suites || []
 

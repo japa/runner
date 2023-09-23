@@ -11,7 +11,7 @@ import { join } from 'node:path'
 import findCacheDirectory from 'find-cache-dir'
 import { mkdir, readFile, unlink, writeFile } from 'node:fs/promises'
 
-import cliui from '../helpers.js'
+import { colors } from '../helpers.js'
 import type { PluginFn } from '../types.js'
 
 /**
@@ -67,7 +67,7 @@ export const retryPlugin: PluginFn = async function retry({ config, cliArgs }) {
   if (cliArgs.failed) {
     const { tests } = await getFailedTests()
     if (!tests || !tests.length) {
-      console.log(cliui.colors.bgYellow().black(' No failing tests found. Running all the tests '))
+      console.log(colors.bgYellow().black(' No failing tests found. Running all the tests '))
       return
     }
     config.filters.tests = tests

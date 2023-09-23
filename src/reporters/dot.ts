@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-import cliui from '../helpers.js'
+import { colors, icons } from '../helpers.js'
 import type { TestEndNode } from '../../modules/core/types.js'
 import { BaseReporter } from '../../modules/core/reporters/base.js'
 
@@ -21,13 +21,13 @@ export class DotReporter extends BaseReporter {
   protected onTestEnd(payload: TestEndNode) {
     let output = ''
     if (payload.isTodo) {
-      output = cliui.colors.cyan('-')
+      output = colors.cyan(icons.info)
     } else if (payload.hasError || payload.isFailing) {
-      output = cliui.colors.red('×')
+      output = payload.hasError ? colors.magenta(icons.squareSmallFilled) : colors.red(icons.cross)
     } else if (payload.isSkipped) {
-      output = cliui.colors.yellow('-')
+      output = colors.yellow(icons.bullet)
     } else {
-      output = cliui.colors.green('•')
+      output = colors.green(icons.tick)
     }
 
     process.stdout.write(`${output}`)

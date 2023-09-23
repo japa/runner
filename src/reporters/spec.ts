@@ -10,7 +10,7 @@
 import ms from 'ms'
 import { relative } from 'node:path'
 
-import cliui from '../helpers.js'
+import { colors, icons } from '../helpers.js'
 import { BaseReporter } from '../../modules/core/main.js'
 import { GroupStartNode, TestEndNode } from '../../modules/core/types.js'
 
@@ -29,24 +29,22 @@ export class SpecReporter extends BaseReporter {
    */
   #getTestIcon(payload: TestEndNode) {
     if (payload.isTodo) {
-      return cliui.colors.cyan(cliui.icons.info)
+      return colors.cyan(icons.info)
     }
 
     if (payload.isFailing) {
-      return payload.hasError
-        ? cliui.colors.magenta(cliui.icons.squareSmallFilled)
-        : cliui.colors.red(cliui.icons.cross)
+      return payload.hasError ? colors.magenta(icons.squareSmallFilled) : colors.red(icons.cross)
     }
 
     if (payload.hasError) {
-      return cliui.colors.red(cliui.icons.cross)
+      return colors.red(icons.cross)
     }
 
     if (payload.isSkipped) {
-      return cliui.colors.yellow(cliui.icons.bullet)
+      return colors.yellow(icons.bullet)
     }
 
-    return cliui.colors.green(cliui.icons.tick)
+    return colors.green(icons.tick)
   }
 
   /**
@@ -56,22 +54,22 @@ export class SpecReporter extends BaseReporter {
     const message = typeof payload.title === 'string' ? payload.title : payload.title.expanded
 
     if (payload.isTodo) {
-      return cliui.colors.blue(message)
+      return colors.blue(message)
     }
 
     if (payload.isFailing) {
-      return payload.hasError ? cliui.colors.magenta(message) : cliui.colors.red(message)
+      return payload.hasError ? colors.magenta(message) : colors.red(message)
     }
 
     if (payload.hasError) {
-      return cliui.colors.red(message)
+      return colors.red(message)
     }
 
     if (payload.isSkipped) {
-      return cliui.colors.yellow(message)
+      return colors.yellow(message)
     }
 
-    return cliui.colors.grey(message)
+    return colors.grey(message)
   }
 
   /**
@@ -79,7 +77,7 @@ export class SpecReporter extends BaseReporter {
    */
   #getSubText(payload: TestEndNode): string | undefined {
     if (payload.isSkipped && payload.skipReason) {
-      return cliui.colors.yellow(payload.skipReason)
+      return colors.yellow(payload.skipReason)
     }
 
     if (!payload.isFailing) {
@@ -87,16 +85,16 @@ export class SpecReporter extends BaseReporter {
     }
 
     if (!payload.hasError) {
-      return cliui.colors.magenta(`Test marked with ".fails()" must finish with an error`)
+      return colors.magenta(`Test marked with ".fails()" must finish with an error`)
     }
 
     if (payload.failReason) {
-      return cliui.colors.magenta(payload.failReason)
+      return colors.magenta(payload.failReason)
     }
 
     const testErrorMessage = payload.errors.find((error) => error.phase === 'test')
     if (testErrorMessage && testErrorMessage.error) {
-      return cliui.colors.magenta(testErrorMessage.error.message)
+      return colors.magenta(testErrorMessage.error.message)
     }
   }
 
@@ -113,12 +111,12 @@ export class SpecReporter extends BaseReporter {
   #printTest(payload: TestEndNode) {
     const icon = this.#getTestIcon(payload)
     const message = this.#getTestMessage(payload)
-    const prefix = payload.isPinned ? cliui.colors.yellow('[PINNED] ') : ''
+    const prefix = payload.isPinned ? colors.yellow('[PINNED] ') : ''
     const indentation = this.currentFileName || this.currentGroupName ? '  ' : ''
-    const duration = cliui.colors.dim(`(${ms(Number(payload.duration.toFixed(2)))})`)
+    const duration = colors.dim(`(${ms(Number(payload.duration.toFixed(2)))})`)
     const retries =
       payload.retryAttempt && payload.retryAttempt > 1
-        ? cliui.colors.dim(`(x${payload.retryAttempt}) `)
+        ? colors.dim(`(x${payload.retryAttempt}) `)
         : ''
 
     let subText = this.#getSubText(payload)
@@ -137,7 +135,7 @@ export class SpecReporter extends BaseReporter {
         : payload.title
 
     const suffix = this.currentFileName
-      ? cliui.colors.dim(` (${this.#getRelativeFilename(this.currentFileName)})`)
+      ? colors.dim(` (${this.#getRelativeFilename(this.currentFileName)})`)
       : ''
 
     console.log(`\n${title}${suffix}`)
@@ -152,7 +150,7 @@ export class SpecReporter extends BaseReporter {
      * - Test is first in a sequence
      */
     if (this.currentFileName && this.#isFirstLoneTest) {
-      console.log(`\n${cliui.colors.dim(this.#getRelativeFilename(this.currentFileName))}`)
+      console.log(`\n${colors.dim(this.#getRelativeFilename(this.currentFileName))}`)
     }
     this.#isFirstLoneTest = false
   }

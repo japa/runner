@@ -7,5 +7,33 @@
  * file that was distributed with this source code.
  */
 
-import { cliui } from '@poppinss/cliui'
-export default cliui()
+import useColors from '@poppinss/colors'
+import { Colors } from '@poppinss/colors/types'
+
+export const colors: Colors = useColors.ansi()
+
+/**
+ * A collection of platform specific icons
+ */
+export const icons =
+  process.platform === 'win32' && !process.env.WT_SESSION
+    ? {
+        tick: '√',
+        cross: '×',
+        bullet: '*',
+        nodejs: '♦',
+        pointer: '>',
+        info: 'i',
+        warning: '‼',
+        squareSmallFilled: '[█]',
+      }
+    : {
+        tick: '✔',
+        cross: '✖',
+        bullet: '●',
+        nodejs: '⬢',
+        pointer: '❯',
+        info: 'ℹ',
+        warning: '⚠',
+        squareSmallFilled: '◼',
+      }

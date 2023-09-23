@@ -13,10 +13,10 @@ import { fileURLToPath } from 'node:url'
 import { Planner } from '../src/planner.js'
 import { GlobalHooks } from '../src/hooks.js'
 import { CliParser } from '../src/cli_parser.js'
-import { CLIArgs, Config, NormalizedConfig } from '../src/types.js'
 import { ConfigManager } from '../src/config_manager.js'
 import { createTest, createTestGroup } from '../src/create_test.js'
 import { Group, Suite, Runner, Emitter } from '../modules/core/main.js'
+import type { CLIArgs, Config, NormalizedConfig, RunnerSummary } from '../src/types.js'
 
 /**
  * Runner factory exposes the API to run dummy suites, groups and tests.
@@ -202,7 +202,7 @@ export class RunnerFactory {
   /**
    * Run dummy tests. You might use
    */
-  async run() {
+  async run(): Promise<RunnerSummary> {
     const runner = new Runner(this.#emitter)
 
     await this.#registerPlugins(runner)

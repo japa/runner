@@ -8,8 +8,8 @@
  */
 
 import debug from './debug.js'
-import { dot, ndjson, spec } from './reporters/main.js'
 import { Refiner } from '../modules/core/main.js'
+import { dot, ndjson, spec } from './reporters/main.js'
 import type { CLIArgs, Config, Filters, NormalizedBaseConfig, NormalizedConfig } from './types.js'
 
 export const NOOP = () => {}
