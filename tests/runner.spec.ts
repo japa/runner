@@ -37,7 +37,10 @@ test.describe('Runner | create tests and groups', () => {
     const refiner = new Refiner()
     const suite = new Suite('', emitter, refiner)
     const group = createTestGroup('', emitter, refiner, { suite })
-    assert.deepEqual(suite.stack, [group])
+
+    await wrapAssertions(() => {
+      assert.deepEqual(suite.stack, [group])
+    })
   })
 
   test('add test to the suite when defined', async () => {
@@ -45,7 +48,10 @@ test.describe('Runner | create tests and groups', () => {
     const refiner = new Refiner()
     const suite = new Suite('', emitter, refiner)
     const t = createTest('', emitter, refiner, { suite })
-    assert.deepEqual(suite.stack, [t])
+
+    await wrapAssertions(() => {
+      assert.deepEqual(suite.stack, [t])
+    })
   })
 
   test('add test to the group when group and suite both are defined', async () => {
@@ -55,8 +61,11 @@ test.describe('Runner | create tests and groups', () => {
 
     const group = createTestGroup('', emitter, refiner, { suite })
     const t = createTest('', emitter, refiner, { suite, group })
-    assert.deepEqual(suite.stack, [group])
-    assert.deepEqual(group.tests, [t])
+
+    await wrapAssertions(() => {
+      assert.deepEqual(suite.stack, [group])
+      assert.deepEqual(group.tests, [t])
+    })
   })
 
   test('define test timeout from global options', async () => {
@@ -103,7 +112,10 @@ test.describe('Runner | create tests and groups', () => {
     }).throws('Failed')
 
     const [event] = await Promise.all([pEvent(emitter, 'test:end'), t.exec()])
-    assert.equal(event!.hasError, false)
+
+    await wrapAssertions(() => {
+      assert.equal(event!.hasError, false)
+    })
   })
 
   test('assert error matches the regular expression', async () => {
@@ -115,7 +127,10 @@ test.describe('Runner | create tests and groups', () => {
     }).throws(/ed?/)
 
     const [event] = await Promise.all([pEvent(emitter, 'test:end'), t.exec()])
-    assert.equal(event!.hasError, false)
+
+    await wrapAssertions(() => {
+      assert.equal(event!.hasError, false)
+    })
   })
 
   test('throw error when test does not have a callback defined', async () => {
@@ -140,7 +155,9 @@ test.describe('Runner | create tests and groups', () => {
     }).throws('Failed', Error)
 
     const [event] = await Promise.all([pEvent(emitter, 'test:end'), t.exec()])
-    assert.equal(event!.hasError, false)
+    await wrapAssertions(() => {
+      assert.equal(event!.hasError, false)
+    })
   })
 
   test('fail when test does not throw an exception', async () => {
@@ -150,8 +167,10 @@ test.describe('Runner | create tests and groups', () => {
     t.run(() => {}).throws('Failed', Error)
 
     const [event] = await Promise.all([pEvent(emitter, 'test:end'), t.exec()])
-    assert.equal(event!.hasError, true)
-    assert.equal(event!.errors[0].error.message, 'Expected test to throw an exception')
+    await wrapAssertions(() => {
+      assert.equal(event!.hasError, true)
+      assert.equal(event!.errors[0].error.message, 'Expected test to throw an exception')
+    })
   })
 
   test('fail when error constructor mismatch', async () => {
@@ -164,8 +183,10 @@ test.describe('Runner | create tests and groups', () => {
     }).throws('Failed', Exception)
 
     const [event] = await Promise.all([pEvent(emitter, 'test:end'), t.exec()])
-    assert.equal(event!.hasError, true)
-    assert.equal(event!.errors[0].error.message, 'Expected test to throw "[class Exception]"')
+    await wrapAssertions(() => {
+      assert.equal(event!.hasError, true)
+      assert.equal(event!.errors[0].error.message, 'Expected test to throw "[class Exception]"')
+    })
   })
 
   test('fail when error message mismatch', async () => {
@@ -177,11 +198,13 @@ test.describe('Runner | create tests and groups', () => {
     }).throws('Failure')
 
     const [event] = await Promise.all([pEvent(emitter, 'test:end'), t.exec()])
-    assert.equal(event!.hasError, true)
-    assert.equal(
-      event!.errors[0].error.message,
-      'Expected test to throw "Failure". Instead received "Failed"'
-    )
+    await wrapAssertions(() => {
+      assert.equal(event!.hasError, true)
+      assert.equal(
+        event!.errors[0].error.message,
+        'Expected test to throw "Failure". Instead received "Failed"'
+      )
+    })
   })
 
   test('fail when error does not match the regular expression', async () => {
@@ -193,11 +216,13 @@ test.describe('Runner | create tests and groups', () => {
     }).throws(/lure?/)
 
     const [event] = await Promise.all([pEvent(emitter, 'test:end'), t.exec()])
-    assert.equal(event!.hasError, true)
-    assert.equal(
-      event!.errors[0].error.message,
-      'Expected test error to match "/lure?/" regular expression'
-    )
+    await wrapAssertions(() => {
+      assert.equal(event!.hasError, true)
+      assert.equal(
+        event!.errors[0].error.message,
+        'Expected test error to match "/lure?/" regular expression'
+      )
+    })
   })
 })
 
