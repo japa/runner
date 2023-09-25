@@ -367,8 +367,7 @@ test.describe('Runner | retryPlugin', () => {
         plugins: [retryPlugin],
       })
       .useEmitter(emitter)
-      .withSuites([suite])
-      .run()
+      .runSuites(() => [suite])
 
     await wrapAssertions(async () => {
       assert.deepEqual(await getFailedTests(), { tests: ['failing test'] })
@@ -412,16 +411,15 @@ test.describe('Runner | retryPlugin', () => {
           argv
         )
         .useEmitter(emitter)
-        .withSuites([getSuite()])
     }
 
-    await getExecutor().run()
+    await getExecutor().runSuites(() => [getSuite()])
     await wrapAssertions(async () => {
       assert.deepEqual(await getFailedTests(), { tests: ['failing test'] })
       assert.deepEqual(stack, ['executing failing test', 'executing passing test'])
     })
 
-    await getExecutor(['--failed']).run()
+    await getExecutor(['--failed']).runSuites(() => [getSuite()])
     await wrapAssertions(async () => {
       assert.deepEqual(await getFailedTests(), { tests: ['failing test'] })
       assert.deepEqual(stack, [
@@ -468,16 +466,15 @@ test.describe('Runner | retryPlugin', () => {
           argv
         )
         .useEmitter(emitter)
-        .withSuites([getSuite()])
     }
 
-    await getExecutor().run()
+    await getExecutor().runSuites(() => [getSuite()])
     await wrapAssertions(async () => {
       assert.deepEqual(await getFailedTests(), { tests: ['failing test'] })
       assert.deepEqual(stack, ['executing failing test', 'executing passing test'])
     })
 
-    await getExecutor([]).run()
+    await getExecutor([]).runSuites(() => [getSuite()])
     await wrapAssertions(async () => {
       assert.deepEqual(await getFailedTests(), { tests: ['failing test'] })
       assert.deepEqual(stack, [
@@ -521,16 +518,15 @@ test.describe('Runner | retryPlugin', () => {
           argv
         )
         .useEmitter(emitter)
-        .withSuites([getSuite()])
     }
 
-    await getExecutor().run()
+    await getExecutor().runSuites(() => [getSuite()])
     await wrapAssertions(async () => {
       assert.deepEqual(await getFailedTests(), { tests: [] })
       assert.deepEqual(stack, ['executing passing test'])
     })
 
-    await getExecutor(['--failed']).run()
+    await getExecutor(['--failed']).runSuites(() => [getSuite()])
     await wrapAssertions(async () => {
       assert.deepEqual(await getFailedTests(), { tests: [] })
       assert.deepEqual(stack, ['executing passing test', 'executing passing test'])

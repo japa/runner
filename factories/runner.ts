@@ -7,15 +7,14 @@
  * file that was distributed with this source code.
  */
 
-import assert from 'node:assert'
 import { fileURLToPath } from 'node:url'
 
 import { Planner } from '../src/planner.js'
 import { GlobalHooks } from '../src/hooks.js'
 import { CliParser } from '../src/cli_parser.js'
+import { createTest } from '../src/create_test.js'
 import { ConfigManager } from '../src/config_manager.js'
-import { createTest, createTestGroup } from '../src/create_test.js'
-import { Group, Suite, Runner, Emitter, TestContext } from '../modules/core/main.js'
+import { Suite, Runner, Emitter, TestContext, Refiner } from '../modules/core/main.js'
 import type {
   Config,
   CLIArgs,
@@ -33,136 +32,10 @@ export class RunnerFactory {
   #emitter = new Emitter()
   #config?: NormalizedConfig
   #cliArgs?: CLIArgs
-  #suites?: Suite[]
   #file = fileURLToPath(import.meta.url)
 
   get #refiner() {
     return this.#config!.refiner
-  }
-
-  /**
-   * Creating unit and functional suites
-   */
-  #createSuites() {
-    return [
-      new Suite('unit', this.#emitter, this.#refiner),
-      new Suite('functional', this.#emitter, this.#refiner),
-    ]
-  }
-
-  /**
-   * Creates a variety of tests for Maths.add method
-   */
-  #createAdditionTests(group: Group) {
-    createTest('add two numbers', this.#emitter, this.#refiner, { group, file: this.#file }).run(
-      () => {
-        assert.equal(2 + 2, 4)
-      }
-    )
-    createTest('add three numbers', this.#emitter, this.#refiner, {
-      group,
-      file: this.#file,
-    }).run(() => {
-      assert.equal(2 + 2 + 2, 6)
-    })
-    createTest('add group of numbers', this.#emitter, this.#refiner, { group, file: this.#file })
-    createTest('use math.js lib', this.#emitter, this.#refiner, { group, file: this.#file }).skip(
-      true,
-      'Library work pending'
-    )
-    createTest('add multiple numbers', this.#emitter, this.#refiner, {
-      file: this.#file,
-      group,
-    }).run(() => {
-      assert.equal(2 + 2 + 2 + 2, 6)
-    })
-    createTest('add floating numbers', this.#emitter, this.#refiner, { group, file: this.#file })
-      .run(() => {
-        assert.equal(2 + 2.2 + 2.1, 6)
-      })
-      .fails('Have to add support for floating numbers')
-    createTest('A test with an error that is not an AssertionError', this.#emitter, this.#refiner, {
-      group,
-      file: this.#file,
-    }).run(() => {
-      throw new Error('This is an error')
-    })
-  }
-
-  /**
-   * Creates a variety of dummy tests for creating
-   * a new user
-   */
-  #createUserStoreTests(group: Group) {
-    createTest('Validate user data', this.#emitter, this.#refiner, {
-      group,
-      file: this.#file,
-    }).run(() => {})
-    createTest('Disallow duplicate emails', this.#emitter, this.#refiner, {
-      group,
-      file: this.#file,
-    }).run(() => {})
-    createTest('Disallow duplicate emails across tenants', this.#emitter, this.#refiner, {
-      group,
-      file: this.#file,
-    }).run(() => {
-      const users = ['', '']
-      assert.equal(users.length, 1)
-    })
-    createTest('Normalize email before persisting it', this.#emitter, this.#refiner, {
-      group,
-      file: this.#file,
-    }).skip(true, 'Have to build a normalizer')
-    createTest('Send email verification mail', this.#emitter, this.#refiner, {
-      group,
-      file: this.#file,
-    })
-  }
-
-  /**
-   * Creates tests for the unit tests suite
-   */
-  #createUnitTests(suite: Suite) {
-    const additionGroup = createTestGroup('Maths#add', this.#emitter, this.#refiner, {
-      suite,
-      file: this.#file,
-    })
-    this.#createAdditionTests(additionGroup)
-
-    createTest('A top level test inside a suite', this.#emitter, this.#refiner, {
-      suite,
-      file: this.#file,
-    }).run(() => {})
-  }
-
-  /**
-   * Creates tests for the functional tests suite
-   */
-  #createFunctionalTests(suite: Suite) {
-    const usersStoreGroup = createTestGroup('Users/store', this.#emitter, this.#refiner, {
-      suite,
-      file: this.#file,
-    })
-    this.#createUserStoreTests(usersStoreGroup)
-
-    const usersListGroup = createTestGroup('Users/list', this.#emitter, this.#refiner, {
-      suite,
-      file: this.#file,
-    })
-    usersListGroup.setup(() => {
-      throw new Error('Unable to cleanup database')
-    })
-    createTest(
-      'A test that will never because the group hooks fails',
-      this.#emitter,
-      this.#refiner,
-      { group: usersListGroup }
-    )
-
-    createTest('A top level test inside functional suite', this.#emitter, this.#refiner, {
-      suite,
-      file: this.#file,
-    }).run(() => {})
   }
 
   /**
@@ -189,15 +62,6 @@ export class RunnerFactory {
   }
 
   /**
-   * Register custom suites to execute instead
-   * of the dummy one's
-   */
-  withSuites(suites: Suite[]) {
-    this.#suites = suites
-    return this
-  }
-
-  /**
    * Define a custom emitter instance to use
    */
   useEmitter(emitter: Emitter) {
@@ -212,24 +76,24 @@ export class RunnerFactory {
     title: string,
     callback: TestExecutor<TestContext, undefined>
   ): Promise<RunnerSummary> {
-    const defaultSuite = new Suite('default', this.#emitter, this.#refiner)
-    const test = createTest(title, this.#emitter, this.#refiner, {
-      suite: defaultSuite,
-      file: this.#file,
-    }).run(callback)
+    return this.runSuites((emitter, refiner, file) => {
+      const defaultSuite = new Suite('default', emitter, refiner)
+      createTest(title, emitter, refiner, {
+        suite: defaultSuite,
+        file: file,
+      }).run(callback)
 
-    defaultSuite.add(test)
-
-    this.withSuites([defaultSuite])
-    return this.run()
+      return [defaultSuite]
+    })
   }
 
   /**
    * Run dummy tests. You might use
    */
-  async run(): Promise<RunnerSummary> {
+  async runSuites(
+    suites: (emitter: Emitter, refiner: Refiner, file?: string) => Suite[]
+  ): Promise<RunnerSummary> {
     const runner = new Runner(this.#emitter)
-
     await this.#registerPlugins(runner)
 
     const { config, reporters, refinerFilters } = await new Planner(this.#config!).plan()
@@ -239,21 +103,12 @@ export class RunnerFactory {
     reporters.forEach((reporter) => {
       runner.registerReporter(reporter)
     })
+
     refinerFilters.forEach((filter) => {
       config.refiner.add(filter.layer, filter.filters)
     })
 
-    if (this.#suites) {
-      this.#suites.forEach((suite) => runner.add(suite))
-    } else {
-      const [unit, functional] = this.#createSuites()
-
-      this.#createUnitTests(unit)
-      runner.add(unit)
-
-      this.#createFunctionalTests(functional)
-      runner.add(functional)
-    }
+    suites(this.#emitter, this.#refiner, this.#file).forEach((suite) => runner.add(suite))
 
     await globalHooks.setup(runner)
     await runner.start()

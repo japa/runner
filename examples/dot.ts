@@ -1,5 +1,5 @@
-import { runner } from '../factories/main.js'
 import { dot } from '../src/reporters/main.js'
+import { createDiverseTests, runner } from '../factories/main.js'
 
 await runner()
   .configure({
@@ -9,4 +9,4 @@ await runner()
       activated: ['dot'],
     },
   })
-  .run()
+  .runSuites(createDiverseTests)

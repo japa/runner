@@ -1,5 +1,5 @@
-import { runner } from '../factories/main.js'
 import { ndjson } from '../src/reporters/main.js'
+import { createDiverseTests, runner } from '../factories/main.js'
 
 await runner()
   .configure({
@@ -9,4 +9,4 @@ await runner()
       activated: ['ndjson'],
     },
   })
-  .run()
+  .runSuites(createDiverseTests)
