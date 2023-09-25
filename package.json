@@ -23,7 +23,7 @@
     "quick:test": "glob -c \"node --enable-source-maps --loader=ts-node/esm --test-reporter=spec --test\" \"tests/*.spec.ts\"",
     "clean": "del-cli build",
     "typecheck": "tsc --noEmit",
-    "compile": "npm run lint && npm run clean && tsup-node",
+    "compile": "npm run lint && npm run clean && tsc",
     "build": "npm run compile",
     "release": "np",
     "prepublishOnly": "npm run build",
@@ -56,7 +56,6 @@
     "np": "^8.0.4",
     "prettier": "^3.0.3",
     "ts-node": "^10.9.1",
-    "tsup": "^7.2.0",
     "typescript": "^5.2.2"
   },
   "dependencies": {
@@ -120,19 +119,5 @@
       "modules/core/**",
       "src/reporters/**"
     ]
-  },
-  "tsup": {
-    "entry": [
-      "./index.ts",
-      "./src/types.ts",
-      "./src/reporters/main.ts",
-      "./factories/main.ts",
-      "./modules/core/main.ts"
-    ],
-    "outDir": "./build",
-    "clean": true,
-    "format": "esm",
-    "dts": true,
-    "target": "esnext"
   }
 }
