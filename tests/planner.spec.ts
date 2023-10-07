@@ -517,7 +517,7 @@ test.describe('Planner | reporters', () => {
         },
       },
       {
-        reporter: 'spec',
+        reporters: 'spec',
       }
     ).hydrate()
     const { reporters } = await new Planner(config).plan()
@@ -580,7 +580,7 @@ test.describe('Planner | reporters', () => {
         },
       },
       {
-        reporter: 'progress',
+        reporters: 'progress',
       }
     ).hydrate()
 

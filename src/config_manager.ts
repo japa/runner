@@ -119,8 +119,8 @@ export class ConfigManager {
    * --reporter flag
    */
   #getCLIReporters(): string[] | undefined {
-    if (this.#cliArgs.reporter) {
-      return this.#processAsArray(this.#cliArgs.reporter)
+    if (this.#cliArgs.reporters) {
+      return this.#processAsArray(this.#cliArgs.reporters)
     }
   }
 

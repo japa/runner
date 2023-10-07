@@ -22,7 +22,7 @@ const DATASET: [CLIArgs, CLIArgs][] = [
       '_': [] as string[],
       'files': '',
       'groups': '',
-      'reporter': '',
+      'reporters': '',
       'h': false,
       'help': false,
       'failed': false,
@@ -39,7 +39,7 @@ const DATASET: [CLIArgs, CLIArgs][] = [
     {
       '_': ['unit', 'functional'] as string[],
       'files': '',
-      'reporter': '',
+      'reporters': '',
       'groups': '',
       'h': false,
       'help': false,
@@ -57,7 +57,7 @@ const DATASET: [CLIArgs, CLIArgs][] = [
     {
       '_': [] as string[],
       'files': '',
-      'reporter': '',
+      'reporters': '',
       'groups': '',
       'h': false,
       'help': false,
@@ -75,7 +75,7 @@ const DATASET: [CLIArgs, CLIArgs][] = [
     {
       '_': [] as string[],
       'files': '',
-      'reporter': '',
+      'reporters': '',
       'groups': '',
       'h': false,
       'help': false,
@@ -93,7 +93,7 @@ const DATASET: [CLIArgs, CLIArgs][] = [
     {
       '_': [] as string[],
       'files': '',
-      'reporter': '',
+      'reporters': '',
       'groups': '',
       'h': false,
       'help': false,
@@ -113,7 +113,7 @@ const DATASET: [CLIArgs, CLIArgs][] = [
       'files': '',
       'force-exit': true,
       'forceExit': true,
-      'reporter': '',
+      'reporters': '',
       'groups': '',
       'h': false,
       'help': false,
@@ -132,7 +132,7 @@ const DATASET: [CLIArgs, CLIArgs][] = [
       '_': [] as string[],
       'files': '',
       'browser': ['chrome', 'firefox'],
-      'reporter': '',
+      'reporters': '',
       'groups': '',
       'h': false,
       'help': false,
@@ -146,11 +146,11 @@ const DATASET: [CLIArgs, CLIArgs][] = [
     },
   ],
   [
-    new CliParser().parse(['--reporter', 'spec']),
+    new CliParser().parse(['--reporters', 'spec']),
     {
       '_': [] as string[],
       'files': '',
-      'reporter': 'spec',
+      'reporters': 'spec',
       'groups': '',
       'h': false,
       'help': false,
@@ -164,11 +164,11 @@ const DATASET: [CLIArgs, CLIArgs][] = [
     },
   ],
   [
-    new CliParser().parse(['--reporter', 'spec', '--reporter', 'dot']),
+    new CliParser().parse(['--reporters', 'spec', '--reporters', 'dot']),
     {
       '_': [] as string[],
       'files': '',
-      'reporter': ['spec', 'dot'],
+      'reporters': ['spec', 'dot'],
       'groups': '',
       'h': false,
       'help': false,
@@ -182,11 +182,11 @@ const DATASET: [CLIArgs, CLIArgs][] = [
     },
   ],
   [
-    new CliParser().parse(['--reporter', 'spec,dot']),
+    new CliParser().parse(['--reporters', 'spec,dot']),
     {
       '_': [] as string[],
       'files': '',
-      'reporter': 'spec,dot',
+      'reporters': 'spec,dot',
       'groups': '',
       'h': false,
       'help': false,
@@ -204,7 +204,7 @@ const DATASET: [CLIArgs, CLIArgs][] = [
     {
       '_': [] as string[],
       'files': '',
-      'reporter': '',
+      'reporters': '',
       'groups': '',
       'h': false,
       'help': false,
@@ -254,7 +254,7 @@ test.describe('CLI parser', () => {
           `${ansi.green('--retries')}                   ${ansi.dim(
             'Define default retries for all tests'
           )}`,
-          `${ansi.green('--reporter')}                  ${ansi.dim(
+          `${ansi.green('--reporters')}                 ${ansi.dim(
             'Activate one or more test reporters'
           )}`,
           `${ansi.green('--failed')}                    ${ansi.dim(

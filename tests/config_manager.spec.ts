@@ -604,7 +604,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
         list: [spec()],
       },
     },
-    new CliParser().parse(['--reporter', 'progress']),
+    new CliParser().parse(['--reporters', 'progress']),
     {
       cwd: process.cwd(),
       files: [],

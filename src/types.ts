@@ -45,7 +45,7 @@ export type CLIArgs = {
   groups?: string | string[]
   timeout?: string
   retries?: string
-  reporter?: string | string[]
+  reporters?: string | string[]
   forceExit?: boolean
   failed?: boolean
   help?: boolean
