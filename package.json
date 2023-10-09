@@ -63,10 +63,10 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "@japa/core": "^8.0.0",
+    "@japa/core": "^8.0.1",
     "@japa/errors-printer": "^3.0.0",
     "@poppinss/colors": "^4.1.0-4",
-    "@poppinss/hooks": "^7.1.1-5",
+    "@poppinss/hooks": "^7.1.1-6",
     "fast-glob": "^3.3.1",
     "find-cache-dir": "^5.0.0",
     "getopts": "^2.3.0",
