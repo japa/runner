@@ -59,17 +59,24 @@ export const retryPlugin: PluginFn = async function retry({ config, cliArgs }) {
     return
   }
 
-  config.teardown.push(async (runner) => {
-    const summary = runner.getSummary()
-    await cacheFailedTests(summary.failedTestsTitles)
+  config.setup.push((runner) => {
+    return async () => {
+      const summary = runner.getSummary()
+      await cacheFailedTests(summary.failedTestsTitles)
+    }
   })
 
   if (cliArgs.failed) {
-    const { tests } = await getFailedTests()
-    if (!tests || !tests.length) {
-      console.log(colors.bgYellow().black(' No failing tests found. Running all the tests '))
-      return
+    try {
+      const { tests } = await getFailedTests()
+      if (!tests || !tests.length) {
+        console.log(colors.bgYellow().black(' No failing tests found. Running all the tests '))
+        return
+      }
+      config.filters.tests = tests
+    } catch (error) {
+      console.log(colors.bgRed().black(' Unable to read failed tests. Running all the tests '))
+      console.log(colors.red(error))
     }
-    config.filters.tests = tests
   }
 }
