@@ -78,6 +78,7 @@ export class RunnerFactory {
   ): Promise<RunnerSummary> {
     return this.runSuites((emitter, refiner, file) => {
       const defaultSuite = new Suite('default', emitter, refiner)
+
       createTest(title, emitter, refiner, {
         suite: defaultSuite,
         file: file,

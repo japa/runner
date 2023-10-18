@@ -21,7 +21,12 @@ export const syncReporter: ReporterContract = {
     emitter.on('runner:end', function () {
       const summary = r.getSummary()
       if (summary.hasError) {
-        throw summary.failureTree[0].children[0].errors[0].error
+        if (summary.failureTree[0].errors.length) {
+          throw summary.failureTree[0].errors[0].error
+        }
+        if (summary.failureTree[0].children[0].errors.length) {
+          throw summary.failureTree[0].children[0].errors[0].error
+        }
       }
     })
   },
