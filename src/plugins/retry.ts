@@ -59,7 +59,7 @@ export const retryPlugin: PluginFn = async function retry({ config, cliArgs }) {
     return
   }
 
-  config.teardown.push((runner) => {
+  config.teardown.push(async (runner) => {
     const summary = runner.getSummary()
     await cacheFailedTests(summary.failedTestsTitles)
   })
