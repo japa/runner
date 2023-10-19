@@ -59,11 +59,9 @@ export const retryPlugin: PluginFn = async function retry({ config, cliArgs }) {
     return
   }
 
-  config.setup.push((runner) => {
-    return async () => {
-      const summary = runner.getSummary()
-      await cacheFailedTests(summary.failedTestsTitles)
-    }
+  config.teardown.push((runner) => {
+    const summary = runner.getSummary()
+    await cacheFailedTests(summary.failedTestsTitles)
   })
 
   if (cliArgs.failed) {
