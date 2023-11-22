@@ -143,7 +143,7 @@ export class ConfigManager {
 
     const baseConfig: NormalizedBaseConfig = {
       cwd: this.#config.cwd ?? process.cwd(),
-      exclude: this.#config.exclude || [],
+      exclude: this.#config.exclude || ['node_modules/**', '.git/**', 'coverage/**'],
       filters: Object.assign({}, this.#config.filters ?? {}, cliFilters),
       importer: this.#config.importer ?? DEFAULTS.importer,
       refiner: this.#config.refiner ?? new Refiner(),
