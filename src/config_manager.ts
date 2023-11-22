@@ -51,8 +51,12 @@ export class ConfigManager {
    * Processes a CLI argument and converts it to an
    * array of strings
    */
-  #processAsArray(value: string | string[]): string[] {
-    return Array.isArray(value) ? value : value.split(',').map((item: string) => item.trim())
+  #processAsArray(value: string | string[], splitByComma: boolean): string[] {
+    return Array.isArray(value)
+      ? value
+      : splitByComma
+        ? value.split(',').map((item: string) => item.trim())
+        : [value]
   }
 
   /**
@@ -63,19 +67,19 @@ export class ConfigManager {
     const filters: Filters = {}
 
     if (this.#cliArgs.tags) {
-      filters.tags = this.#processAsArray(this.#cliArgs.tags)
+      filters.tags = this.#processAsArray(this.#cliArgs.tags, true)
     }
     if (this.#cliArgs.tests) {
-      filters.tests = this.#processAsArray(this.#cliArgs.tests)
+      filters.tests = this.#processAsArray(this.#cliArgs.tests, false)
     }
     if (this.#cliArgs.files) {
-      filters.files = this.#processAsArray(this.#cliArgs.files)
+      filters.files = this.#processAsArray(this.#cliArgs.files, true)
     }
     if (this.#cliArgs.groups) {
-      filters.groups = this.#processAsArray(this.#cliArgs.groups)
+      filters.groups = this.#processAsArray(this.#cliArgs.groups, false)
     }
     if (this.#cliArgs._ && this.#cliArgs._.length) {
-      filters.suites = this.#processAsArray(this.#cliArgs._)
+      filters.suites = this.#processAsArray(this.#cliArgs._, true)
     }
 
     return filters
@@ -120,7 +124,7 @@ export class ConfigManager {
    */
   #getCLIReporters(): string[] | undefined {
     if (this.#cliArgs.reporters) {
-      return this.#processAsArray(this.#cliArgs.reporters)
+      return this.#processAsArray(this.#cliArgs.reporters, true)
     }
   }
 
