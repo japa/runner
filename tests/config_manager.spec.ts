@@ -29,7 +29,7 @@ const USER_DEFINED_CONFIG_DATASET: [Config, Config][] = [
       cwd: process.cwd(),
       files: [],
       filters: {},
-      exclude: [],
+      exclude: ['node_modules/**', '.git/**', 'coverage/**'],
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
@@ -51,7 +51,7 @@ const USER_DEFINED_CONFIG_DATASET: [Config, Config][] = [
       cwd: process.cwd(),
       files: ['tests/unit/**.spec.ts'],
       filters: {},
-      exclude: [],
+      exclude: ['node_modules/**', '.git/**', 'coverage/**'],
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
@@ -74,7 +74,7 @@ const USER_DEFINED_CONFIG_DATASET: [Config, Config][] = [
       cwd: process.cwd(),
       files: ['tests/unit/**.spec.ts'],
       filters: {},
-      exclude: [],
+      exclude: ['node_modules/**', '.git/**', 'coverage/**'],
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
@@ -98,7 +98,7 @@ const USER_DEFINED_CONFIG_DATASET: [Config, Config][] = [
       cwd: process.cwd(),
       files: ['tests/unit/**.spec.ts'],
       filters: {},
-      exclude: [],
+      exclude: ['node_modules/**', '.git/**', 'coverage/**'],
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
@@ -122,7 +122,7 @@ const USER_DEFINED_CONFIG_DATASET: [Config, Config][] = [
       cwd: process.cwd(),
       files: ['tests/unit/**.spec.ts'],
       filters: {},
-      exclude: [],
+      exclude: ['node_modules/**', '.git/**', 'coverage/**'],
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
@@ -153,7 +153,7 @@ const USER_DEFINED_CONFIG_DATASET: [Config, Config][] = [
         tags: ['@integration', '~@slow'],
         tests: ['users list'],
       },
-      exclude: [],
+      exclude: ['node_modules/**', '.git/**', 'coverage/**'],
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
@@ -185,7 +185,7 @@ const USER_DEFINED_CONFIG_DATASET: [Config, Config][] = [
         tags: ['@integration', '~@slow'],
         tests: ['users list'],
       },
-      exclude: [],
+      exclude: ['node_modules/**', '.git/**', 'coverage/**'],
       forceExit: true,
       refiner: new Refiner(),
       reporters: {
@@ -211,7 +211,7 @@ const USER_DEFINED_CONFIG_DATASET: [Config, Config][] = [
       cwd: process.cwd(),
       files: [],
       filters: {},
-      exclude: [],
+      exclude: ['node_modules/**', '.git/**', 'coverage/**'],
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
@@ -236,7 +236,7 @@ const USER_DEFINED_CONFIG_DATASET: [Config, Config][] = [
       cwd: process.cwd(),
       files: [],
       filters: {},
-      exclude: [],
+      exclude: ['node_modules/**', '.git/**', 'coverage/**'],
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
@@ -262,7 +262,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       cwd: process.cwd(),
       files: [],
       filters: {},
-      exclude: [],
+      exclude: ['node_modules/**', '.git/**', 'coverage/**'],
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
@@ -287,7 +287,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       filters: {
         tags: ['@slow'],
       },
-      exclude: [],
+      exclude: ['node_modules/**', '.git/**', 'coverage/**'],
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
@@ -311,7 +311,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       cwd: process.cwd(),
       files: ['tests/unit/**.spec.ts'],
       filters: {},
-      exclude: [],
+      exclude: ['node_modules/**', '.git/**', 'coverage/**'],
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
@@ -349,7 +349,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
         },
       ],
       filters: {},
-      exclude: [],
+      exclude: ['node_modules/**', '.git/**', 'coverage/**'],
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
@@ -374,7 +374,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       cwd: process.cwd(),
       files: ['tests/unit/**.spec.ts'],
       filters: {},
-      exclude: [],
+      exclude: ['node_modules/**', '.git/**', 'coverage/**'],
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
@@ -412,7 +412,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
         },
       ],
       filters: {},
-      exclude: [],
+      exclude: ['node_modules/**', '.git/**', 'coverage/**'],
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
@@ -437,7 +437,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       cwd: process.cwd(),
       files: ['tests/unit/**.spec.ts'],
       filters: {},
-      exclude: [],
+      exclude: ['node_modules/**', '.git/**', 'coverage/**'],
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
@@ -469,7 +469,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
         tags: ['@slow'],
         tests: ['users list'],
       },
-      exclude: [],
+      exclude: ['node_modules/**', '.git/**', 'coverage/**'],
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
@@ -502,7 +502,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
         tags: ['@integration', '~@slow'],
         tests: ['users'],
       },
-      exclude: [],
+      exclude: ['node_modules/**', '.git/**', 'coverage/**'],
       forceExit: true,
       refiner: new Refiner(),
       reporters: {
@@ -535,7 +535,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
         tags: ['@integration', '~@slow'],
         groups: ['customers'],
       },
-      exclude: [],
+      exclude: ['node_modules/**', '.git/**', 'coverage/**'],
       forceExit: true,
       refiner: new Refiner(),
       reporters: {
@@ -568,7 +568,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
         tags: ['@integration', '~@slow'],
         files: ['*'],
       },
-      exclude: [],
+      exclude: ['node_modules/**', '.git/**', 'coverage/**'],
       forceExit: true,
       refiner: new Refiner(),
       reporters: {
@@ -603,7 +603,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
         tests: ['users list'],
         suites: ['unit', 'functional'],
       },
-      exclude: [],
+      exclude: ['node_modules/**', '.git/**', 'coverage/**'],
       forceExit: true,
       refiner: new Refiner(),
       reporters: {
@@ -630,7 +630,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       cwd: process.cwd(),
       files: [],
       filters: {},
-      exclude: [],
+      exclude: ['node_modules/**', '.git/**', 'coverage/**'],
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
@@ -657,7 +657,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       cwd: process.cwd(),
       files: [],
       filters: {},
-      exclude: [],
+      exclude: ['node_modules/**', '.git/**', 'coverage/**'],
       forceExit: true,
       refiner: new Refiner(),
       reporters: {
@@ -684,7 +684,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       cwd: process.cwd(),
       files: [],
       filters: {},
-      exclude: [],
+      exclude: ['node_modules/**', '.git/**', 'coverage/**'],
       forceExit: true,
       refiner: new Refiner(),
       reporters: {
@@ -711,7 +711,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       cwd: process.cwd(),
       files: [],
       filters: {},
-      exclude: [],
+      exclude: ['node_modules/**', '.git/**', 'coverage/**'],
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
