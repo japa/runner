@@ -42,7 +42,7 @@ export class Planner {
    * files glob and apply the files filter
    */
   async #collectFiles(files: TestFiles) {
-    let filesURLs = await this.#fileManager.getFiles(this.#config.cwd, files)
+    let filesURLs = await this.#fileManager.getFiles(this.#config.cwd, files, this.#config.exclude)
     if (this.#config.filters.files && this.#config.filters.files.length) {
       filesURLs = this.#fileManager.grep(filesURLs, this.#config.filters.files)
     }

@@ -143,6 +143,15 @@ export type BaseConfig = {
    * Global hooks to execute on teardown
    */
   teardown?: TeardownHookHandler[]
+
+  /**
+   * An array of directories to exclude when searching
+   * for test files.
+   *
+   * For example, if you search for test files inside the entire
+   * project, you might want to exclude "node_modules"
+   */
+  exclude?: string[]
 }
 
 /**

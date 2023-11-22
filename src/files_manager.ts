@@ -27,12 +27,13 @@ export class FilesManager {
    * Returns a collection of files from the user defined
    * glob or the implementation function
    */
-  async getFiles(cwd: string, files: TestFiles): Promise<URL[]> {
+  async getFiles(cwd: string, files: TestFiles, excludes: string[]): Promise<URL[]> {
     if (Array.isArray(files) || typeof files === 'string') {
       const testFiles = await fastGlob(files, {
         absolute: true,
         onlyFiles: true,
         cwd: cwd,
+        ignore: excludes,
       })
       return testFiles.map((file) => pathToFileURL(file))
     }

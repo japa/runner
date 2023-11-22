@@ -29,6 +29,7 @@ const USER_DEFINED_CONFIG_DATASET: [Config, Config][] = [
       cwd: process.cwd(),
       files: [],
       filters: {},
+      exclude: [],
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
@@ -50,6 +51,7 @@ const USER_DEFINED_CONFIG_DATASET: [Config, Config][] = [
       cwd: process.cwd(),
       files: ['tests/unit/**.spec.ts'],
       filters: {},
+      exclude: [],
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
@@ -72,6 +74,7 @@ const USER_DEFINED_CONFIG_DATASET: [Config, Config][] = [
       cwd: process.cwd(),
       files: ['tests/unit/**.spec.ts'],
       filters: {},
+      exclude: [],
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
@@ -95,6 +98,7 @@ const USER_DEFINED_CONFIG_DATASET: [Config, Config][] = [
       cwd: process.cwd(),
       files: ['tests/unit/**.spec.ts'],
       filters: {},
+      exclude: [],
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
@@ -118,6 +122,7 @@ const USER_DEFINED_CONFIG_DATASET: [Config, Config][] = [
       cwd: process.cwd(),
       files: ['tests/unit/**.spec.ts'],
       filters: {},
+      exclude: [],
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
@@ -148,6 +153,7 @@ const USER_DEFINED_CONFIG_DATASET: [Config, Config][] = [
         tags: ['@integration', '~@slow'],
         tests: ['users list'],
       },
+      exclude: [],
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
@@ -179,6 +185,7 @@ const USER_DEFINED_CONFIG_DATASET: [Config, Config][] = [
         tags: ['@integration', '~@slow'],
         tests: ['users list'],
       },
+      exclude: [],
       forceExit: true,
       refiner: new Refiner(),
       reporters: {
@@ -204,6 +211,7 @@ const USER_DEFINED_CONFIG_DATASET: [Config, Config][] = [
       cwd: process.cwd(),
       files: [],
       filters: {},
+      exclude: [],
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
@@ -228,6 +236,7 @@ const USER_DEFINED_CONFIG_DATASET: [Config, Config][] = [
       cwd: process.cwd(),
       files: [],
       filters: {},
+      exclude: [],
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
@@ -253,6 +262,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       cwd: process.cwd(),
       files: [],
       filters: {},
+      exclude: [],
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
@@ -277,6 +287,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       filters: {
         tags: ['@slow'],
       },
+      exclude: [],
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
@@ -300,6 +311,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       cwd: process.cwd(),
       files: ['tests/unit/**.spec.ts'],
       filters: {},
+      exclude: [],
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
@@ -337,6 +349,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
         },
       ],
       filters: {},
+      exclude: [],
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
@@ -361,6 +374,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       cwd: process.cwd(),
       files: ['tests/unit/**.spec.ts'],
       filters: {},
+      exclude: [],
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
@@ -398,6 +412,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
         },
       ],
       filters: {},
+      exclude: [],
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
@@ -422,6 +437,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       cwd: process.cwd(),
       files: ['tests/unit/**.spec.ts'],
       filters: {},
+      exclude: [],
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
@@ -453,6 +469,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
         tags: ['@slow'],
         tests: ['users list'],
       },
+      exclude: [],
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
@@ -485,6 +502,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
         tags: ['@integration', '~@slow'],
         tests: ['users'],
       },
+      exclude: [],
       forceExit: true,
       refiner: new Refiner(),
       reporters: {
@@ -517,6 +535,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
         tags: ['@integration', '~@slow'],
         groups: ['customers'],
       },
+      exclude: [],
       forceExit: true,
       refiner: new Refiner(),
       reporters: {
@@ -549,6 +568,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
         tags: ['@integration', '~@slow'],
         files: ['*'],
       },
+      exclude: [],
       forceExit: true,
       refiner: new Refiner(),
       reporters: {
@@ -583,6 +603,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
         tests: ['users list'],
         suites: ['unit', 'functional'],
       },
+      exclude: [],
       forceExit: true,
       refiner: new Refiner(),
       reporters: {
@@ -609,6 +630,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       cwd: process.cwd(),
       files: [],
       filters: {},
+      exclude: [],
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
@@ -635,6 +657,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       cwd: process.cwd(),
       files: [],
       filters: {},
+      exclude: [],
       forceExit: true,
       refiner: new Refiner(),
       reporters: {
@@ -661,6 +684,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       cwd: process.cwd(),
       files: [],
       filters: {},
+      exclude: [],
       forceExit: true,
       refiner: new Refiner(),
       reporters: {
@@ -687,6 +711,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       cwd: process.cwd(),
       files: [],
       filters: {},
+      exclude: [],
       forceExit: false,
       refiner: new Refiner(),
       reporters: {

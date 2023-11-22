@@ -102,7 +102,7 @@ test.describe('Files manager | grep', () => {
 test.describe('Files manager | getFiles', () => {
   test('get files for the glob pattern', async () => {
     const cwd = new URL('../', import.meta.url)
-    const files = await new FilesManager().getFiles(fileURLToPath(cwd), ['tests/**/*.spec.ts'])
+    const files = await new FilesManager().getFiles(fileURLToPath(cwd), ['tests/**/*.spec.ts'], [])
 
     await wrapAssertions(() => {
       assert.deepEqual(files, [
@@ -119,10 +119,11 @@ test.describe('Files manager | getFiles', () => {
 
   test('get files from multiple glob patterns', async () => {
     const cwd = new URL('../', import.meta.url)
-    const files = await new FilesManager().getFiles(fileURLToPath(cwd), [
-      'tests/**/*.spec.ts',
-      'modules/**/*.ts',
-    ])
+    const files = await new FilesManager().getFiles(
+      fileURLToPath(cwd),
+      ['tests/**/*.spec.ts', 'modules/**/*.ts'],
+      []
+    )
 
     await wrapAssertions(() => {
       assert.deepEqual(files, [
@@ -140,16 +141,41 @@ test.describe('Files manager | getFiles', () => {
     })
   })
 
-  test('get files from a custom implementation', async () => {
+  test('ignore files using the exclude pattern', async () => {
     const cwd = new URL('../', import.meta.url)
-    const files = await new FilesManager().getFiles(fileURLToPath(cwd), () => {
-      return [
+    const files = await new FilesManager().getFiles(
+      fileURLToPath(cwd),
+      ['tests/**/*.spec.ts', 'modules/**/*.ts'],
+      ['modules/**']
+    )
+
+    await wrapAssertions(() => {
+      assert.deepEqual(files, [
+        new URL('tests/base_reporter.spec.ts', cwd),
         new URL('tests/cli_parser.spec.ts', cwd),
         new URL('tests/config_manager.spec.ts', cwd),
+        new URL('tests/core.spec.ts', cwd),
         new URL('tests/files_manager.spec.ts', cwd),
-        new URL('modules/core/main.ts', cwd),
-      ]
+        new URL('tests/planner.spec.ts', cwd),
+        new URL('tests/runner.spec.ts', cwd),
+      ])
     })
+  })
+
+  test('get files from a custom implementation', async () => {
+    const cwd = new URL('../', import.meta.url)
+    const files = await new FilesManager().getFiles(
+      fileURLToPath(cwd),
+      () => {
+        return [
+          new URL('tests/cli_parser.spec.ts', cwd),
+          new URL('tests/config_manager.spec.ts', cwd),
+          new URL('tests/files_manager.spec.ts', cwd),
+          new URL('modules/core/main.ts', cwd),
+        ]
+      },
+      []
+    )
 
     await wrapAssertions(() => {
       assert.deepEqual(files, [
