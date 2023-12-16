@@ -51,7 +51,7 @@ export class SpecReporter extends BaseReporter {
    * Returns the test message
    */
   #getTestMessage(payload: TestEndNode) {
-    const message = typeof payload.title === 'string' ? payload.title : payload.title.expanded
+    const message = payload.title.expanded
 
     if (payload.isTodo) {
       return colors.blue(message)
