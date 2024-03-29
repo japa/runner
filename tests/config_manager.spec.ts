@@ -10,7 +10,7 @@
 import { test } from 'node:test'
 import chaiSubset from 'chai-subset'
 import { Refiner } from '@japa/core'
-import { assert, default as chai } from 'chai'
+import { assert, use } from 'chai'
 
 import { CliParser } from '../src/cli_parser.js'
 import type { CLIArgs, Config } from '../src/types.js'
@@ -18,7 +18,7 @@ import { wrapAssertions } from '../tests_helpers/main.js'
 import { ndjson, spec, dot } from '../src/reporters/main.js'
 import { ConfigManager, NOOP } from '../src/config_manager.js'
 
-chai.use(chaiSubset)
+use(chaiSubset)
 
 const USER_DEFINED_CONFIG_DATASET: [Config, Config][] = [
   [

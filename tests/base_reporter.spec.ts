@@ -9,9 +9,9 @@
 
 import { test } from 'node:test'
 import chaiSubset from 'chai-subset'
-import { assert, default as chai } from 'chai'
+import { assert, use } from 'chai'
 
-chai.use(chaiSubset)
+use(chaiSubset)
 
 import { wrapAssertions } from '../tests_helpers/main.js'
 import {
