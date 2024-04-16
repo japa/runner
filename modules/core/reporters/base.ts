@@ -8,7 +8,7 @@
  */
 
 import ms from 'ms'
-import colors from '@poppinss/colors'
+import { colors } from '../../../src/helpers.js'
 import { ErrorsPrinter } from '@japa/errors-printer'
 
 import type {
@@ -24,8 +24,6 @@ import type {
   BaseReporterOptions,
 } from '../types.js'
 import { Emitter, Runner } from '../main.js'
-
-const ansi = colors.ansi()
 
 /**
  * Base reporter to build custom reporters on top of
@@ -63,30 +61,30 @@ export abstract class BaseReporter {
      * Set value for tests row
      */
     if (summary.aggregates.passed) {
-      tests.push(ansi.green(`${summary.aggregates.passed} passed`))
+      tests.push(colors.green(`${summary.aggregates.passed} passed`))
     }
     if (summary.aggregates.failed) {
-      tests.push(ansi.red(`${summary.aggregates.failed} failed`))
+      tests.push(colors.red(`${summary.aggregates.failed} failed`))
     }
     if (summary.aggregates.todo) {
-      tests.push(ansi.cyan(`${summary.aggregates.todo} todo`))
+      tests.push(colors.cyan(`${summary.aggregates.todo} todo`))
     }
     if (summary.aggregates.skipped) {
-      tests.push(ansi.yellow(`${summary.aggregates.skipped} skipped`))
+      tests.push(colors.yellow(`${summary.aggregates.skipped} skipped`))
     }
     if (summary.aggregates.regression) {
-      tests.push(ansi.magenta(`${summary.aggregates.regression} regression`))
+      tests.push(colors.magenta(`${summary.aggregates.regression} regression`))
     }
 
     this.runner!.summaryBuilder.use(() => {
       return [
         {
-          key: ansi.dim('Tests'),
-          value: `${tests.join(', ')} ${ansi.dim(`(${summary.aggregates.total})`)}`,
+          key: colors.dim('Tests'),
+          value: `${tests.join(', ')} ${colors.dim(`(${summary.aggregates.total})`)}`,
         },
         {
-          key: ansi.dim('Time'),
-          value: ansi.dim(ms(summary.duration)),
+          key: colors.dim('Time'),
+          value: colors.dim(ms(summary.duration)),
         },
       ]
     })
@@ -171,14 +169,14 @@ export abstract class BaseReporter {
 
     console.log('')
     if (summary.aggregates.total === 0 && !summary.hasError) {
-      console.log(ansi.bgYellow().black(' NO TESTS EXECUTED '))
+      console.log(colors.bgYellow().black(' NO TESTS EXECUTED '))
       return
     }
 
     if (summary.hasError) {
-      console.log(ansi.bgRed().black(' FAILED '))
+      console.log(colors.bgRed().black(' FAILED '))
     } else {
-      console.log(ansi.bgGreen().black(' PASSED '))
+      console.log(colors.bgGreen().black(' PASSED '))
     }
     console.log('')
     this.#printAggregates(summary)

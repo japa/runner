@@ -9,8 +9,8 @@
 
 import { assert } from 'chai'
 import { test } from 'node:test'
-import colors from '@poppinss/colors'
 
+import { colors } from '../src/helpers.js'
 import type { CLIArgs } from '../src/types.js'
 import { CliParser } from '../src/cli_parser.js'
 import { wrapAssertions } from '../tests_helpers/main.js'
@@ -230,57 +230,56 @@ test.describe('CLI parser', () => {
 
   if (!process.env.CI) {
     test('display help', async () => {
-      const ansi = colors.ansi()
       console.log(new CliParser().getHelp())
       await wrapAssertions(() => {
         assert.deepEqual(new CliParser().getHelp().split('\n'), [
           '',
-          ansi.yellow('@japa/runner v2.3.0'),
+          colors.yellow('@japa/runner v2.3.0'),
           '',
-          `${ansi.green('--tests')}                     ${ansi.dim(
+          `${colors.green('--tests')}                     ${colors.dim(
             'Filter tests by the test title'
           )}`,
-          `${ansi.green('--groups')}                    ${ansi.dim(
+          `${colors.green('--groups')}                    ${colors.dim(
             'Filter tests by the group title'
           )}`,
-          `${ansi.green('--tags')}                      ${ansi.dim('Filter tests by tags')}`,
-          `${ansi.green('--files')}                     ${ansi.dim(
+          `${colors.green('--tags')}                      ${colors.dim('Filter tests by tags')}`,
+          `${colors.green('--files')}                     ${colors.dim(
             'Filter tests by the file name'
           )}`,
-          `${ansi.green('--force-exit')}                ${ansi.dim('Forcefully exit the process')}`,
-          `${ansi.green('--timeout')}                   ${ansi.dim(
+          `${colors.green('--force-exit')}                ${colors.dim('Forcefully exit the process')}`,
+          `${colors.green('--timeout')}                   ${colors.dim(
             'Define default timeout for all tests'
           )}`,
-          `${ansi.green('--retries')}                   ${ansi.dim(
+          `${colors.green('--retries')}                   ${colors.dim(
             'Define default retries for all tests'
           )}`,
-          `${ansi.green('--reporters')}                 ${ansi.dim(
+          `${colors.green('--reporters')}                 ${colors.dim(
             'Activate one or more test reporters'
           )}`,
-          `${ansi.green('--failed')}                    ${ansi.dim(
+          `${colors.green('--failed')}                    ${colors.dim(
             'Run tests failed during the last run'
           )}`,
-          `${ansi.green('-h, --help')}                  ${ansi.dim('View help')}`,
+          `${colors.green('-h, --help')}                  ${colors.dim('View help')}`,
           ``,
-          `${ansi.yellow('Examples:')}`,
-          `${ansi.dim('node bin/test.js --tags="@github"')}`,
-          `${ansi.dim('node bin/test.js --tags="~@github"')}`,
-          `${ansi.dim('node bin/test.js --tags="@github,@slow,@integration" --match-all')}`,
-          `${ansi.dim('node bin/test.js --force-exit')}`,
-          `${ansi.dim('node bin/test.js --files="user"')}`,
-          `${ansi.dim('node bin/test.js --files="functional/user"')}`,
-          `${ansi.dim('node bin/test.js --files="unit/user"')}`,
+          `${colors.yellow('Examples:')}`,
+          `${colors.dim('node bin/test.js --tags="@github"')}`,
+          `${colors.dim('node bin/test.js --tags="~@github"')}`,
+          `${colors.dim('node bin/test.js --tags="@github,@slow,@integration" --match-all')}`,
+          `${colors.dim('node bin/test.js --force-exit')}`,
+          `${colors.dim('node bin/test.js --files="user"')}`,
+          `${colors.dim('node bin/test.js --files="functional/user"')}`,
+          `${colors.dim('node bin/test.js --files="unit/user"')}`,
           ``,
-          `${ansi.yellow('Notes:')}`,
+          `${colors.yellow('Notes:')}`,
           `- When groups and tests filters are applied together. We will first filter the`,
           `  tests by group title and then apply the tests title filter.`,
-          `- The timeout defined on test object takes precedence over the ${ansi.green(
+          `- The timeout defined on test object takes precedence over the ${colors.green(
             '--timeout'
           )} flag.`,
-          `- The retries defined on test object takes precedence over the ${ansi.green(
+          `- The retries defined on test object takes precedence over the ${colors.green(
             '--retries'
           )} flag.`,
-          `- The ${ansi.green(
+          `- The ${colors.green(
             '--files'
           )} flag checks for the file names ending with the filter substring.`,
           ``,
