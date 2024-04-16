@@ -8,9 +8,10 @@
  */
 
 import useColors from '@poppinss/colors'
+import supportsColor from 'supports-color'
 import { Colors } from '@poppinss/colors/types'
 
-export const colors: Colors = useColors.ansi()
+export const colors: Colors = supportsColor.stdout ? useColors.ansi() : useColors.silent()
 
 /**
  * A collection of platform specific icons
