@@ -1,6 +1,6 @@
 {
   "name": "@japa/runner",
-  "description": "Runner for Japa testing framework",
+  "description": "A simple yet powerful testing framework for Node.js",
   "version": "3.1.4",
   "engines": {
     "node": ">=18.16.0"
@@ -23,61 +23,54 @@
   "scripts": {
     "pretest": "npm run lint",
     "test": "cross-env NODE_DEBUG=japa:runner c8 npm run quick:test",
-    "quick:test": "glob -c \"node --enable-source-maps --loader=ts-node/esm --test-reporter=spec --test\" \"tests/*.spec.ts\"",
-    "clean": "del-cli build",
+    "lint": "eslint .",
+    "format": "prettier --write .",
     "typecheck": "tsc --noEmit",
+    "clean": "del-cli build",
     "precompile": "npm run lint && npm run clean",
     "compile": "tsup-node && tsc --emitDeclarationOnly --declaration",
     "build": "npm run compile",
-    "release": "np",
-    "prepublishOnly": "npm run build",
-    "lint": "eslint . --ext=.ts",
-    "format": "prettier --write .",
     "version": "npm run build",
-    "sync-labels": "github-label-sync --labels .github/labels.json japa/runner"
+    "prepublishOnly": "npm run build",
+    "release": "release-it",
+    "quick:test": "glob -c \"node --enable-source-maps --loader=ts-node/esm --test-reporter=spec --test\" \"tests/*.spec.ts\""
   },
   "devDependencies": {
-    "@adonisjs/eslint-config": "^1.3.0",
-    "@adonisjs/prettier-config": "^1.3.0",
-    "@adonisjs/tsconfig": "^1.3.0",
-    "@commitlint/cli": "^19.2.1",
-    "@commitlint/config-conventional": "^19.1.0",
-    "@swc/core": "^1.4.11",
-    "@types/chai": "^4.3.14",
+    "@adonisjs/eslint-config": "^2.0.0-beta.7",
+    "@adonisjs/prettier-config": "^1.4.0",
+    "@adonisjs/tsconfig": "^1.4.0",
+    "@release-it/conventional-changelog": "^9.0.4",
+    "@swc/core": "^1.10.4",
+    "@types/chai": "^5.0.1",
     "@types/chai-subset": "^1.3.5",
-    "@types/find-cache-dir": "^5.0.0",
+    "@types/find-cache-dir": "^5.0.2",
     "@types/ms": "^0.7.34",
-    "@types/node": "^20.11.30",
-    "c8": "^9.1.0",
-    "chai": "^5.1.0",
+    "@types/node": "^22.10.5",
+    "c8": "^10.1.3",
+    "chai": "^5.1.2",
     "chai-subset": "^1.6.0",
     "cross-env": "^7.0.3",
-    "del-cli": "^5.1.0",
-    "eslint": "^8.57.0",
-    "github-label-sync": "^2.3.1",
-    "glob": "^10.3.12",
-    "husky": "^9.0.11",
-    "np": "^10.0.2",
-    "prettier": "^3.2.5",
-    "ts-node": "^10.9.2",
-    "tsup": "^8.0.2",
-    "typescript": "^5.4.3"
+    "del-cli": "^6.0.0",
+    "eslint": "^9.17.0",
+    "glob": "^11.0.0",
+    "prettier": "^3.4.2",
+    "release-it": "^17.11.0",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2"
   },
   "dependencies": {
-    "@japa/core": "^9.0.1",
-    "@japa/errors-printer": "^3.0.4",
-    "@poppinss/colors": "^4.1.3",
-    "@poppinss/hooks": "^7.2.3",
+    "@japa/core": "^10.0.1",
+    "@japa/errors-printer": "^4.0.0",
+    "@poppinss/colors": "^4.1.4",
+    "@poppinss/hooks": "^7.2.5",
     "fast-glob": "^3.3.2",
     "find-cache-dir": "^5.0.0",
     "getopts": "^2.3.0",
     "ms": "^2.1.3",
     "serialize-error": "^11.0.3",
     "slash": "^5.1.0",
-    "supports-color": "^9.4.0"
+    "supports-color": "^10.0.0"
   },
-  "author": "virk,japa",
-  "license": "MIT",
   "homepage": "https://github.com/japa/runner#readme",
   "repository": {
     "type": "git",
@@ -91,40 +84,11 @@
     "tests",
     "test-runner"
   ],
-  "directories": {
-    "test": "test"
-  },
-  "eslintConfig": {
-    "extends": "@adonisjs/eslint-config/package"
-  },
-  "prettier": "@adonisjs/prettier-config",
-  "commitlint": {
-    "extends": [
-      "@commitlint/config-conventional"
-    ]
-  },
+  "author": "Harminder Virk <virk@adonisjs.com>",
+  "license": "MIT",
   "publishConfig": {
     "access": "public",
-    "tag": "latest"
-  },
-  "np": {
-    "message": "chore(release): %s",
-    "tag": "latest",
-    "branch": "main",
-    "anyBranch": false
-  },
-  "c8": {
-    "reporter": [
-      "text",
-      "html"
-    ],
-    "exclude": [
-      "tests/**",
-      "tests_helpers/**",
-      "factories/**",
-      "modules/core/**",
-      "src/reporters/**"
-    ]
+    "provenance": true
   },
   "tsup": {
     "entry": [
@@ -140,5 +104,43 @@
     "dts": false,
     "sourcemap": true,
     "target": "esnext"
-  }
+  },
+  "release-it": {
+    "git": {
+      "requireCleanWorkingDir": true,
+      "requireUpstream": true,
+      "commitMessage": "chore(release): ${version}",
+      "tagAnnotation": "v${version}",
+      "push": true,
+      "tagName": "v${version}"
+    },
+    "github": {
+      "release": true
+    },
+    "npm": {
+      "publish": true,
+      "skipChecks": true
+    },
+    "plugins": {
+      "@release-it/conventional-changelog": {
+        "preset": {
+          "name": "angular"
+        }
+      }
+    }
+  },
+  "c8": {
+    "reporter": [
+      "text",
+      "html"
+    ],
+    "exclude": [
+      "tests/**",
+      "tests_helpers/**",
+      "factories/**",
+      "modules/core/**",
+      "src/reporters/**"
+    ]
+  },
+  "prettier": "@adonisjs/prettier-config"
 }
