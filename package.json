@@ -33,7 +33,7 @@
     "version": "npm run build",
     "prepublishOnly": "npm run build",
     "release": "release-it",
-    "quick:test": "glob -c \"node --enable-source-maps --loader=ts-node/esm --test-reporter=spec --test\" \"tests/*.spec.ts\""
+    "quick:test": "glob -c \"node --import=ts-node-maintained/register/esm --enable-source-maps --test-reporter=spec --test\" \"tests/*.spec.ts\""
   },
   "devDependencies": {
     "@adonisjs/eslint-config": "^2.0.0-beta.7",
@@ -55,6 +55,7 @@
     "glob": "^11.0.0",
     "prettier": "^3.4.2",
     "release-it": "^17.11.0",
+    "ts-node-maintained": "^10.9.4",
     "tsup": "^8.3.5",
     "typescript": "^5.7.2"
   },
