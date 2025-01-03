@@ -1,9 +1,13 @@
 # @japa/runner
-> An API first tests runner for Node.js
+> A simple yet powerful testing framework for Node.js
 
 [![github-actions-image]][github-actions-url] [![npm-image]][npm-url] [![license-image]][license-url] [![typescript-image]][typescript-url]
 
-Japa is an API first testing framework. It focuses only on testing Node.js (backend) applications, thus resulting in a fast, small, and a simple tests runner.
+Japa comes with everything you need to test your backend applications. Be it writing JSON API tests using an Open API schema or writing browser tests using Playwright.
+
+Unlike other testing frameworks born out of the frontend ecosystem, Japa focuses only on testing backend applications and libraries. Therefore, Japa is **simpler**, **faster**, and **bloatware free**.
+
+Japa
 
 #### 💁 Please visit https://japa.dev for documentation
 
