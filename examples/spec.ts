@@ -1,5 +1,5 @@
 import { spec } from '../src/reporters/main.js'
-import { createDiverseTests, runner } from '../factories/main.js'
+import { createDummyTests, runner } from '../factories/main.js'
 
 await runner()
   .configure({
@@ -9,4 +9,4 @@ await runner()
       activated: ['spec'],
     },
   })
-  .runSuites(createDiverseTests)
+  .runSuites(createDummyTests)
