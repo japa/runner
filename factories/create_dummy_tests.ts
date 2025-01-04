@@ -128,7 +128,7 @@ function createFunctionalTestsSuite(emitter: Emitter, refiner: Refiner, file?: s
  * Returns an array of suites with dummy tests reproducting
  * different test behavior
  */
-export function createDiverseTests(emitter: Emitter, refiner: Refiner, file?: string): Suite[] {
+export function createDummyTests(emitter: Emitter, refiner: Refiner, file?: string): Suite[] {
   return [
     createUnitTestsSuite(emitter, refiner, file),
     createFunctionalTestsSuite(emitter, refiner, file),

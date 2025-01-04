@@ -14,7 +14,7 @@ import { RunnerFactory } from './runner.js'
  * Create an instance of the runner factory
  */
 export const runner = () => new RunnerFactory()
-export { createDiverseTests } from './create_diverse_tests.js'
+export { createDummyTests } from './create_dummy_tests.js'
 export const syncReporter: ReporterContract = {
   name: 'sync',
   handler(r, emitter) {
