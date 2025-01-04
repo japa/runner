@@ -23,9 +23,17 @@ import type { DataSetNode, TestHooksCleanupHandler } from './types.js'
 
 declare module '@japa/core' {
   interface Test<Context extends Record<any, any>, TestData extends DataSetNode = undefined> {
+    /**
+     * Assert the test throws an exception with a certain error message
+     * and optionally is an instance of a given Error class.
+     */
     throws(message: string | RegExp, errorConstructor?: any): this
   }
   interface TestContext {
+    /**
+     * Register a cleanup function that runs after the test finishes
+     * successfully or with an error.
+     */
     cleanup: (cleanupCallback: TestHooksCleanupHandler<TestContext>) => void
   }
 }
@@ -69,9 +77,8 @@ export class Test<TestData extends DataSetNode = undefined> extends BaseTest<
   static executingCallbacks = []
 
   /**
-   * Assert the test callback throws an exception when a certain
-   * error message and optionally is an instance of a given
-   * Error class.
+   * Assert the test throws an exception with a certain error message
+   * and optionally is an instance of a given Error class.
    */
   throws(message: string | RegExp, errorConstructor?: any) {
     const errorInPoint = new AssertionError({})

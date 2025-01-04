@@ -44,6 +44,13 @@ function createUnitTestsSuite(emitter: Emitter, refiner: Refiner, file?: string)
       assert.equal(2 + 2.2 + 2.1, 6)
     })
     .fails('Have to add support for floating numbers')
+
+  createTest('regression test that is passing', emitter, refiner, { group, file })
+    .run(() => {
+      assert.equal(2 + 2.2 + 2.1, 2 + 2.2 + 2.1)
+    })
+    .fails('Have to add support for floating numbers')
+
   createTest('A test with an error that is not an AssertionError', emitter, refiner, {
     group,
     file,
@@ -89,6 +96,15 @@ function createFunctionalTestsSuite(emitter: Emitter, refiner: Refiner, file?: s
     file: file,
   })
 
+  createTest('Test that times out', emitter, refiner, {
+    group,
+    file: file,
+  }).run(() => {
+    return new Promise((resolve) => {
+      setTimeout(resolve, 2100)
+    })
+  })
+
   const usersListGroup = createTestGroup('Users/list', emitter, refiner, {
     suite,
     file: file,
@@ -96,7 +112,7 @@ function createFunctionalTestsSuite(emitter: Emitter, refiner: Refiner, file?: s
   usersListGroup.setup(() => {
     throw new Error('Unable to cleanup database')
   })
-  createTest('A test that will never because the group hooks fails', emitter, refiner, {
+  createTest('A test that will never run because the group hooks fails', emitter, refiner, {
     group: usersListGroup,
   })
 

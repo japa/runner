@@ -32,16 +32,16 @@ export class SpecReporter extends BaseReporter {
       return colors.cyan(icons.info)
     }
 
-    if (payload.isFailing) {
-      return payload.hasError ? colors.magenta(icons.squareSmallFilled) : colors.red(icons.cross)
-    }
-
     if (payload.hasError) {
       return colors.red(icons.cross)
     }
 
     if (payload.isSkipped) {
       return colors.yellow(icons.bullet)
+    }
+
+    if (payload.isFailing) {
+      return colors.magenta(icons.squareSmallFilled)
     }
 
     return colors.green(icons.tick)
@@ -57,16 +57,16 @@ export class SpecReporter extends BaseReporter {
       return colors.blue(message)
     }
 
-    if (payload.isFailing) {
-      return payload.hasError ? colors.magenta(message) : colors.red(message)
-    }
-
     if (payload.hasError) {
       return colors.red(message)
     }
 
     if (payload.isSkipped) {
       return colors.yellow(message)
+    }
+
+    if (payload.isFailing) {
+      return colors.magenta(message)
     }
 
     return colors.grey(message)
@@ -84,8 +84,11 @@ export class SpecReporter extends BaseReporter {
       return
     }
 
-    if (!payload.hasError) {
-      return colors.magenta(`Test marked with ".fails()" must finish with an error`)
+    if (payload.hasError) {
+      const message =
+        payload.errors.find((error) => error.phase === 'test')?.error.message ??
+        `Test marked with ".fails()" must finish with an error`
+      return colors.magenta(message)
     }
 
     if (payload.failReason) {

@@ -8,9 +8,10 @@
  */
 
 import ms from 'ms'
-import { colors } from '../../../src/helpers.js'
 import { ErrorsPrinter } from '@japa/errors-printer'
 
+import { Emitter, Runner } from '../main.js'
+import { colors } from '../../../src/helpers.js'
 import type {
   TestEndNode,
   SuiteEndNode,
@@ -23,7 +24,6 @@ import type {
   RunnerStartNode,
   BaseReporterOptions,
 } from '../types.js'
-import { Emitter, Runner } from '../main.js'
 
 /**
  * Base reporter to build custom reporters on top of
@@ -138,7 +138,6 @@ export abstract class BaseReporter {
     }
 
     const errorPrinter = new ErrorsPrinter({
-      stackLinesCount: this.#options.stackLinesCount,
       framesMaxLimit: this.#options.framesMaxLimit,
     })
 

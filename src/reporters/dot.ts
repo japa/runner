@@ -22,10 +22,12 @@ export class DotReporter extends BaseReporter {
     let output = ''
     if (payload.isTodo) {
       output = colors.cyan(icons.info)
-    } else if (payload.hasError || payload.isFailing) {
-      output = payload.hasError ? colors.magenta(icons.squareSmallFilled) : colors.red(icons.cross)
+    } else if (payload.hasError) {
+      output = colors.red(icons.cross)
     } else if (payload.isSkipped) {
       output = colors.yellow(icons.bullet)
+    } else if (payload.isFailing) {
+      output = colors.magenta(icons.squareSmallFilled)
     } else {
       output = colors.green(icons.tick)
     }

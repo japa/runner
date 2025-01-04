@@ -10,6 +10,5 @@
 export * from '@japa/core/types'
 
 export type BaseReporterOptions = {
-  stackLinesCount?: number
   framesMaxLimit?: number
 }
