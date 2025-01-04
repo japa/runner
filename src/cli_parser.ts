@@ -17,7 +17,7 @@ import type { CLIArgs } from './types.js'
  * will be parsed aswell, but without any normalization
  */
 const OPTIONS = {
-  string: ['tests', 'groups', 'tags', 'files', 'timeout', 'retries', 'reporters', 'failed'],
+  string: ['tests', 'groups', 'tags', 'files', 'timeout', 'retries', 'reporters'],
   boolean: ['help', 'matchAll', 'failed'],
   alias: {
     forceExit: 'force-exit',
