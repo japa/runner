@@ -9,8 +9,8 @@
 
 import { assert } from 'chai'
 import { test } from 'node:test'
-import { Emitter, Refiner, Test, TestContext } from '../modules/core/main.js'
 import { wrapAssertions } from './helpers.js'
+import { Emitter, Refiner, Test, TestContext } from '../modules/core/main.js'
 
 test.describe('Core', () => {
   test('define test cleanup callback using the test context', async () => {

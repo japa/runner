@@ -33,6 +33,7 @@ export class RunnerFactory {
   #config?: NormalizedConfig
   #cliArgs?: CLIArgs
   #file = fileURLToPath(import.meta.url)
+  #bail: boolean = false
 
   get #refiner() {
     return this.#config!.refiner
@@ -89,12 +90,22 @@ export class RunnerFactory {
   }
 
   /**
+   * Enable/disable the bail mode
+   */
+  bail(toggle: boolean = true) {
+    this.#bail = toggle
+    return this
+  }
+
+  /**
    * Run dummy tests. You might use
    */
   async runSuites(
     suites: (emitter: Emitter, refiner: Refiner, file?: string) => Suite[]
   ): Promise<RunnerSummary> {
     const runner = new Runner(this.#emitter)
+    runner.bail(this.#bail)
+
     await this.#registerPlugins(runner)
 
     const { config, reporters, refinerFilters } = await new Planner(this.#config!).plan()

@@ -17,11 +17,12 @@ import type { CLIArgs } from './types.js'
  * will be parsed aswell, but without any normalization
  */
 const OPTIONS = {
-  string: ['tests', 'groups', 'tags', 'files', 'timeout', 'retries', 'reporters'],
-  boolean: ['help', 'matchAll', 'failed'],
+  string: ['tests', 'groups', 'tags', 'files', 'timeout', 'retries', 'reporters', 'bailLayer'],
+  boolean: ['help', 'matchAll', 'failed', 'bail'],
   alias: {
     forceExit: 'force-exit',
     matchAll: 'match-all',
+    bailLayer: 'bail-layer',
     help: 'h',
   },
 }
@@ -42,6 +43,8 @@ ${colors.green('--timeout')}                   ${colors.dim('Define default time
 ${colors.green('--retries')}                   ${colors.dim('Define default retries for all tests')}
 ${colors.green('--reporters')}                 ${colors.dim('Activate one or more test reporters')}
 ${colors.green('--failed')}                    ${colors.dim('Run tests failed during the last run')}
+${colors.green('--bail')}                      ${colors.dim('Exit early when a test fails')}
+${colors.green('--bail-layer')}                ${colors.dim('Specify at which layer to enable the bail mode. Can be "group" or "suite"')}
 ${colors.green('-h, --help')}                  ${colors.dim('View help')}
 
 ${colors.yellow('Examples:')}
@@ -53,6 +56,8 @@ ${colors.dim('node bin/test.js --files="user"')}
 ${colors.dim('node bin/test.js --files="functional/user"')}
 ${colors.dim('node bin/test.js --files="unit/user"')}
 ${colors.dim('node bin/test.js --failed')}
+${colors.dim('node bin/test.js --bail')}
+${colors.dim('node bin/test.js --bail=group')}
 
 ${colors.yellow('Notes:')}
 - When groups and tests filters are applied together. We will first filter the

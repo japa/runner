@@ -560,3 +560,129 @@ test.describe('Runner | retryPlugin', () => {
     await clearCache()
   })
 })
+
+test.describe('Runner | bail', () => {
+  test('stop after a failing test', async () => {
+    const stack: string[] = []
+
+    const emitter = new Emitter()
+    const refiner = new Refiner()
+
+    const suite = new Suite('same', emitter, refiner)
+    createTest('failing test', emitter, refiner, { suite }).run(() => {
+      stack.push('executing failing test')
+      throw new Error('Failing')
+    })
+    createTest('passing test', emitter, refiner, { suite }).run(() => {
+      stack.push('executing passing test')
+    })
+
+    await runner()
+      .bail()
+      .configure({
+        files: [],
+        refiner,
+        reporters: {
+          activated: [],
+          list: [],
+        },
+      })
+      .useEmitter(emitter)
+      .runSuites(() => [suite])
+
+    await wrapAssertions(async () => {
+      assert.deepEqual(stack, ['executing failing test'])
+    })
+  })
+
+  test('run all suites when bailLayer is set to suite', async () => {
+    const stack: string[] = []
+
+    const emitter = new Emitter()
+    const refiner = new Refiner()
+
+    const unit = new Suite('unit', emitter, refiner)
+    unit.bail()
+    const functional = new Suite('functional', emitter, refiner)
+    functional.bail()
+
+    createTest('failing unit test', emitter, refiner, { suite: unit }).run(() => {
+      stack.push('executing failing unit test')
+      throw new Error('Failing')
+    })
+    createTest('passing unit test', emitter, refiner, { suite: unit }).run(() => {
+      stack.push('executing passing unit test')
+    })
+
+    createTest('failing functional test', emitter, refiner, { suite: functional }).run(() => {
+      stack.push('executing failing functional test')
+      throw new Error('Failing')
+    })
+    createTest('passing functional test', emitter, refiner, { suite: functional }).run(() => {
+      stack.push('executing passing functional test')
+    })
+
+    await runner()
+      .configure({
+        files: [],
+        refiner,
+        reporters: {
+          activated: [],
+          list: [],
+        },
+      })
+      .useEmitter(emitter)
+      .runSuites(() => [unit, functional])
+
+    await wrapAssertions(async () => {
+      assert.deepEqual(stack, ['executing failing unit test', 'executing failing functional test'])
+    })
+  })
+
+  test('run all groups when bailLayer is set to group', async () => {
+    const stack: string[] = []
+
+    const emitter = new Emitter()
+    const refiner = new Refiner()
+
+    const unit = new Suite('unit', emitter, refiner)
+
+    const group1 = createTestGroup('group 1', emitter, refiner, { suite: unit })
+    group1.bail()
+
+    const group2 = createTestGroup('group 2', emitter, refiner, { suite: unit })
+    group2.bail()
+
+    createTest('failing group 1 test', emitter, refiner, { suite: unit, group: group1 }).run(() => {
+      stack.push('executing failing group 1 test')
+      throw new Error('Failing')
+    })
+    createTest('passing group 1 test', emitter, refiner, { suite: unit, group: group1 }).run(() => {
+      stack.push('executing passing group 1 test')
+    })
+
+    createTest('failing group 2 test', emitter, refiner, { suite: unit, group: group2 }).run(() => {
+      stack.push('executing failing group 2 test')
+      throw new Error('Failing')
+    })
+    createTest('passing group 1 test', emitter, refiner, { suite: unit, group: group2 }).run(() => {
+      stack.push('executing passing group 2 test')
+    })
+
+    await runner()
+      .configure({
+        files: [],
+        refiner,
+        reporters: {
+          activated: [],
+          list: [],
+        },
+      })
+      .useEmitter(emitter)
+      .runSuites(() => [unit])
+
+    await wrapAssertions(async () => {
+      assert.deepEqual(stack, ['executing failing group 1 test', 'executing failing group 2 test'])
+    })
+  })
+})

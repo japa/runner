@@ -93,6 +93,14 @@ test.group = function (title: string, callback: (group: Group) => void) {
     runnerConfig!.refiner,
     executionPlanState
   )
+
+  /**
+   * Enable bail on the group an when bailLayer is set to "group"
+   */
+  if (cliArgs.bail && cliArgs.bailLayer === 'group') {
+    executionPlanState.group.bail(true)
+  }
+
   callback(executionPlanState.group)
   executionPlanState.group = undefined
 }
@@ -140,6 +148,15 @@ export async function run() {
 
   executionPlanState.phase = 'planning'
   const runner = new Runner(emitter)
+
+  /**
+   * Enable bail on the runner and all the layers after the
+   * runner when no specific bailLayer is specified
+   */
+  if (cliArgs.bail && cliArgs.bailLayer === '') {
+    runner.bail(true)
+  }
+
   const globalHooks = new GlobalHooks()
   const exceptionsManager = new ExceptionsManager()
 
@@ -197,6 +214,14 @@ export async function run() {
       executionPlanState.timeout = suite.timeout
       if (typeof suite.configure === 'function') {
         suite.configure(executionPlanState.suite)
+      }
+
+      /**
+       * Enable bail on the suite and all the layers after the
+       * suite when bailLayer is set to "suite"
+       */
+      if (cliArgs.bail && cliArgs.bailLayer === 'suite') {
+        executionPlanState.suite.bail(true)
       }
       runner.add(executionPlanState.suite)
 

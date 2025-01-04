@@ -8,13 +8,13 @@
  */
 
 import { test } from 'node:test'
+import { assert, use } from 'chai'
 import chaiSubset from 'chai-subset'
 import { Refiner } from '@japa/core'
-import { assert, use } from 'chai'
 
+import { wrapAssertions } from './helpers.js'
 import { CliParser } from '../src/cli_parser.js'
 import type { CLIArgs, Config } from '../src/types.js'
-import { wrapAssertions } from './helpers.js'
 import { ndjson, spec, dot } from '../src/reporters/main.js'
 import { ConfigManager, NOOP } from '../src/config_manager.js'
 
