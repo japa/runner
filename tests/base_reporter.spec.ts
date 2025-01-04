@@ -13,7 +13,7 @@ import { assert, use } from 'chai'
 
 use(chaiSubset)
 
-import { wrapAssertions } from '../tests_helpers/main.js'
+import { wrapAssertions } from './helpers.js'
 import {
   TestEndNode,
   GroupEndNode,

@@ -33,7 +33,7 @@ const DEFAULTS = {
 
 /**
  * Config manager is used to hydrate the configuration by merging
- * the defaults, user defined config and the command line
+ * the defaults with the user defined config and the command line
  * flags.
  *
  * The command line flags have the upmost priority

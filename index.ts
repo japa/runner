@@ -234,7 +234,7 @@ export async function run() {
     /**
      * Print unhandled errors
      */
-    await exceptionsManager.flow()
+    await exceptionsManager.report()
 
     const summary = runner.getSummary()
     if (summary.hasError || exceptionsManager.hasErrors) {
@@ -252,7 +252,7 @@ export async function run() {
      * Print unhandled errors in case the code inside
      * the try block never got triggered
      */
-    await exceptionsManager.flow()
+    await exceptionsManager.report()
 
     process.exitCode = 1
     if (runnerConfig!.forceExit) {

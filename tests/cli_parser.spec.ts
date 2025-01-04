@@ -13,7 +13,7 @@ import { test } from 'node:test'
 import { colors } from '../src/helpers.js'
 import type { CLIArgs } from '../src/types.js'
 import { CliParser } from '../src/cli_parser.js'
-import { wrapAssertions } from '../tests_helpers/main.js'
+import { wrapAssertions } from './helpers.js'
 
 const DATASET: [CLIArgs, CLIArgs][] = [
   [
@@ -243,6 +243,7 @@ test.describe('CLI parser', () => {
             'Filter tests by the group title'
           )}`,
           `${colors.green('--tags')}                      ${colors.dim('Filter tests by tags')}`,
+          `${colors.green('--match-all')}                 ${colors.dim('Run tests that matches all the supplied tags')}`,
           `${colors.green('--files')}                     ${colors.dim(
             'Filter tests by the file name'
           )}`,
@@ -269,10 +270,11 @@ test.describe('CLI parser', () => {
           `${colors.dim('node bin/test.js --files="user"')}`,
           `${colors.dim('node bin/test.js --files="functional/user"')}`,
           `${colors.dim('node bin/test.js --files="unit/user"')}`,
+          `${colors.dim('node bin/test.js --failed')}`,
           ``,
           `${colors.yellow('Notes:')}`,
           `- When groups and tests filters are applied together. We will first filter the`,
-          `  tests by group title and then apply the tests title filter.`,
+          `  tests by group title and then apply the tests filter.`,
           `- The timeout defined on test object takes precedence over the ${colors.green(
             '--timeout'
           )} flag.`,
@@ -282,6 +284,8 @@ test.describe('CLI parser', () => {
           `- The ${colors.green(
             '--files'
           )} flag checks for the file names ending with the filter substring.`,
+          `- The ${colors.green('--tags')} filter runs tests that has one or more of the supplied tags.`,
+          `- You can use the ${colors.green('--match-all')} flag to run tests that has all the supplied tags.`,
           ``,
         ])
       })

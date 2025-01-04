@@ -16,7 +16,7 @@ import { ErrorsPrinter } from '@japa/errors-printer'
 export class ExceptionsManager {
   #exceptionsBuffer: any[] = []
   #rejectionsBuffer: any[] = []
-  #state: 'watching' | 'flowing' = 'watching'
+  #state: 'watching' | 'reporting' = 'watching'
   #errorsPrinter = new ErrorsPrinter({ stackLinesCount: 2, framesMaxLimit: 4 })
 
   hasErrors: boolean = false
@@ -54,12 +54,12 @@ export class ExceptionsManager {
     })
   }
 
-  async flow() {
-    if (this.#state === 'flowing') {
+  async report() {
+    if (this.#state === 'reporting') {
       return
     }
 
-    this.#state = 'flowing'
+    this.#state = 'reporting'
 
     /**
      * Print exceptions

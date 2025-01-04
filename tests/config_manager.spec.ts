@@ -14,7 +14,7 @@ import { assert, use } from 'chai'
 
 import { CliParser } from '../src/cli_parser.js'
 import type { CLIArgs, Config } from '../src/types.js'
-import { wrapAssertions } from '../tests_helpers/main.js'
+import { wrapAssertions } from './helpers.js'
 import { ndjson, spec, dot } from '../src/reporters/main.js'
 import { ConfigManager, NOOP } from '../src/config_manager.js'
 

@@ -35,6 +35,7 @@ ${colors.yellow('@japa/runner v2.3.0')}
 ${colors.green('--tests')}                     ${colors.dim('Filter tests by the test title')}
 ${colors.green('--groups')}                    ${colors.dim('Filter tests by the group title')}
 ${colors.green('--tags')}                      ${colors.dim('Filter tests by tags')}
+${colors.green('--match-all')}                 ${colors.dim('Run tests that matches all the supplied tags')}
 ${colors.green('--files')}                     ${colors.dim('Filter tests by the file name')}
 ${colors.green('--force-exit')}                ${colors.dim('Forcefully exit the process')}
 ${colors.green('--timeout')}                   ${colors.dim('Define default timeout for all tests')}
@@ -51,13 +52,16 @@ ${colors.dim('node bin/test.js --force-exit')}
 ${colors.dim('node bin/test.js --files="user"')}
 ${colors.dim('node bin/test.js --files="functional/user"')}
 ${colors.dim('node bin/test.js --files="unit/user"')}
+${colors.dim('node bin/test.js --failed')}
 
 ${colors.yellow('Notes:')}
 - When groups and tests filters are applied together. We will first filter the
-  tests by group title and then apply the tests title filter.
+  tests by group title and then apply the tests filter.
 - The timeout defined on test object takes precedence over the ${colors.green('--timeout')} flag.
 - The retries defined on test object takes precedence over the ${colors.green('--retries')} flag.
 - The ${colors.green('--files')} flag checks for the file names ending with the filter substring.
+- The ${colors.green('--tags')} filter runs tests that has one or more of the supplied tags.
+- You can use the ${colors.green('--match-all')} flag to run tests that has all the supplied tags.
 `
 
 /**

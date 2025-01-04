@@ -11,7 +11,7 @@ import { assert } from 'chai'
 import { test } from 'node:test'
 import { Planner } from '../src/planner.js'
 import { ConfigManager, NOOP } from '../src/config_manager.js'
-import { wrapAssertions } from '../tests_helpers/main.js'
+import { wrapAssertions } from './helpers.js'
 
 test.describe('Planner | files', () => {
   test('get suites for files', async () => {

@@ -12,7 +12,7 @@ import { test } from 'node:test'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 
 import { FilesManager } from '../src/files_manager.js'
-import { wrapAssertions } from '../tests_helpers/main.js'
+import { wrapAssertions } from './helpers.js'
 
 const FILTERING_DATASET: { files: URL[]; filters: string[]; output: URL[] }[] = [
   {
