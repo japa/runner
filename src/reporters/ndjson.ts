@@ -34,7 +34,9 @@ export class NdJSONReporter extends BaseReporter {
   /**
    * Serialize errors to JSON
    */
-  #serializeErrors(errors: TestEndNode['errors']) {
+  #serializeErrors(
+    errors: TestEndNode['errors'] | GroupEndNode['errors'] | SuiteEndNode['errors']
+  ) {
     return errors.map((error) => ({
       phase: error.phase,
       error: serializeError(error.error),
@@ -94,7 +96,9 @@ export class NdJSONReporter extends BaseReporter {
     console.log(
       JSON.stringify({
         event: 'suite:end',
-        ...payload,
+        name: payload.name,
+        hasError: payload.hasError,
+        errors: this.#serializeErrors(payload.errors),
       })
     )
   }
