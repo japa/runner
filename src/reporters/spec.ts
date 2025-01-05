@@ -77,7 +77,7 @@ export class SpecReporter extends BaseReporter {
    */
   #getSubText(payload: TestEndNode): string | undefined {
     if (payload.isSkipped && payload.skipReason) {
-      return colors.yellow(payload.skipReason)
+      return colors.dim(`${icons.branch} ${colors.italic(payload.skipReason)}`)
     }
 
     if (!payload.isFailing) {
@@ -88,16 +88,17 @@ export class SpecReporter extends BaseReporter {
       const message =
         payload.errors.find((error) => error.phase === 'test')?.error.message ??
         `Test marked with ".fails()" must finish with an error`
-      return colors.magenta(message)
+
+      return colors.dim(`${icons.branch} ${colors.italic(message)}`)
     }
 
     if (payload.failReason) {
-      return colors.magenta(payload.failReason)
+      return colors.dim(`${icons.branch} ${colors.italic(payload.failReason)}`)
     }
 
     const testErrorMessage = payload.errors.find((error) => error.phase === 'test')
     if (testErrorMessage && testErrorMessage.error) {
-      return colors.magenta(testErrorMessage.error.message)
+      return colors.dim(`${icons.branch} ${colors.italic(testErrorMessage.error.message)}`)
     }
   }
 

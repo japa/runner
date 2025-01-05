@@ -26,6 +26,7 @@ export const icons =
         pointer: '>',
         info: 'i',
         warning: '‼',
+        branch: ' -',
         squareSmallFilled: '[█]',
       }
     : {
@@ -36,5 +37,6 @@ export const icons =
         pointer: '❯',
         info: 'ℹ',
         warning: '⚠',
+        branch: '└──',
         squareSmallFilled: '◼',
       }
