@@ -60,15 +60,15 @@
     "typescript": "^5.7.2"
   },
   "dependencies": {
-    "@japa/core": "^10.1.1",
+    "@japa/core": "^10.3.0",
     "@japa/errors-printer": "^4.0.0",
     "@poppinss/colors": "^4.1.4",
     "@poppinss/hooks": "^7.2.5",
-    "fast-glob": "^3.3.2",
+    "fast-glob": "^3.3.3",
     "find-cache-dir": "^5.0.0",
     "getopts": "^2.3.0",
     "ms": "^2.1.3",
-    "serialize-error": "^11.0.3",
+    "serialize-error": "^12.0.0",
     "slash": "^5.1.0",
     "supports-color": "^10.0.0"
   },
