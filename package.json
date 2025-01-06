@@ -10,8 +10,7 @@
   "files": [
     "build",
     "!build/examples",
-    "!build/tests",
-    "!build/tests_helpers"
+    "!build/tests"
   ],
   "exports": {
     ".": "./build/index.js",
@@ -103,7 +102,7 @@
     "clean": true,
     "format": "esm",
     "dts": false,
-    "sourcemap": true,
+    "sourcemap": false,
     "target": "esnext"
   },
   "release-it": {
