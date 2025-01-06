@@ -16,9 +16,9 @@ Japa
 
 ![](https://raw.githubusercontent.com/thetutlage/static/main/sponsorkit/sponsors.png)
 
-[github-actions-image]: https://img.shields.io/github/actions/workflow/status/japa/runner/test.yml?style=for-the-badge "github-actions"
+[github-actions-image]: https://img.shields.io/github/actions/workflow/status/japa/runner/checks.yml?style=for-the-badge "github-actions"
 
-[github-actions-url]: https://github.com/japa/runner/actions/workflows/test.yml
+[github-actions-url]: https://github.com/japa/runner/actions/workflows/checks.yml
 
 [npm-image]: https://img.shields.io/npm/v/@japa/runner.svg?style=for-the-badge&logo=npm
 [npm-url]: https://npmjs.org/package/@japa/runner "npm"
