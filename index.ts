@@ -23,6 +23,8 @@ import { createTest, createTestGroup } from './src/create_test.js'
 import type { CLIArgs, Config, NormalizedConfig } from './src/types.js'
 import { Emitter, Group, Runner, Suite, Test, TestContext } from './modules/core/main.js'
 
+type OmitFirstArg<F> = F extends [_: any, ...args: infer R] ? R : never
+
 /**
  * Global emitter instance used by the test
  */
@@ -103,6 +105,22 @@ test.group = function (title: string, callback: (group: Group) => void) {
 
   callback(executionPlanState.group)
   executionPlanState.group = undefined
+}
+
+/**
+ * Create a test bound macro. Within the macro, you can access the
+ * currently executed test to read its context values or define
+ * cleanup hooks
+ */
+test.macro = function <T extends (test: Test, ...args: any[]) => any>(
+  callback: T
+): (...args: OmitFirstArg<Parameters<T>>) => ReturnType<T> {
+  return (...args) => {
+    if (!activeTest) {
+      throw new Error('Cannot invoke macro outside of the test callback')
+    }
+    return callback(activeTest, ...args)
+  }
 }
 
 /**
