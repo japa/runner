@@ -8,9 +8,9 @@
  */
 
 import { relative } from 'node:path'
-import { BaseReporter } from '@japa/runner/core'
 import { stripVTControlCharacters } from 'node:util'
 import { ErrorsPrinter } from '@japa/errors-printer'
+import { BaseReporter } from '../../modules/core/main.js'
 
 /**
  * Prints annotations when executing tests within Github actions
