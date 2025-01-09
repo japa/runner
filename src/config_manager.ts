@@ -24,7 +24,7 @@ const DEFAULTS = {
   forceExit: false,
   plugins: [],
   reporters: {
-    activated: ['spec'],
+    activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
     list: [spec(), ndjson(), dot()],
   },
   importer: (filePath) => import(filePath.href),

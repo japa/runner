@@ -33,7 +33,7 @@ const USER_DEFINED_CONFIG_DATASET: [Config, Config][] = [
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
-        activated: ['spec'],
+        activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
         list: [spec(), ndjson(), dot()],
       },
       setup: [],
@@ -55,7 +55,7 @@ const USER_DEFINED_CONFIG_DATASET: [Config, Config][] = [
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
-        activated: ['spec'],
+        activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
         list: [spec(), ndjson(), dot()],
       },
       plugins: [],
@@ -78,7 +78,7 @@ const USER_DEFINED_CONFIG_DATASET: [Config, Config][] = [
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
-        activated: ['spec'],
+        activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
         list: [spec(), ndjson(), dot()],
       },
       plugins: [],
@@ -102,7 +102,7 @@ const USER_DEFINED_CONFIG_DATASET: [Config, Config][] = [
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
-        activated: ['spec'],
+        activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
         list: [spec(), ndjson(), dot()],
       },
       plugins: [],
@@ -126,7 +126,7 @@ const USER_DEFINED_CONFIG_DATASET: [Config, Config][] = [
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
-        activated: ['spec'],
+        activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
         list: [spec(), ndjson(), dot()],
       },
       plugins: [],
@@ -157,7 +157,7 @@ const USER_DEFINED_CONFIG_DATASET: [Config, Config][] = [
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
-        activated: ['spec'],
+        activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
         list: [spec(), ndjson(), dot()],
       },
       plugins: [],
@@ -189,7 +189,7 @@ const USER_DEFINED_CONFIG_DATASET: [Config, Config][] = [
       forceExit: true,
       refiner: new Refiner(),
       reporters: {
-        activated: ['spec'],
+        activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
         list: [spec(), ndjson(), dot()],
       },
       plugins: [],
@@ -266,7 +266,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
-        activated: ['spec'],
+        activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
         list: [spec(), ndjson(), dot()],
       },
       plugins: [],
@@ -291,7 +291,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
-        activated: ['spec'],
+        activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
         list: [spec(), ndjson(), dot()],
       },
       plugins: [],
@@ -315,7 +315,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
-        activated: ['spec'],
+        activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
         list: [spec(), ndjson(), dot()],
       },
       plugins: [],
@@ -353,7 +353,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
-        activated: ['spec'],
+        activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
         list: [spec(), ndjson(), dot()],
       },
       plugins: [],
@@ -378,7 +378,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
-        activated: ['spec'],
+        activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
         list: [spec(), ndjson(), dot()],
       },
       plugins: [],
@@ -416,7 +416,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
-        activated: ['spec'],
+        activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
         list: [spec(), ndjson(), dot()],
       },
       plugins: [],
@@ -441,7 +441,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
-        activated: ['spec'],
+        activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
         list: [spec(), ndjson(), dot()],
       },
       plugins: [],
@@ -473,7 +473,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
-        activated: ['spec'],
+        activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
         list: [spec(), ndjson(), dot()],
       },
       plugins: [],
@@ -506,7 +506,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       forceExit: true,
       refiner: new Refiner(),
       reporters: {
-        activated: ['spec'],
+        activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
         list: [spec(), ndjson(), dot()],
       },
       plugins: [],
@@ -539,7 +539,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       forceExit: true,
       refiner: new Refiner(),
       reporters: {
-        activated: ['spec'],
+        activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
         list: [spec(), ndjson(), dot()],
       },
       plugins: [],
@@ -572,7 +572,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       forceExit: true,
       refiner: new Refiner(),
       reporters: {
-        activated: ['spec'],
+        activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
         list: [spec(), ndjson(), dot()],
       },
       plugins: [],
@@ -607,7 +607,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       forceExit: true,
       refiner: new Refiner(),
       reporters: {
-        activated: ['spec'],
+        activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
         list: [spec(), ndjson(), dot()],
       },
       plugins: [],
@@ -648,7 +648,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
     {
       files: [],
       reporters: {
-        activated: ['spec'],
+        activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
         list: [spec()],
       },
     },
@@ -661,7 +661,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       forceExit: true,
       refiner: new Refiner(),
       reporters: {
-        activated: ['spec'],
+        activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
         list: [spec()],
       },
       plugins: [],
@@ -675,7 +675,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
     {
       files: [],
       reporters: {
-        activated: ['spec'],
+        activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
         list: [spec()],
       },
     },
@@ -688,7 +688,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       forceExit: true,
       refiner: new Refiner(),
       reporters: {
-        activated: ['spec'],
+        activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
         list: [spec()],
       },
       plugins: [],
@@ -702,7 +702,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
     {
       files: [],
       reporters: {
-        activated: ['spec'],
+        activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
         list: [spec()],
       },
     },
@@ -715,7 +715,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
-        activated: ['spec'],
+        activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
         list: [spec()],
       },
       plugins: [],
