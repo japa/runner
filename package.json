@@ -137,6 +137,7 @@
     "exclude": [
       "tests/**",
       "tests_helpers/**",
+      "build/**",
       "factories/**",
       "modules/core/**",
       "src/reporters/**"

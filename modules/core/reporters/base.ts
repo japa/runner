@@ -29,7 +29,6 @@ import type {
  * Base reporter to build custom reporters on top of
  */
 export abstract class BaseReporter {
-  #options: BaseReporterOptions
   runner?: Runner
 
   /**
@@ -47,8 +46,10 @@ export abstract class BaseReporter {
    */
   currentGroupName?: string
 
+  protected options: BaseReporterOptions
+
   constructor(options: BaseReporterOptions = {}) {
-    this.#options = Object.assign({ stackLinesCount: 2 }, options)
+    this.options = Object.assign({ stackLinesCount: 2 }, options)
   }
 
   /**
@@ -138,7 +139,7 @@ export abstract class BaseReporter {
     }
 
     const errorPrinter = new ErrorsPrinter({
-      framesMaxLimit: this.#options.framesMaxLimit,
+      framesMaxLimit: this.options.framesMaxLimit,
     })
 
     errorPrinter.printSectionHeader('ERRORS')

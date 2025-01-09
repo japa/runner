@@ -11,6 +11,7 @@ import { DotReporter } from './dot.js'
 import { SpecReporter } from './spec.js'
 import { NdJSONReporter } from './ndjson.js'
 import type { BaseReporterOptions, NamedReporterContract } from '../types.js'
+import { GithubReporter } from './github.js'
 
 /**
  * Create an instance of the spec reporter
@@ -39,5 +40,15 @@ export const ndjson: (options?: BaseReporterOptions) => NamedReporterContract = 
   return {
     name: 'ndjson',
     handler: (...args) => new NdJSONReporter(options).boot(...args),
+  }
+}
+
+/**
+ * Create an instance of the github reporter
+ */
+export const github: (options?: BaseReporterOptions) => NamedReporterContract = (options) => {
+  return {
+    name: 'github',
+    handler: (...args) => new GithubReporter(options).boot(...args),
   }
 }
