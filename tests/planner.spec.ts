@@ -468,12 +468,24 @@ test.describe('Planner | reporters', () => {
     const { reporters } = await new Planner(config).plan()
 
     await wrapAssertions(() => {
-      assert.deepEqual(reporters, [
-        {
-          handler: reporters[0].handler,
-          name: 'spec',
-        },
-      ])
+      assert.deepEqual(
+        reporters,
+        [
+          {
+            handler: reporters[0].handler,
+            name: 'spec',
+          },
+        ].concat(
+          process.env.GITHUB_ACTIONS === 'true'
+            ? [
+                {
+                  handler: reporters[1].handler,
+                  name: 'github',
+                },
+              ]
+            : []
+        )
+      )
     })
   })
 
