@@ -15,8 +15,8 @@ import { Refiner } from '@japa/core'
 import { wrapAssertions } from './helpers.js'
 import { CliParser } from '../src/cli_parser.js'
 import type { CLIArgs, Config } from '../src/types.js'
-import { ndjson, spec, dot } from '../src/reporters/main.js'
 import { ConfigManager, NOOP } from '../src/config_manager.js'
+import { ndjson, spec, dot, github } from '../src/reporters/main.js'
 
 use(chaiSubset)
 
@@ -34,7 +34,7 @@ const USER_DEFINED_CONFIG_DATASET: [Config, Config][] = [
       refiner: new Refiner(),
       reporters: {
         activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
-        list: [spec(), ndjson(), dot()],
+        list: [spec(), ndjson(), dot(), github()],
       },
       setup: [],
       teardown: [],
@@ -56,7 +56,7 @@ const USER_DEFINED_CONFIG_DATASET: [Config, Config][] = [
       refiner: new Refiner(),
       reporters: {
         activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
-        list: [spec(), ndjson(), dot()],
+        list: [spec(), ndjson(), dot(), github()],
       },
       plugins: [],
       setup: [],
@@ -79,7 +79,7 @@ const USER_DEFINED_CONFIG_DATASET: [Config, Config][] = [
       refiner: new Refiner(),
       reporters: {
         activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
-        list: [spec(), ndjson(), dot()],
+        list: [spec(), ndjson(), dot(), github()],
       },
       plugins: [],
       setup: [],
@@ -103,7 +103,7 @@ const USER_DEFINED_CONFIG_DATASET: [Config, Config][] = [
       refiner: new Refiner(),
       reporters: {
         activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
-        list: [spec(), ndjson(), dot()],
+        list: [spec(), ndjson(), dot(), github()],
       },
       plugins: [],
       setup: [],
@@ -127,7 +127,7 @@ const USER_DEFINED_CONFIG_DATASET: [Config, Config][] = [
       refiner: new Refiner(),
       reporters: {
         activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
-        list: [spec(), ndjson(), dot()],
+        list: [spec(), ndjson(), dot(), github()],
       },
       plugins: [],
       setup: [],
@@ -158,7 +158,7 @@ const USER_DEFINED_CONFIG_DATASET: [Config, Config][] = [
       refiner: new Refiner(),
       reporters: {
         activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
-        list: [spec(), ndjson(), dot()],
+        list: [spec(), ndjson(), dot(), github()],
       },
       plugins: [],
       setup: [],
@@ -190,7 +190,7 @@ const USER_DEFINED_CONFIG_DATASET: [Config, Config][] = [
       refiner: new Refiner(),
       reporters: {
         activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
-        list: [spec(), ndjson(), dot()],
+        list: [spec(), ndjson(), dot(), github()],
       },
       plugins: [],
       setup: [],
@@ -241,7 +241,7 @@ const USER_DEFINED_CONFIG_DATASET: [Config, Config][] = [
       refiner: new Refiner(),
       reporters: {
         activated: ['dot'],
-        list: [spec(), ndjson(), dot()],
+        list: [spec(), ndjson(), dot(), github()],
       },
       plugins: [],
       setup: [],
@@ -267,7 +267,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       refiner: new Refiner(),
       reporters: {
         activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
-        list: [spec(), ndjson(), dot()],
+        list: [spec(), ndjson(), dot(), github()],
       },
       plugins: [],
       setup: [],
@@ -292,7 +292,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       refiner: new Refiner(),
       reporters: {
         activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
-        list: [spec(), ndjson(), dot()],
+        list: [spec(), ndjson(), dot(), github()],
       },
       plugins: [],
       setup: [],
@@ -316,7 +316,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       refiner: new Refiner(),
       reporters: {
         activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
-        list: [spec(), ndjson(), dot()],
+        list: [spec(), ndjson(), dot(), github()],
       },
       plugins: [],
       setup: [],
@@ -354,7 +354,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       refiner: new Refiner(),
       reporters: {
         activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
-        list: [spec(), ndjson(), dot()],
+        list: [spec(), ndjson(), dot(), github()],
       },
       plugins: [],
       setup: [],
@@ -379,7 +379,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       refiner: new Refiner(),
       reporters: {
         activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
-        list: [spec(), ndjson(), dot()],
+        list: [spec(), ndjson(), dot(), github()],
       },
       plugins: [],
       setup: [],
@@ -417,7 +417,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       refiner: new Refiner(),
       reporters: {
         activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
-        list: [spec(), ndjson(), dot()],
+        list: [spec(), ndjson(), dot(), github()],
       },
       plugins: [],
       setup: [],
@@ -442,7 +442,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       refiner: new Refiner(),
       reporters: {
         activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
-        list: [spec(), ndjson(), dot()],
+        list: [spec(), ndjson(), dot(), github()],
       },
       plugins: [],
       setup: [],
@@ -474,7 +474,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       refiner: new Refiner(),
       reporters: {
         activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
-        list: [spec(), ndjson(), dot()],
+        list: [spec(), ndjson(), dot(), github()],
       },
       plugins: [],
       setup: [],
@@ -507,7 +507,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       refiner: new Refiner(),
       reporters: {
         activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
-        list: [spec(), ndjson(), dot()],
+        list: [spec(), ndjson(), dot(), github()],
       },
       plugins: [],
       setup: [],
@@ -540,7 +540,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       refiner: new Refiner(),
       reporters: {
         activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
-        list: [spec(), ndjson(), dot()],
+        list: [spec(), ndjson(), dot(), github()],
       },
       plugins: [],
       setup: [],
@@ -573,7 +573,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       refiner: new Refiner(),
       reporters: {
         activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
-        list: [spec(), ndjson(), dot()],
+        list: [spec(), ndjson(), dot(), github()],
       },
       plugins: [],
       setup: [],
@@ -608,7 +608,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       refiner: new Refiner(),
       reporters: {
         activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
-        list: [spec(), ndjson(), dot()],
+        list: [spec(), ndjson(), dot(), github()],
       },
       plugins: [],
       setup: [],
