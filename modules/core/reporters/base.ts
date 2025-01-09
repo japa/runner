@@ -54,7 +54,7 @@ export abstract class BaseReporter {
   /**
    * Pretty prints the aggregates
    */
-  #printAggregates(summary: RunnerSummary) {
+  protected printAggregates(summary: RunnerSummary) {
     const tests: string[] = []
 
     /**
@@ -95,7 +95,7 @@ export abstract class BaseReporter {
   /**
    * Aggregates errors tree to a flat array
    */
-  #aggregateErrors(summary: RunnerSummary) {
+  protected aggregateErrors(summary: RunnerSummary) {
     const errorsList: { phase: string; title: string; error: Error }[] = []
 
     summary.failureTree.forEach((suite) => {
@@ -132,7 +132,7 @@ export abstract class BaseReporter {
   /**
    * Pretty print errors
    */
-  async #printErrors(summary: RunnerSummary) {
+  protected async printErrors(summary: RunnerSummary) {
     if (!summary.failureTree.length) {
       return
     }
@@ -142,7 +142,7 @@ export abstract class BaseReporter {
     })
 
     errorPrinter.printSectionHeader('ERRORS')
-    await errorPrinter.printErrors(this.#aggregateErrors(summary))
+    await errorPrinter.printErrors(this.aggregateErrors(summary))
   }
 
   /**
@@ -164,7 +164,7 @@ export abstract class BaseReporter {
    * Print tests summary
    */
   protected async printSummary(summary: RunnerSummary) {
-    await this.#printErrors(summary)
+    await this.printErrors(summary)
 
     console.log('')
     if (summary.aggregates.total === 0 && !summary.hasError) {
@@ -178,7 +178,7 @@ export abstract class BaseReporter {
       console.log(colors.bgGreen().black(' PASSED '))
     }
     console.log('')
-    this.#printAggregates(summary)
+    this.printAggregates(summary)
   }
 
   /**
