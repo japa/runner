@@ -7,6 +7,7 @@
  * file that was distributed with this source code.
  */
 
+import slash from 'slash'
 import { relative } from 'node:path'
 import { stripVTControlCharacters } from 'node:util'
 import { ErrorsPrinter } from '@japa/errors-printer'
@@ -79,7 +80,7 @@ export class GithubReporter extends BaseReporter {
     return this.formatMessage({
       command: 'error',
       properties: {
-        file: relative(process.cwd(), mainFrame.fileName!),
+        file: slash(relative(process.cwd(), mainFrame.fileName!)),
         title: error.title,
         line: String(mainFrame.lineNumber!),
         column: String(mainFrame.columnNumber!),
