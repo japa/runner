@@ -8,6 +8,7 @@
  */
 
 import { ErrorsPrinter } from '@japa/errors-printer'
+import debug from './debug.js'
 
 /**
  * Handles uncaught exceptions and prints them to the
@@ -32,6 +33,7 @@ export class ExceptionsManager {
    */
   monitor() {
     process.on('uncaughtException', async (error) => {
+      debug('received uncaught exception %O', error)
       this.hasErrors = true
       if (this.#state === 'watching') {
         this.#exceptionsBuffer.push(error)
@@ -43,6 +45,7 @@ export class ExceptionsManager {
     })
 
     process.on('unhandledRejection', async (error) => {
+      debug('received unhandled rejection %O', error)
       this.hasErrors = true
       if (this.#state === 'watching') {
         this.#rejectionsBuffer.push(error)

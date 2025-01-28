@@ -227,6 +227,7 @@ export async function run() {
       /**
        * Creating and configuring the suite
        */
+      debug('initiating suite %s', suite.name)
       executionPlanState.suite = new Suite(suite.name, emitter, config.refiner)
       executionPlanState.retries = suite.retries
       executionPlanState.timeout = suite.timeout
@@ -239,6 +240,7 @@ export async function run() {
        * suite when bailLayer is set to "suite"
        */
       if (cliArgs.bail && cliArgs.bailLayer === 'suite') {
+        debug('enabling bail mode for the suite %s', suite.name)
         executionPlanState.suite.bail(true)
       }
       runner.add(executionPlanState.suite)
@@ -281,12 +283,19 @@ export async function run() {
 
     const summary = runner.getSummary()
     if (summary.hasError || exceptionsManager.hasErrors) {
+      debug(
+        'updating exit code to 1. summary.hasError %s, process.hasError',
+        summary.hasError,
+        exceptionsManager.hasErrors
+      )
       process.exitCode = 1
     }
     if (config.forceExit) {
+      debug('force exiting process')
       process.exit()
     }
   } catch (error) {
+    debug('error running tests %O', error)
     await globalHooks.teardown(error, runner)
     const printer = new ErrorsPrinter()
     await printer.printError(error)
@@ -299,6 +308,7 @@ export async function run() {
 
     process.exitCode = 1
     if (runnerConfig!.forceExit) {
+      debug('force exiting process')
       process.exit()
     }
   }
