@@ -60,7 +60,7 @@
   },
   "dependencies": {
     "@japa/core": "^10.3.0",
-    "@japa/errors-printer": "^4.1.1",
+    "@japa/errors-printer": "^4.1.2",
     "@poppinss/colors": "^4.1.4",
     "@poppinss/hooks": "^7.2.5",
     "fast-glob": "^3.3.3",
