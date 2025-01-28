@@ -39,7 +39,7 @@
     "@adonisjs/prettier-config": "^1.4.0",
     "@adonisjs/tsconfig": "^1.4.0",
     "@release-it/conventional-changelog": "^10.0.0",
-    "@swc/core": "^1.10.4",
+    "@swc/core": "1.10.7",
     "@types/chai": "^5.0.1",
     "@types/chai-subset": "^1.3.5",
     "@types/find-cache-dir": "^5.0.2",
