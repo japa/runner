@@ -86,15 +86,16 @@ export function test(title: string, callback?: TestExecutor<TestContext, undefin
 /**
  * Create a Japa test group
  */
-test.group = function (title: string, callback: (group: Group) => void) {
+test.group = function (title: string, callback: (group: Group) => void): Group {
   validator.ensureIsInPlanningPhase(executionPlanState.phase)
 
-  executionPlanState.group = createTestGroup(
+  const group = createTestGroup(
     title,
     emitter,
     runnerConfig!.refiner,
     executionPlanState
   )
+  executionPlanState.group = group
 
   /**
    * Enable bail on the group an when bailLayer is set to "group"
@@ -105,6 +106,8 @@ test.group = function (title: string, callback: (group: Group) => void) {
 
   callback(executionPlanState.group)
   executionPlanState.group = undefined
+
+  return group
 }
 
 /**
