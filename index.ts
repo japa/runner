@@ -89,12 +89,7 @@ export function test(title: string, callback?: TestExecutor<TestContext, undefin
 test.group = function (title: string, callback: (group: Group) => void): Group {
   validator.ensureIsInPlanningPhase(executionPlanState.phase)
 
-  const group = createTestGroup(
-    title,
-    emitter,
-    runnerConfig!.refiner,
-    executionPlanState
-  )
+  const group = createTestGroup(title, emitter, runnerConfig!.refiner, executionPlanState)
   executionPlanState.group = group
 
   /**
