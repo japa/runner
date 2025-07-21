@@ -134,6 +134,14 @@ export function getActiveTest() {
 }
 
 /**
+ * Get the test of currently running test or throw an error
+ */
+export function getActiveTestOrFail() {
+  if (!activeTest) throw new Error('Cannot access active test outside of a test callback')
+  return activeTest
+}
+
+/**
  * Make Japa process command line arguments. Later the parsed output
  * will be used by Japa to compute the configuration
  */
