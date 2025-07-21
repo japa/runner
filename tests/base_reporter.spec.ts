@@ -7,11 +7,8 @@
  * file that was distributed with this source code.
  */
 
+import { assert } from 'chai'
 import { test } from 'node:test'
-import chaiSubset from 'chai-subset'
-import { assert, use } from 'chai'
-
-use(chaiSubset)
 
 import { wrapAssertions } from './helpers.js'
 import {

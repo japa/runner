@@ -7,9 +7,8 @@
  * file that was distributed with this source code.
  */
 
+import { assert } from 'chai'
 import { test } from 'node:test'
-import { assert, use } from 'chai'
-import chaiSubset from 'chai-subset'
 import { Refiner } from '@japa/core'
 
 import { wrapAssertions } from './helpers.js'
@@ -17,8 +16,6 @@ import { CliParser } from '../src/cli_parser.js'
 import type { CLIArgs, Config } from '../src/types.js'
 import { ConfigManager, NOOP } from '../src/config_manager.js'
 import { ndjson, spec, dot, github } from '../src/reporters/main.js'
-
-use(chaiSubset)
 
 const USER_DEFINED_CONFIG_DATASET: [Config, Config][] = [
   [

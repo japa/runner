@@ -7,15 +7,12 @@
  * file that was distributed with this source code.
  */
 
+import { assert } from 'chai'
 import { test } from 'node:test'
-import { assert, use } from 'chai'
-import chaiSubset from 'chai-subset'
 import { ErrorsPrinter } from '@japa/errors-printer'
 
 import { wrapAssertions } from './helpers.js'
 import { GithubReporter } from '../src/reporters/github.js'
-
-use(chaiSubset)
 
 test.describe('Github reporter', () => {
   test('report errors in correct format', async () => {
@@ -30,7 +27,7 @@ test.describe('Github reporter', () => {
     wrapAssertions(() => {
       assert.equal(
         annotation,
-        '::error file=tests/github_reporter.spec.ts,title=2 + 2 is 4,line=27,column=14::Expected 5 to equal 4'
+        '::error file=tests/github_reporter.spec.ts,title=2 + 2 is 4,line=24,column=14::Expected 5 to equal 4'
       )
     })
   })
