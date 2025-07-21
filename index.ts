@@ -89,12 +89,7 @@ export function test(title: string, callback?: TestExecutor<TestContext, undefin
 test.group = function (title: string, callback: (group: Group) => void): Group {
   validator.ensureIsInPlanningPhase(executionPlanState.phase)
 
-  const group = createTestGroup(
-    title,
-    emitter,
-    runnerConfig!.refiner,
-    executionPlanState
-  )
+  const group = createTestGroup(title, emitter, runnerConfig!.refiner, executionPlanState)
   executionPlanState.group = group
 
   /**
@@ -130,6 +125,14 @@ test.macro = function <T extends (test: Test, ...args: any[]) => any>(
  * Get the test of currently running test
  */
 export function getActiveTest() {
+  return activeTest
+}
+
+/**
+ * Get the test of currently running test or throw an error
+ */
+export function getActiveTestOrFail() {
+  if (!activeTest) throw new Error('Cannot access active test outside of a test callback')
   return activeTest
 }
 
