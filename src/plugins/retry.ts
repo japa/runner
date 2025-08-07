@@ -8,7 +8,7 @@
  */
 
 import { join } from 'node:path'
-import findCacheDirectory from 'find-cache-dir'
+import findCacheDirectory from 'find-cache-directory'
 import { mkdir, readFile, unlink, writeFile } from 'node:fs/promises'
 
 import { colors } from '../helpers.js'
