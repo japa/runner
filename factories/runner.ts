@@ -79,11 +79,12 @@ export class RunnerFactory {
   ): Promise<RunnerSummary> {
     return this.runSuites((emitter, refiner, file) => {
       const defaultSuite = new Suite('default', emitter, refiner)
+      const debuggingError = new Error()
 
-      createTest(title, emitter, refiner, {
+      createTest(title, emitter, refiner, debuggingError, {
         suite: defaultSuite,
         file: file,
-      }).run(callback)
+      }).run(callback, debuggingError)
 
       return [defaultSuite]
     })

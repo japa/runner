@@ -35,6 +35,7 @@ export function disallowPinnedTests(options?: {
     function disallowPinned(test: Test) {
       if (test.isPinned) {
         test.options.meta.abort(string.interpolate(errorMessage, { test: test.title }))
+        process.exitCode = 1
       }
     }
 

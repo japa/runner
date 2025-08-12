@@ -13,45 +13,45 @@ function createUnitTestsSuite(emitter: Emitter, refiner: Refiner, file?: string)
     file,
   })
 
-  createTest('A top level test inside a suite', emitter, refiner, {
+  createTest('A top level test inside a suite', emitter, refiner, new Error(), {
     suite,
     file,
   }).run(() => {})
 
-  createTest('add two numbers', emitter, refiner, { group, file }).run(() => {
+  createTest('add two numbers', emitter, refiner, new Error(), { group, file }).run(() => {
     assert.equal(2 + 2, 4)
   })
-  createTest('add three numbers', emitter, refiner, {
+  createTest('add three numbers', emitter, refiner, new Error(), {
     group,
     file,
   }).run(() => {
     assert.equal(2 + 2 + 2, 6)
   })
 
-  createTest('add group of numbers', emitter, refiner, { group, file })
-  createTest('use math.js lib', emitter, refiner, { group, file }).skip(
+  createTest('add group of numbers', emitter, refiner, new Error(), { group, file })
+  createTest('use math.js lib', emitter, refiner, new Error(), { group, file }).skip(
     true,
     'Library work pending'
   )
-  createTest('add multiple numbers', emitter, refiner, {
+  createTest('add multiple numbers', emitter, refiner, new Error(), {
     file,
     group,
   }).run(() => {
     assert.equal(2 + 2 + 2 + 2, 6)
   })
-  createTest('add floating numbers', emitter, refiner, { group, file })
+  createTest('add floating numbers', emitter, refiner, new Error(), { group, file })
     .run(() => {
       assert.equal(2 + 2.2 + 2.1, 6)
     })
     .fails('Have to add support for floating numbers')
 
-  createTest('regression test that is passing', emitter, refiner, { group, file })
+  createTest('regression test that is passing', emitter, refiner, new Error(), { group, file })
     .run(() => {
       assert.equal(2 + 2.2 + 2.1, 2 + 2.2 + 2.1)
     })
     .fails('Have to add support for floating numbers')
 
-  createTest('A test with an error that is not an AssertionError', emitter, refiner, {
+  createTest('A test with an error that is not an AssertionError', emitter, refiner, new Error(), {
     group,
     file,
   }).run(() => {
@@ -72,31 +72,31 @@ function createFunctionalTestsSuite(emitter: Emitter, refiner: Refiner, file?: s
     suite,
     file: file,
   })
-  createTest('Validate user data', emitter, refiner, {
+  createTest('Validate user data', emitter, refiner, new Error(), {
     group,
     file: file,
   }).run(() => {})
-  createTest('Disallow duplicate emails', emitter, refiner, {
+  createTest('Disallow duplicate emails', emitter, refiner, new Error(), {
     group,
     file: file,
   }).run(() => {})
-  createTest('Disallow duplicate emails across tenants', emitter, refiner, {
+  createTest('Disallow duplicate emails across tenants', emitter, refiner, new Error(), {
     group,
     file: file,
   }).run(() => {
     const users = ['', '']
     assert.equal(users.length, 1)
   })
-  createTest('Normalize email before persisting it', emitter, refiner, {
+  createTest('Normalize email before persisting it', emitter, refiner, new Error(), {
     group,
     file: file,
   }).skip(true, 'Have to build a normalizer')
-  createTest('Send email verification mail', emitter, refiner, {
+  createTest('Send email verification mail', emitter, refiner, new Error(), {
     group,
     file: file,
   })
 
-  createTest('Test that times out', emitter, refiner, {
+  createTest('Test that times out', emitter, refiner, new Error(), {
     group,
     file: file,
   }).run(() => {
@@ -112,11 +112,17 @@ function createFunctionalTestsSuite(emitter: Emitter, refiner: Refiner, file?: s
   usersListGroup.setup(() => {
     throw new Error('Unable to cleanup database')
   })
-  createTest('A test that will never run because the group hooks fails', emitter, refiner, {
-    group: usersListGroup,
-  })
+  createTest(
+    'A test that will never run because the group hooks fails',
+    emitter,
+    refiner,
+    new Error(),
+    {
+      group: usersListGroup,
+    }
+  )
 
-  createTest('A top level test inside functional suite', emitter, refiner, {
+  createTest('A top level test inside functional suite', emitter, refiner, new Error(), {
     suite,
     file: file,
   }).run(() => {})

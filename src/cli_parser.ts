@@ -18,10 +18,11 @@ import type { CLIArgs } from './types.js'
  */
 const OPTIONS = {
   string: ['tests', 'groups', 'tags', 'files', 'timeout', 'retries', 'reporters', 'bailLayer'],
-  boolean: ['help', 'matchAll', 'failed', 'bail'],
+  boolean: ['help', 'matchAll', 'failed', 'bail', 'listPinned'],
   alias: {
     forceExit: 'force-exit',
     matchAll: 'match-all',
+    listPinned: 'list-pinned',
     bailLayer: 'bail-layer',
     help: 'h',
   },
@@ -37,6 +38,7 @@ ${colors.green('--tests')}                     ${colors.dim('Filter tests by the
 ${colors.green('--groups')}                    ${colors.dim('Filter tests by the group title')}
 ${colors.green('--tags')}                      ${colors.dim('Filter tests by tags')}
 ${colors.green('--match-all')}                 ${colors.dim('Run tests that matches all the supplied tags')}
+${colors.green('--list-pinned')}               ${colors.dim('List pinned tests')}
 ${colors.green('--files')}                     ${colors.dim('Filter tests by the file name')}
 ${colors.green('--force-exit')}                ${colors.dim('Forcefully exit the process')}
 ${colors.green('--timeout')}                   ${colors.dim('Define default timeout for all tests')}

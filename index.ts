@@ -16,6 +16,7 @@ import validator from './src/validator.js'
 import { Planner } from './src/planner.js'
 import { GlobalHooks } from './src/hooks.js'
 import { CliParser } from './src/cli_parser.js'
+import { printPinnedTests } from './src/helpers.js'
 import { retryPlugin } from './src/plugins/retry.js'
 import { ConfigManager } from './src/config_manager.js'
 import { ExceptionsManager } from './src/exceptions_manager.js'
@@ -231,7 +232,14 @@ export async function run() {
      */
     debug('executing global hooks')
     globalHooks.apply(config)
-    await globalHooks.setup(runner)
+
+    /**
+     * Only run global hooks when we are not listing
+     * pinned tests
+     */
+    if (!cliArgs.listPinned) {
+      await globalHooks.setup(runner)
+    }
 
     /**
      * Step 5: Register suites and import test files
@@ -271,6 +279,18 @@ export async function run() {
        * Resetting global state
        */
       executionPlanState.suite = undefined
+    }
+
+    /**
+     * Exit early when there are one or more pinned tests
+     */
+    if (cliArgs.listPinned) {
+      printPinnedTests(runner)
+      if (config.forceExit) {
+        debug('force exiting process')
+        process.exit()
+      }
+      return
     }
 
     /**

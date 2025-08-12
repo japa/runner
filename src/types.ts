@@ -50,6 +50,7 @@ export type CLIArgs = {
   failed?: boolean
   help?: boolean
   matchAll?: boolean
+  listPinned?: boolean
   bail?: boolean
   bailLayer?: string
 } & Record<string, string | string[] | boolean>
