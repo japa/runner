@@ -35,29 +35,29 @@
     "quick:test": "glob -c \"node --import=ts-node-maintained/register/esm --enable-source-maps --test-reporter=spec --test\" \"tests/*.spec.ts\""
   },
   "devDependencies": {
-    "@adonisjs/eslint-config": "^2.1.0",
+    "@adonisjs/eslint-config": "^2.1.2",
     "@adonisjs/prettier-config": "^1.4.5",
     "@adonisjs/tsconfig": "^1.4.1",
     "@release-it/conventional-changelog": "^10.0.1",
-    "@swc/core": "1.13.1",
+    "@swc/core": "1.13.3",
     "@types/chai": "^5.2.2",
     "@types/ms": "^2.1.0",
-    "@types/node": "^24.0.15",
+    "@types/node": "^24.2.1",
     "c8": "^10.1.3",
     "chai": "^5.2.1",
-    "cross-env": "^7.0.3",
+    "cross-env": "^10.0.0",
     "del-cli": "^6.0.0",
-    "eslint": "^9.31.0",
+    "eslint": "^9.33.0",
     "glob": "^11.0.3",
     "prettier": "^3.6.2",
     "release-it": "^19.0.4",
-    "ts-node-maintained": "^10.9.5",
+    "ts-node-maintained": "^10.9.6",
     "tsup": "^8.5.0",
-    "typescript": "^5.8.3"
+    "typescript": "^5.9.2"
   },
   "dependencies": {
     "@japa/core": "^10.3.0",
-    "@japa/errors-printer": "^4.1.2",
+    "@japa/errors-printer": "^4.1.3",
     "@poppinss/colors": "^4.1.5",
     "@poppinss/hooks": "^7.2.6",
     "fast-glob": "^3.3.3",
@@ -66,7 +66,7 @@
     "ms": "^2.1.3",
     "serialize-error": "^12.0.0",
     "slash": "^5.1.0",
-    "supports-color": "^10.0.0"
+    "supports-color": "^10.1.0"
   },
   "homepage": "https://github.com/japa/runner#readme",
   "repository": {
