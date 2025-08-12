@@ -743,7 +743,7 @@ test.describe('Runner | disallowPinnedTests plugin', () => {
     await wrapAssertions(async () => {
       assert.equal(
         fatalError.message,
-        'Pinning test is disallowed by the "disallowPinnedTests" plugin. Use --list-pinned flag to list pinned tests'
+        'Pinning tests are disallowed by the "disallowPinnedTests" plugin. Use the "--list-pinned" flag to list pinned tests'
       )
       assert.deepEqual(stack, [])
     })

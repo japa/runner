@@ -22,7 +22,7 @@ export function disallowPinnedTests(options?: {
   const disallow = options?.disallow ?? true
   const errorMessage =
     options?.errorMessage ??
-    'Pinning test is disallowed by the "disallowPinnedTests" plugin. Use --list-pinned flag to list pinned tests'
+    'Pinning tests are disallowed by the "disallowPinnedTests" plugin. Use the "--list-pinned" flag to list pinned tests'
 
   const pluginFn: PluginFn = async function disallowPinnedTestsPluginFn({ runner, emitter }) {
     /**
