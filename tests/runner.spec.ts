@@ -16,6 +16,7 @@ import { ConfigManager } from '../src/config_manager.js'
 import { pEvent, wrapAssertions } from './helpers.js'
 import { createTest, createTestGroup } from '../src/create_test.js'
 import { Emitter, Refiner, Runner, Suite } from '../modules/core/main.js'
+import { disallowPinnedTests } from '../src/plugins/disallow_pinned_tests.js'
 import { clearCache, getFailedTests, retryPlugin } from '../src/plugins/retry.js'
 
 test.describe('Runner | create tests and groups', () => {
@@ -47,7 +48,7 @@ test.describe('Runner | create tests and groups', () => {
     const emitter = new Emitter()
     const refiner = new Refiner()
     const suite = new Suite('', emitter, refiner)
-    const t = createTest('', emitter, refiner, { suite })
+    const t = createTest('', emitter, refiner, new Error(), { suite })
 
     await wrapAssertions(() => {
       assert.deepEqual(suite.stack, [t])
@@ -60,7 +61,7 @@ test.describe('Runner | create tests and groups', () => {
     const suite = new Suite('', emitter, refiner)
 
     const group = createTestGroup('', emitter, refiner, { suite })
-    const t = createTest('', emitter, refiner, { suite, group })
+    const t = createTest('', emitter, refiner, new Error(), { suite, group })
 
     await wrapAssertions(() => {
       assert.deepEqual(suite.stack, [group])
@@ -71,7 +72,7 @@ test.describe('Runner | create tests and groups', () => {
   test('define test timeout from global options', async () => {
     const emitter = new Emitter()
     const refiner = new Refiner()
-    const t = createTest('', emitter, refiner, { timeout: 1000 })
+    const t = createTest('', emitter, refiner, new Error(), { timeout: 1000 })
 
     await wrapAssertions(() => {
       assert.equal(t.options.timeout, 1000)
@@ -81,7 +82,7 @@ test.describe('Runner | create tests and groups', () => {
   test('define test retries from global options', async () => {
     const emitter = new Emitter()
     const refiner = new Refiner()
-    const t = createTest('', emitter, refiner, { retries: 4 })
+    const t = createTest('', emitter, refiner, new Error(), { retries: 4 })
 
     await wrapAssertions(() => {
       assert.equal(t.options.retries, 4)
@@ -92,7 +93,7 @@ test.describe('Runner | create tests and groups', () => {
     const stack: string[] = []
     const emitter = new Emitter()
     const refiner = new Refiner()
-    const t = createTest('', emitter, refiner, { retries: 4 })
+    const t = createTest('', emitter, refiner, new Error(), { retries: 4 })
     t.run(() => {
       stack.push('executed')
     })
@@ -106,7 +107,7 @@ test.describe('Runner | create tests and groups', () => {
   test('assert test throws an exception', async () => {
     const emitter = new Emitter()
     const refiner = new Refiner()
-    const t = createTest('', emitter, refiner, {})
+    const t = createTest('', emitter, refiner, new Error(), {})
     t.run(() => {
       throw new Error('Failed')
     }).throws('Failed')
@@ -121,7 +122,7 @@ test.describe('Runner | create tests and groups', () => {
   test('assert error matches the regular expression', async () => {
     const emitter = new Emitter()
     const refiner = new Refiner()
-    const t = createTest('', emitter, refiner, {})
+    const t = createTest('', emitter, refiner, new Error(), {})
     t.run(() => {
       throw new Error('Failed')
     }).throws(/ed?/)
@@ -136,7 +137,7 @@ test.describe('Runner | create tests and groups', () => {
   test('throw error when test does not have a callback defined', async () => {
     const emitter = new Emitter()
     const refiner = new Refiner()
-    const t = createTest('', emitter, refiner, {})
+    const t = createTest('', emitter, refiner, new Error(), {})
 
     await wrapAssertions(() => {
       assert.throws(
@@ -149,7 +150,7 @@ test.describe('Runner | create tests and groups', () => {
   test('assert test throws an instance of a given class', async () => {
     const emitter = new Emitter()
     const refiner = new Refiner()
-    const t = createTest('', emitter, refiner, {})
+    const t = createTest('', emitter, refiner, new Error(), {})
     t.run(() => {
       throw new Error('Failed')
     }).throws('Failed', Error)
@@ -163,7 +164,7 @@ test.describe('Runner | create tests and groups', () => {
   test('fail when test does not throw an exception', async () => {
     const emitter = new Emitter()
     const refiner = new Refiner()
-    const t = createTest('', emitter, refiner, {})
+    const t = createTest('', emitter, refiner, new Error(), {})
     t.run(() => {}).throws('Failed', Error)
 
     const [event] = await Promise.all([pEvent(emitter, 'test:end'), t.exec()])
@@ -177,7 +178,7 @@ test.describe('Runner | create tests and groups', () => {
     class Exception {}
     const emitter = new Emitter()
     const refiner = new Refiner()
-    const t = createTest('', emitter, refiner, {})
+    const t = createTest('', emitter, refiner, new Error(), {})
     t.run(() => {
       throw new Error('Failed')
     }).throws('Failed', Exception)
@@ -192,7 +193,7 @@ test.describe('Runner | create tests and groups', () => {
   test('fail when error message mismatch', async () => {
     const emitter = new Emitter()
     const refiner = new Refiner()
-    const t = createTest('', emitter, refiner, {})
+    const t = createTest('', emitter, refiner, new Error(), {})
     t.run(() => {
       throw new Error('Failed')
     }).throws('Failure')
@@ -210,7 +211,7 @@ test.describe('Runner | create tests and groups', () => {
   test('fail when error does not match the regular expression', async () => {
     const emitter = new Emitter()
     const refiner = new Refiner()
-    const t = createTest('', emitter, refiner, {})
+    const t = createTest('', emitter, refiner, new Error(), {})
     t.run(() => {
       throw new Error('Failed')
     }).throws(/lure?/)
@@ -373,11 +374,11 @@ test.describe('Runner | retryPlugin', () => {
     const refiner = new Refiner()
 
     const suite = new Suite('same', emitter, refiner)
-    createTest('failing test', emitter, refiner, { suite }).run(() => {
+    createTest('failing test', emitter, refiner, new Error(), { suite }).run(() => {
       stack.push('executing failing test')
       throw new Error('Failing')
     })
-    createTest('passing test', emitter, refiner, { suite }).run(() => {
+    createTest('passing test', emitter, refiner, new Error(), { suite }).run(() => {
       stack.push('executing passing test')
     })
 
@@ -410,11 +411,11 @@ test.describe('Runner | retryPlugin', () => {
 
     function getSuite() {
       const suite = new Suite('same', emitter, refiner)
-      createTest('failing test', emitter, refiner, { suite }).run(() => {
+      createTest('failing test', emitter, refiner, new Error(), { suite }).run(() => {
         stack.push('executing failing test')
         throw new Error('Failing')
       })
-      createTest('passing test', emitter, refiner, { suite }).run(() => {
+      createTest('passing test', emitter, refiner, new Error(), { suite }).run(() => {
         stack.push('executing passing test')
       })
 
@@ -465,11 +466,11 @@ test.describe('Runner | retryPlugin', () => {
 
     function getSuite() {
       const suite = new Suite('same', emitter, refiner)
-      createTest('failing test', emitter, refiner, { suite }).run(() => {
+      createTest('failing test', emitter, refiner, new Error(), { suite }).run(() => {
         stack.push('executing failing test')
         throw new Error('Failing')
       })
-      createTest('passing test', emitter, refiner, { suite }).run(() => {
+      createTest('passing test', emitter, refiner, new Error(), { suite }).run(() => {
         stack.push('executing passing test')
       })
 
@@ -521,7 +522,7 @@ test.describe('Runner | retryPlugin', () => {
 
     function getSuite() {
       const suite = new Suite('same', emitter, refiner)
-      createTest('passing test', emitter, refiner, { suite }).run(() => {
+      createTest('passing test', emitter, refiner, new Error(), { suite }).run(() => {
         stack.push('executing passing test')
       })
 
@@ -569,11 +570,11 @@ test.describe('Runner | bail', () => {
     const refiner = new Refiner()
 
     const suite = new Suite('same', emitter, refiner)
-    createTest('failing test', emitter, refiner, { suite }).run(() => {
+    createTest('failing test', emitter, refiner, new Error(), { suite }).run(() => {
       stack.push('executing failing test')
       throw new Error('Failing')
     })
-    createTest('passing test', emitter, refiner, { suite }).run(() => {
+    createTest('passing test', emitter, refiner, new Error(), { suite }).run(() => {
       stack.push('executing passing test')
     })
 
@@ -606,21 +607,25 @@ test.describe('Runner | bail', () => {
     const functional = new Suite('functional', emitter, refiner)
     functional.bail()
 
-    createTest('failing unit test', emitter, refiner, { suite: unit }).run(() => {
+    createTest('failing unit test', emitter, refiner, new Error(), { suite: unit }).run(() => {
       stack.push('executing failing unit test')
       throw new Error('Failing')
     })
-    createTest('passing unit test', emitter, refiner, { suite: unit }).run(() => {
+    createTest('passing unit test', emitter, refiner, new Error(), { suite: unit }).run(() => {
       stack.push('executing passing unit test')
     })
 
-    createTest('failing functional test', emitter, refiner, { suite: functional }).run(() => {
-      stack.push('executing failing functional test')
-      throw new Error('Failing')
-    })
-    createTest('passing functional test', emitter, refiner, { suite: functional }).run(() => {
-      stack.push('executing passing functional test')
-    })
+    createTest('failing functional test', emitter, refiner, new Error(), { suite: functional }).run(
+      () => {
+        stack.push('executing failing functional test')
+        throw new Error('Failing')
+      }
+    )
+    createTest('passing functional test', emitter, refiner, new Error(), { suite: functional }).run(
+      () => {
+        stack.push('executing passing functional test')
+      }
+    )
 
     await runner()
       .configure({
@@ -653,19 +658,31 @@ test.describe('Runner | bail', () => {
     const group2 = createTestGroup('group 2', emitter, refiner, { suite: unit })
     group2.bail()
 
-    createTest('failing group 1 test', emitter, refiner, { suite: unit, group: group1 }).run(() => {
+    createTest('failing group 1 test', emitter, refiner, new Error(), {
+      suite: unit,
+      group: group1,
+    }).run(() => {
       stack.push('executing failing group 1 test')
       throw new Error('Failing')
     })
-    createTest('passing group 1 test', emitter, refiner, { suite: unit, group: group1 }).run(() => {
+    createTest('passing group 1 test', emitter, refiner, new Error(), {
+      suite: unit,
+      group: group1,
+    }).run(() => {
       stack.push('executing passing group 1 test')
     })
 
-    createTest('failing group 2 test', emitter, refiner, { suite: unit, group: group2 }).run(() => {
+    createTest('failing group 2 test', emitter, refiner, new Error(), {
+      suite: unit,
+      group: group2,
+    }).run(() => {
       stack.push('executing failing group 2 test')
       throw new Error('Failing')
     })
-    createTest('passing group 1 test', emitter, refiner, { suite: unit, group: group2 }).run(() => {
+    createTest('passing group 1 test', emitter, refiner, new Error(), {
+      suite: unit,
+      group: group2,
+    }).run(() => {
       stack.push('executing passing group 2 test')
     })
 
@@ -683,6 +700,143 @@ test.describe('Runner | bail', () => {
 
     await wrapAssertions(async () => {
       assert.deepEqual(stack, ['executing failing group 1 test', 'executing failing group 2 test'])
+    })
+  })
+})
+
+test.describe('Runner | disallowPinnedTests plugin', () => {
+  test('fail when one or more tests are pinned', async () => {
+    const stack: string[] = []
+    let fatalError: Error
+
+    const emitter = new Emitter()
+    const refiner = new Refiner()
+
+    const suite = new Suite('same', emitter, refiner)
+    createTest('pinned test', emitter, refiner, new Error(), { suite })
+      .run(() => {
+        stack.push('executing pinned test')
+      })
+      .pin()
+
+    createTest('passing test', emitter, refiner, new Error(), { suite }).run(() => {
+      stack.push('executing passing test')
+    })
+
+    try {
+      await runner()
+        .configure({
+          files: [],
+          refiner,
+          reporters: {
+            activated: [],
+            list: [],
+          },
+          plugins: [disallowPinnedTests()],
+        })
+        .useEmitter(emitter)
+        .runSuites(() => [suite])
+    } catch (error) {
+      fatalError = error
+    }
+
+    await wrapAssertions(async () => {
+      assert.equal(
+        fatalError.message,
+        'Pinning test is disallowed by the "disallowPinnedTests" plugin. Use --list-pinned flag to list pinned tests'
+      )
+      assert.deepEqual(stack, [])
+    })
+  })
+
+  test('use custom error message', async () => {
+    const stack: string[] = []
+    let fatalError: Error
+
+    const emitter = new Emitter()
+    const refiner = new Refiner()
+
+    const suite = new Suite('same', emitter, refiner)
+    createTest('pinned test', emitter, refiner, new Error(), { suite })
+      .run(() => {
+        stack.push('executing pinned test')
+      })
+      .pin()
+
+    createTest('passing test', emitter, refiner, new Error(), { suite }).run(() => {
+      stack.push('executing passing test')
+    })
+
+    try {
+      await runner()
+        .configure({
+          files: [],
+          refiner,
+          reporters: {
+            activated: [],
+            list: [],
+          },
+          plugins: [
+            disallowPinnedTests({
+              errorMessage: '{{test}} cannot be pinned',
+            }),
+          ],
+        })
+        .useEmitter(emitter)
+        .runSuites(() => [suite])
+    } catch (error) {
+      fatalError = error
+    }
+
+    await wrapAssertions(async () => {
+      assert.equal(fatalError.message, 'pinned test cannot be pinned')
+      assert.deepEqual(stack, [])
+    })
+  })
+
+  test('do not fail when disallow option is disabled', async () => {
+    const stack: string[] = []
+    let fatalError: Error
+
+    const emitter = new Emitter()
+    const refiner = new Refiner()
+
+    const suite = new Suite('same', emitter, refiner)
+    createTest('pinned test', emitter, refiner, new Error(), { suite })
+      .run(() => {
+        stack.push('executing pinned test')
+      })
+      .pin()
+
+    createTest('passing test', emitter, refiner, new Error(), { suite }).run(() => {
+      stack.push('executing passing test')
+    })
+
+    try {
+      await runner()
+        .configure({
+          files: [],
+          refiner,
+          reporters: {
+            activated: [],
+            list: [],
+          },
+          plugins: [
+            disallowPinnedTests({
+              disallow: false,
+              errorMessage: '{{test}} cannot be pinned',
+            }),
+          ],
+        })
+        .useEmitter(emitter)
+        .runSuites(() => [suite])
+    } catch (error) {
+      fatalError = error
+    }
+
+    await wrapAssertions(async () => {
+      assert.isUndefined(fatalError)
+      assert.deepEqual(stack, ['executing pinned test'])
     })
   })
 })

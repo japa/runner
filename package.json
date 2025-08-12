@@ -16,6 +16,7 @@
     ".": "./build/index.js",
     "./types": "./build/src/types.js",
     "./reporters": "./build/src/reporters/main.js",
+    "./plugins": "./build/src/plugins/main.js",
     "./factories": "./build/factories/main.js",
     "./core": "./build/modules/core/main.js"
   },
@@ -60,6 +61,7 @@
     "@japa/errors-printer": "^4.1.3",
     "@poppinss/colors": "^4.1.5",
     "@poppinss/hooks": "^7.2.6",
+    "@poppinss/string": "^1.7.0",
     "fast-glob": "^3.3.3",
     "find-cache-directory": "^6.0.0",
     "getopts": "^2.3.0",
@@ -91,6 +93,7 @@
     "entry": [
       "./index.ts",
       "./src/types.ts",
+      "./src/plugins/main.ts",
       "./src/reporters/main.ts",
       "./factories/main.ts",
       "./modules/core/main.ts"

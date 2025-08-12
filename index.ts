@@ -67,8 +67,15 @@ const executionPlanState: {
  */
 export function test(title: string, callback?: TestExecutor<TestContext, undefined>) {
   validator.ensureIsInPlanningPhase(executionPlanState.phase)
+  const debuggingError = new Error()
 
-  const testInstance = createTest(title, emitter, runnerConfig!.refiner, executionPlanState)
+  const testInstance = createTest(
+    title,
+    emitter,
+    runnerConfig!.refiner,
+    debuggingError,
+    executionPlanState
+  )
   testInstance.setup((t) => {
     activeTest = t
     return () => {
@@ -77,7 +84,7 @@ export function test(title: string, callback?: TestExecutor<TestContext, undefin
   })
 
   if (callback) {
-    testInstance.run(callback, new Error())
+    testInstance.run(callback, debuggingError)
   }
 
   return testInstance
