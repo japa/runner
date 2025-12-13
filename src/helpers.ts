@@ -12,9 +12,9 @@ import useColors from '@poppinss/colors'
 import { fileURLToPath } from 'node:url'
 import supportsColor from 'supports-color'
 import { parse } from 'error-stack-parser-es'
-import { Colors } from '@poppinss/colors/types'
+import { type Colors } from '@poppinss/colors/types'
 
-import { Group, Runner, Test } from '../modules/core/main.js'
+import { Group, type Runner, type Test } from '../modules/core/main.js'
 
 export const colors: Colors = supportsColor.stdout ? useColors.ansi() : useColors.silent()
 

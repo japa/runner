@@ -1,5 +1,5 @@
 import assert from 'node:assert'
-import { Suite, Emitter, Refiner } from '../modules/core/main.js'
+import { Suite, type Emitter, type Refiner } from '../modules/core/main.js'
 import { createTest, createTestGroup } from '../src/create_test.js'
 
 /**

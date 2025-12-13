@@ -7,7 +7,14 @@
  * file that was distributed with this source code.
  */
 
-import { Emitter, Group, Refiner, Suite, Test, TestContext } from '../modules/core/main.js'
+import {
+  type Emitter,
+  Group,
+  type Refiner,
+  type Suite,
+  Test,
+  TestContext,
+} from '../modules/core/main.js'
 
 /**
  * Function to create the test context for the test

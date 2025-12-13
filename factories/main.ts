@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-import { ReporterContract } from '../src/types.js'
+import { type ReporterContract } from '../src/types.js'
 import { RunnerFactory } from './runner.js'
 
 /**

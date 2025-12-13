@@ -10,7 +10,7 @@
 import Hooks from '@poppinss/hooks'
 import type { Runner as HooksRunner } from '@poppinss/hooks/types'
 
-import { Runner } from '../modules/core/main.js'
+import { type Runner } from '../modules/core/main.js'
 import type { HooksEvents, SetupHookState, NormalizedConfig, TeardownHookState } from './types.js'
 
 /**

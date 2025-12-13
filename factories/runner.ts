@@ -14,7 +14,7 @@ import { GlobalHooks } from '../src/hooks.js'
 import { CliParser } from '../src/cli_parser.js'
 import { createTest } from '../src/create_test.js'
 import { ConfigManager } from '../src/config_manager.js'
-import { Suite, Runner, Emitter, TestContext, Refiner } from '../modules/core/main.js'
+import { Suite, Runner, Emitter, type TestContext, type Refiner } from '../modules/core/main.js'
 import type {
   Config,
   CLIArgs,

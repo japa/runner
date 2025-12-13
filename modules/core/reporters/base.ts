@@ -10,7 +10,7 @@
 import ms from 'ms'
 import { ErrorsPrinter } from '@japa/errors-printer'
 
-import { Emitter, Runner } from '../main.js'
+import { type Emitter, type Runner } from '../main.js'
 import { colors } from '../../../src/helpers.js'
 import type {
   TestEndNode,

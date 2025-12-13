@@ -8,8 +8,8 @@
  */
 
 import { ErrorsPrinter } from '@japa/errors-printer'
-import { Emitter } from '../modules/core/main.js'
-import { RunnerEvents } from '../src/types.js'
+import { type Emitter } from '../modules/core/main.js'
+import { type RunnerEvents } from '../src/types.js'
 
 export async function wrapAssertions(fn: () => void | Promise<void>) {
   try {

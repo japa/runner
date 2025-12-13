@@ -12,13 +12,13 @@ import { test } from 'node:test'
 
 import { wrapAssertions } from './helpers.js'
 import {
-  TestEndNode,
-  GroupEndNode,
-  GroupOptions,
-  SuiteEndNode,
-  RunnerSummary,
-  TestStartNode,
-  SuiteStartNode,
+  type TestEndNode,
+  type GroupEndNode,
+  type GroupOptions,
+  type SuiteEndNode,
+  type RunnerSummary,
+  type TestStartNode,
+  type SuiteStartNode,
 } from '../modules/core/types.js'
 import {
   Test,

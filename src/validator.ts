@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-import { NormalizedConfig } from './types.js'
+import { type NormalizedConfig } from './types.js'
 
 /**
  * Validator encapsulates the validations to perform before running

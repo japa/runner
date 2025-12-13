@@ -22,7 +22,14 @@ import { ConfigManager } from './src/config_manager.js'
 import { ExceptionsManager } from './src/exceptions_manager.js'
 import { createTest, createTestGroup } from './src/create_test.js'
 import type { CLIArgs, Config, NormalizedConfig } from './src/types.js'
-import { Emitter, Group, Runner, Suite, Test, TestContext } from './modules/core/main.js'
+import {
+  Emitter,
+  type Group,
+  Runner,
+  Suite,
+  type Test,
+  type TestContext,
+} from './modules/core/main.js'
 
 type OmitFirstArg<F> = F extends [_: any, ...args: infer R] ? R : never
 

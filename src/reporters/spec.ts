@@ -12,7 +12,7 @@ import { relative } from 'node:path'
 
 import { colors, icons } from '../helpers.js'
 import { BaseReporter } from '../../modules/core/main.js'
-import { GroupStartNode, TestEndNode } from '../../modules/core/types.js'
+import { type GroupStartNode, type TestEndNode } from '../../modules/core/types.js'
 
 /**
  * Pretty prints the tests on the console
