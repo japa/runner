@@ -1,7 +1,7 @@
 {
   "name": "@japa/runner",
   "description": "A simple yet powerful testing framework for Node.js",
-  "version": "4.4.0",
+  "version": "5.0.0",
   "engines": {
     "node": ">=18.16.0"
   },
