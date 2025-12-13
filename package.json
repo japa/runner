@@ -61,7 +61,6 @@
     "@poppinss/hooks": "^7.3.0",
     "@poppinss/string": "^1.7.1",
     "error-stack-parser-es": "^1.0.5",
-    "fast-glob": "^3.3.3",
     "find-cache-directory": "^6.0.0",
     "getopts": "^2.3.0",
     "supports-color": "^10.2.2"

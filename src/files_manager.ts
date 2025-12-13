@@ -7,8 +7,9 @@
  * file that was distributed with this source code.
  */
 
+import { join } from 'node:path'
 import string from '@poppinss/string'
-import fastGlob from 'fast-glob'
+import { glob } from 'node:fs/promises'
 import { pathToFileURL } from 'node:url'
 import type { TestFiles } from './types.js'
 
@@ -29,13 +30,18 @@ export class FilesManager {
    */
   async getFiles(cwd: string, files: TestFiles, excludes: string[]): Promise<URL[]> {
     if (Array.isArray(files) || typeof files === 'string') {
-      const testFiles = await fastGlob(files, {
-        absolute: true,
-        onlyFiles: true,
+      const matchingFiles = glob(files, {
+        withFileTypes: false,
         cwd: cwd,
-        ignore: excludes,
+        exclude: excludes,
       })
-      return testFiles.map((file) => pathToFileURL(file))
+
+      const testFiles = await Array.fromAsync(matchingFiles)
+      return testFiles
+        .sort((current, next) => {
+          return current.localeCompare(next, undefined, { numeric: true, sensitivity: 'base' })
+        })
+        .map((file) => pathToFileURL(join(cwd, file)))
     }
 
     return await files()

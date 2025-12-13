@@ -129,6 +129,9 @@ test.describe('Files manager | getFiles', () => {
 
     await wrapAssertions(() => {
       assert.deepEqual(files, [
+        new URL('modules/core/main.ts', cwd),
+        new URL('modules/core/reporters/base.ts', cwd),
+        new URL('modules/core/types.ts', cwd),
         new URL('tests/base_reporter.spec.ts', cwd),
         new URL('tests/cli_parser.spec.ts', cwd),
         new URL('tests/config_manager.spec.ts', cwd),
@@ -138,9 +141,6 @@ test.describe('Files manager | getFiles', () => {
         new URL('tests/helpers.spec.ts', cwd),
         new URL('tests/planner.spec.ts', cwd),
         new URL('tests/runner.spec.ts', cwd),
-        new URL('modules/core/main.ts', cwd),
-        new URL('modules/core/types.ts', cwd),
-        new URL('modules/core/reporters/base.ts', cwd),
       ])
     })
   })
