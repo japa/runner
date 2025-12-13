@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-import ms from 'ms'
+import string from '@poppinss/string'
 import { ErrorsPrinter } from '@japa/errors-printer'
 
 import { type Emitter, type Runner } from '../main.js'
@@ -85,7 +85,7 @@ export abstract class BaseReporter {
         },
         {
           key: colors.dim('Time'),
-          value: colors.dim(ms(summary.duration)),
+          value: colors.dim(string.milliseconds.format(summary.duration)),
         },
       ]
     })

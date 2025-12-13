@@ -7,8 +7,8 @@
  * file that was distributed with this source code.
  */
 
-import slash from 'slash'
 import { relative } from 'node:path'
+import string from '@poppinss/string'
 import { stripVTControlCharacters } from 'node:util'
 import { ErrorsPrinter } from '@japa/errors-printer'
 import { BaseReporter } from '../../modules/core/main.js'
@@ -80,7 +80,7 @@ export class GithubReporter extends BaseReporter {
     return this.formatMessage({
       command: 'error',
       properties: {
-        file: slash(relative(process.cwd(), mainFrame.fileName!)),
+        file: string.toUnixSlash(relative(process.cwd(), mainFrame.fileName!)),
         title: error.title,
         line: String(mainFrame.lineNumber!),
         column: String(mainFrame.columnNumber!),

@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-import ms from 'ms'
+import string from '@poppinss/string'
 import { relative } from 'node:path'
 
 import { colors, icons } from '../helpers.js'
@@ -117,7 +117,9 @@ export class SpecReporter extends BaseReporter {
     const message = this.#getTestMessage(payload)
     const prefix = payload.isPinned ? colors.yellow('[PINNED] ') : ''
     const indentation = this.currentFileName || this.currentGroupName ? '  ' : ''
-    const duration = colors.dim(`(${ms(Number(payload.duration.toFixed(2)))})`)
+    const duration = colors.dim(
+      `(${string.milliseconds.format(Number(payload.duration.toFixed(2)))})`
+    )
     const retries =
       payload.retryAttempt && payload.retryAttempt > 1
         ? colors.dim(`(x${payload.retryAttempt}) `)

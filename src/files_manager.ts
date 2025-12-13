@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-import slash from 'slash'
+import string from '@poppinss/string'
 import fastGlob from 'fast-glob'
 import { pathToFileURL } from 'node:url'
 import type { TestFiles } from './types.js'
@@ -47,7 +47,7 @@ export class FilesManager {
    */
   grep(files: URL[], filters: string[]): URL[] {
     return files.filter((file) => {
-      const filename = slash(file.pathname)
+      const filename = string.toUnixSlash(file.pathname)
       const filenameWithoutTestSuffix = filename.replace(FILE_SUFFIX_EXPRESSION, '')
 
       return !!filters.find((filter) => {
