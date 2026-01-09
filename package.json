@@ -62,6 +62,7 @@
     "@poppinss/colors": "^4.1.5",
     "@poppinss/hooks": "^7.2.6",
     "@poppinss/string": "^1.7.0",
+    "@poppinss/utils": "7.0.0-next.6",
     "error-stack-parser-es": "^1.0.5",
     "fast-glob": "^3.3.3",
     "find-cache-directory": "^6.0.0",

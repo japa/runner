@@ -9,6 +9,7 @@
 
 import debug from './debug.js'
 import { Refiner } from '../modules/core/main.js'
+import { isRunningInAIAgent } from '@poppinss/utils'
 import { dot, github, ndjson, spec } from './reporters/main.js'
 import type { CLIArgs, Config, Filters, NormalizedBaseConfig, NormalizedConfig } from './types.js'
 
@@ -24,7 +25,9 @@ const DEFAULTS = {
   forceExit: false,
   plugins: [],
   reporters: {
-    activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
+    activated: isRunningInAIAgent()
+      ? ['dot']
+      : ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
     list: [spec(), ndjson(), dot(), github()],
   },
   importer: (filePath) => import(filePath.href),
