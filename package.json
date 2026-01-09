@@ -58,6 +58,7 @@
     "@japa/core": "^10.4.0",
     "@japa/errors-printer": "^4.1.4",
     "@poppinss/colors": "^4.1.6",
+    "@poppinss/utils": "7.0.0-next.6",
     "@poppinss/hooks": "^7.3.0",
     "@poppinss/string": "^1.7.1",
     "error-stack-parser-es": "^1.0.5",
