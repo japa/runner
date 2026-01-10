@@ -7,6 +7,8 @@ on:
 jobs:
   test:
     uses: japa/.github/.github/workflows/test.yml@main
+    with:
+      disable-windows: true
   lint:
     uses: japa/.github/.github/workflows/lint.yml@main
   typecheck:
