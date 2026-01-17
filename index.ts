@@ -16,7 +16,7 @@ import validator from './src/validator.js'
 import { Planner } from './src/planner.js'
 import { GlobalHooks } from './src/hooks.js'
 import { CliParser } from './src/cli_parser.js'
-import { printPinnedTests } from './src/helpers.js'
+import { dateTimeDoubles, printPinnedTests } from './src/helpers.js'
 import { retryPlugin } from './src/plugins/retry.js'
 import { ConfigManager } from './src/config_manager.js'
 import { ExceptionsManager } from './src/exceptions_manager.js'
@@ -353,3 +353,17 @@ export async function run() {
     }
   }
 }
+
+export const timeTravel = test.macro(($test, durationOrTime: string | number | Date) => {
+  $test.cleanup(() => {
+    dateTimeDoubles.reset()
+  })
+  dateTimeDoubles.travelTo(durationOrTime)
+})
+
+export const freezeTime = test.macro(($test, date?: Date) => {
+  $test.cleanup(() => {
+    dateTimeDoubles.reset()
+  })
+  dateTimeDoubles.freeze(date)
+})

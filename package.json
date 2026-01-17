@@ -64,7 +64,8 @@
     "error-stack-parser-es": "^1.0.5",
     "find-cache-directory": "^6.0.0",
     "getopts": "^2.3.0",
-    "supports-color": "^10.2.2"
+    "supports-color": "^10.2.2",
+    "timekeeper": "^2.3.1"
   },
   "homepage": "https://github.com/japa/runner#readme",
   "repository": {
