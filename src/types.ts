@@ -53,7 +53,17 @@ export type CLIArgs = {
   listPinned?: boolean
   bail?: boolean
   bailLayer?: string
+  shard?: string
 } & Record<string, string | string[] | boolean>
+
+/**
+ * The shard to run when splitting test files across multiple
+ * processes or CI jobs. Both values are 1-based.
+ */
+export type Shard = {
+  current: number
+  total: number
+}
 
 /**
  * Set of filters you can apply to run only specific tests
@@ -61,6 +71,7 @@ export type CLIArgs = {
 export type Filters = FilteringOptions & {
   files?: string[]
   suites?: string[]
+  shard?: Shard
 }
 
 /**

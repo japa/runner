@@ -661,3 +661,111 @@ test.describe('Planner | refinerFilters', () => {
     })
   })
 })
+
+test.describe('Planner | shard', () => {
+  test('split files across shards in round-robin order', async () => {
+    const shards = await Promise.all(
+      [1, 2, 3].map(async (current) => {
+        const config = new ConfigManager(
+          { files: ['tests/**/*.spec.ts'], filters: { shard: { current, total: 3 } } },
+          {}
+        ).hydrate()
+        const { suites } = await new Planner(config).plan()
+        return suites[0].filesURLs
+      })
+    )
+
+    await wrapAssertions(() => {
+      assert.deepEqual(shards, [
+        [
+          new URL('../tests/base_reporter.spec.ts', import.meta.url),
+          new URL('../tests/core.spec.ts', import.meta.url),
+          new URL('../tests/helpers.spec.ts', import.meta.url),
+        ],
+        [
+          new URL('../tests/cli_parser.spec.ts', import.meta.url),
+          new URL('../tests/files_manager.spec.ts', import.meta.url),
+          new URL('../tests/planner.spec.ts', import.meta.url),
+        ],
+        [
+          new URL('../tests/config_manager.spec.ts', import.meta.url),
+          new URL('../tests/github_reporter.spec.ts', import.meta.url),
+          new URL('../tests/runner.spec.ts', import.meta.url),
+        ],
+      ])
+    })
+  })
+
+  test('continue shard index across suites', async () => {
+    const config = new ConfigManager(
+      {
+        suites: [
+          { name: 'unit', files: 'tests/*_manager.spec.ts' },
+          { name: 'functional', files: 'tests/cli_parser.spec.ts' },
+        ],
+        filters: { shard: { current: 1, total: 2 } },
+      },
+      {}
+    ).hydrate()
+    const { suites } = await new Planner(config).plan()
+
+    await wrapAssertions(() => {
+      assert.deepEqual(
+        suites.map(({ name, filesURLs }) => ({ name, filesURLs })),
+        [
+          {
+            name: 'unit',
+            filesURLs: [new URL('../tests/config_manager.spec.ts', import.meta.url)],
+          },
+          {
+            name: 'functional',
+            filesURLs: [new URL('../tests/cli_parser.spec.ts', import.meta.url)],
+          },
+        ]
+      )
+    })
+  })
+
+  test('apply shard after the files filter', async () => {
+    const config = new ConfigManager(
+      {
+        files: ['tests/**/*.spec.ts'],
+        filters: { files: ['manager'], shard: { current: 2, total: 2 } },
+      },
+      {}
+    ).hydrate()
+    const { suites } = await new Planner(config).plan()
+
+    await wrapAssertions(() => {
+      assert.deepEqual(suites[0].filesURLs, [
+        new URL('../tests/files_manager.spec.ts', import.meta.url),
+      ])
+    })
+  })
+
+  test('use shard defined via CLI flag', async () => {
+    const config = new ConfigManager({ files: ['tests/**/*.spec.ts'] }, { shard: '2/3' }).hydrate()
+    const { suites } = await new Planner(config).plan()
+
+    await wrapAssertions(() => {
+      assert.deepEqual(suites[0].filesURLs, [
+        new URL('../tests/cli_parser.spec.ts', import.meta.url),
+        new URL('../tests/files_manager.spec.ts', import.meta.url),
+        new URL('../tests/planner.spec.ts', import.meta.url),
+      ])
+    })
+  })
+
+  test('report error when shard is invalid', async () => {
+    for (let shard of ['0/4', '5/4', '1/0', '1', 'a/b', '-1/4', '1.5/4']) {
+      const config = new ConfigManager({ files: ['tests/**/*.spec.ts'] }, { shard }).hydrate()
+
+      await wrapAssertions(() => {
+        assert.throws(
+          () => new Planner(config),
+          'Invalid shard. Expected "current/total" where both are positive integers and current is not greater than total. For example: --shard=1/4'
+        )
+      })
+    }
+  })
+})

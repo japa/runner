@@ -11,7 +11,14 @@ import debug from './debug.js'
 import { Refiner } from '../modules/core/main.js'
 import { isRunningInAIAgent } from '@poppinss/utils'
 import { dot, github, ndjson, spec } from './reporters/main.js'
-import type { CLIArgs, Config, Filters, NormalizedBaseConfig, NormalizedConfig } from './types.js'
+import type {
+  CLIArgs,
+  Config,
+  Filters,
+  NormalizedBaseConfig,
+  NormalizedConfig,
+  Shard,
+} from './types.js'
 
 export const NOOP = () => {}
 
@@ -63,6 +70,18 @@ export class ConfigManager {
   }
 
   /**
+   * Parses the shard CLI argument defined as "current/total". Values
+   * not matching the format are converted to NaN, so that the
+   * validator can report them.
+   */
+  #processShard(value: string): Shard {
+    const match = String(value).match(/^(\d+)\/(\d+)$/)
+    return match
+      ? { current: Number(match[1]), total: Number(match[2]) }
+      : { current: Number.NaN, total: Number.NaN }
+  }
+
+  /**
    * Returns a copy of filters based upon the CLI
    * arguments.
    */
@@ -80,6 +99,9 @@ export class ConfigManager {
     }
     if (this.#cliArgs.groups) {
       filters.groups = this.#processAsArray(this.#cliArgs.groups, false)
+    }
+    if (this.#cliArgs.shard) {
+      filters.shard = this.#processShard(this.#cliArgs.shard)
     }
     if (this.#cliArgs._ && this.#cliArgs._.length) {
       filters.suites = this.#processAsArray(this.#cliArgs._, true)

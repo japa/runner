@@ -68,6 +68,29 @@ class Validator {
   }
 
   /**
+   * Ensures the shard filter has positive integer values and the
+   * current shard is within the total number of shards
+   */
+  validateShardFilter(config: NormalizedConfig) {
+    const shard = config.filters.shard
+    if (!shard) {
+      return
+    }
+
+    const isValid =
+      Number.isInteger(shard.current) &&
+      Number.isInteger(shard.total) &&
+      shard.current >= 1 &&
+      shard.current <= shard.total
+
+    if (!isValid) {
+      throw new Error(
+        `Invalid shard. Expected "current/total" where both are positive integers and current is not greater than total. For example: --shard=1/4`
+      )
+    }
+  }
+
+  /**
    * Ensure there are unique suites
    */
   validateSuitesForUniqueness(config: NormalizedConfig) {
