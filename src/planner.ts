@@ -24,6 +24,7 @@ export class Planner {
     validator.validateActivatedReporters(config!)
     validator.validateSuitesFilter(config!)
     validator.validateSuitesForUniqueness(config!)
+    validator.validateShardFilter(config!)
     this.#config = config
   }
 
@@ -48,6 +49,27 @@ export class Planner {
     }
 
     return filesURLs
+  }
+
+  /**
+   * Keeps the test files of the current shard. Files are distributed in
+   * round-robin order and the index continues across suites, so every
+   * shard gets a similar slice of each suite.
+   */
+  #applyShard(suites: (TestSuite & { filesURLs: URL[] })[]) {
+    const shard = this.#config.filters.shard
+    if (!shard) {
+      return
+    }
+
+    let index = 0
+    for (let suite of suites) {
+      suite.filesURLs = suite.filesURLs.filter(() => {
+        const belongsToShard = index % shard.total === shard.current - 1
+        index++
+        return belongsToShard
+      })
+    }
   }
 
   /**
@@ -79,6 +101,7 @@ export class Planner {
       }
     }
 
+    this.#applyShard(suites)
     return suites
   }
 

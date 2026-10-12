@@ -17,7 +17,17 @@ import type { CLIArgs } from './types.js'
  * will be parsed aswell, but without any normalization
  */
 const OPTIONS = {
-  string: ['tests', 'groups', 'tags', 'files', 'timeout', 'retries', 'reporters', 'bailLayer'],
+  string: [
+    'tests',
+    'groups',
+    'tags',
+    'files',
+    'timeout',
+    'retries',
+    'reporters',
+    'bailLayer',
+    'shard',
+  ],
   boolean: ['help', 'matchAll', 'failed', 'bail', 'listPinned'],
   alias: {
     forceExit: 'force-exit',
@@ -47,6 +57,7 @@ ${colors.green('--reporters')}                 ${colors.dim('Activate one or mor
 ${colors.green('--failed')}                    ${colors.dim('Run tests failed during the last run')}
 ${colors.green('--bail')}                      ${colors.dim('Exit early when a test fails')}
 ${colors.green('--bail-layer')}                ${colors.dim('Specify at which layer to enable the bail mode. Can be "group" or "suite"')}
+${colors.green('--shard')}                     ${colors.dim('Run a subset of test files. Must be in "current/total" format')}
 ${colors.green('-h, --help')}                  ${colors.dim('View help')}
 
 ${colors.yellow('Examples:')}
@@ -60,6 +71,7 @@ ${colors.dim('node bin/test.js --files="unit/user"')}
 ${colors.dim('node bin/test.js --failed')}
 ${colors.dim('node bin/test.js --bail')}
 ${colors.dim('node bin/test.js --bail=group')}
+${colors.dim('node bin/test.js --shard=1/4')}
 
 ${colors.yellow('Notes:')}
 - When groups and tests filters are applied together. We will first filter the
@@ -69,6 +81,7 @@ ${colors.yellow('Notes:')}
 - The ${colors.green('--files')} flag checks for the file names ending with the filter substring.
 - The ${colors.green('--tags')} filter runs tests that has one or more of the supplied tags.
 - You can use the ${colors.green('--match-all')} flag to run tests that has all the supplied tags.
+- The ${colors.green('--shard')} flag splits test files (not tests) after applying the ${colors.green('--files')} filter.
 `
 
 /**
