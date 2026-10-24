@@ -11,6 +11,11 @@ Japa
 
 #### 💁 Please visit https://japa.dev for documentation
 
+#### 🤖 Running tests from an agent
+
+See [AGENT_LOOP.md](AGENT_LOOP.md) for selection caches, `--changed`, failure
+baselines and machine-readable output.
+
 <br />
 <hr>
 

@@ -7,8 +7,12 @@
  * file that was distributed with this source code.
  */
 
+import { createHash } from 'node:crypto'
+import { relative } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import validator from './validator.js'
 import { FilesManager } from './files_manager.js'
+import { getSelectionPlan, setSelectionStats } from './planning_state.js'
 import type { NamedReporterContract, NormalizedConfig, TestFiles, TestSuite } from './types.js'
 
 /**
@@ -19,6 +23,7 @@ import type { NamedReporterContract, NormalizedConfig, TestFiles, TestSuite } fr
 export class Planner {
   #config: NormalizedConfig
   #fileManager = new FilesManager()
+  #collected = 0
 
   constructor(config: NormalizedConfig) {
     validator.validateActivatedReporters(config!)
@@ -48,7 +53,29 @@ export class Planner {
       filesURLs = this.#fileManager.grep(filesURLs, this.#config.filters.files)
     }
 
-    return filesURLs
+    const collected = filesURLs.length
+    const selected = this.#applySelectionIndex(filesURLs)
+    this.#collected += collected
+    return selected
+  }
+
+  /**
+   * Drop files that the selection index proved cannot match the active filters,
+   * and remember which files it has seen. A file the index has never seen is
+   * always kept: a file added since the last indexed run must never be dropped.
+   */
+  #applySelectionIndex(filesURLs: URL[]) {
+    const selection = getSelectionPlan(this.#config)
+    if (!selection) return filesURLs
+    const only = selection.only ? new Set<string>(selection.only) : undefined
+    const onlyWithin = selection.onlyWithin ? new Set<string>(selection.onlyWithin) : undefined
+    const scope = new Set<string>(selection.skipWithin ?? [])
+    const skip = new Set<string>(selection.skip ?? [])
+    return filesURLs.filter((url) => {
+      const path = relative(this.#config.cwd, fileURLToPath(url)).split('\\').join('/')
+      if (only) return only.has(path) || (onlyWithin !== undefined && !onlyWithin.has(path))
+      return !scope.has(path) || !skip.has(path)
+    })
   }
 
   /**
@@ -62,6 +89,11 @@ export class Planner {
       return
     }
 
+    if (Object.keys(this.#config.shardDurations).length) {
+      this.#applyBalancedShard(suites, shard)
+      return
+    }
+
     let index = 0
     for (let suite of suites) {
       suite.filesURLs = suite.filesURLs.filter(() => {
@@ -70,6 +102,53 @@ export class Planner {
         return belongsToShard
       })
     }
+  }
+
+  /** Assign longest estimated files first, then retain original import order. */
+  #applyBalancedShard(
+    suites: (TestSuite & { filesURLs: URL[] })[],
+    shard: { current: number; total: number }
+  ) {
+    const durations = this.#config.shardDurations
+    const known = Object.values(durations)
+      .filter((value) => value > 0)
+      .sort((a, b) => a - b)
+    const fallback = known[Math.floor(known.length / 2)] ?? 1
+    const files = suites.flatMap((suite, suiteIndex) =>
+      suite.filesURLs.map((url, fileIndex) => {
+        const path = relative(this.#config.cwd, fileURLToPath(url)).split('\\').join('/')
+        return {
+          suiteIndex,
+          fileIndex,
+          duration: durations[`${suite.name}:${path}`] ?? durations[path] ?? fallback,
+        }
+      })
+    )
+    const loads = Array.from({ length: Math.min(shard.total, files.length) }, () => ({
+      duration: 0,
+      count: 0,
+    }))
+    const selected = new Set<string>()
+    for (const file of files.sort(
+      (a, b) => b.duration - a.duration || a.suiteIndex - b.suiteIndex || a.fileIndex - b.fileIndex
+    )) {
+      let worker = 0
+      for (let i = 1; i < loads.length; i++) {
+        if (
+          loads[i].duration < loads[worker].duration ||
+          (loads[i].duration === loads[worker].duration && loads[i].count < loads[worker].count)
+        )
+          worker = i
+      }
+      loads[worker].duration += file.duration
+      loads[worker].count++
+      if (worker === shard.current - 1) selected.add(`${file.suiteIndex}:${file.fileIndex}`)
+    }
+    suites.forEach((suite, suiteIndex) => {
+      suite.filesURLs = suite.filesURLs.filter((_, fileIndex) =>
+        selected.has(`${suiteIndex}:${fileIndex}`)
+      )
+    })
   }
 
   /**
@@ -102,6 +181,22 @@ export class Planner {
     }
 
     this.#applyShard(suites)
+    const plannedFiles = suites
+      .flatMap((suite) =>
+        suite.filesURLs.map((url) =>
+          relative(this.#config.cwd, fileURLToPath(url)).split('\\').join('/')
+        )
+      )
+      .sort()
+    setSelectionStats(this.#config, {
+      collected: this.#collected,
+      planned: plannedFiles.length,
+      // Same files under a different title, group or tag filter are a different selection.
+      signature: createHash('sha256')
+        .update(JSON.stringify([plannedFiles, ...this.#getRefinerFilters()]))
+        .digest('hex')
+        .slice(0, 16),
+    })
     return suites
   }
 

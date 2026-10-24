@@ -144,3 +144,85 @@ test.describe('Base reporter', () => {
     })
   })
 })
+
+test.describe('Reporter output buffering', () => {
+  test('batch writes, flush failures in order, and avoid duplicate flushes', async () => {
+    const { OutputBuffer } = await import('../src/reporters/output_buffer.js')
+    const writes: string[] = []
+    const output = new OutputBuffer(true, (message) => {
+      writes.push(message)
+    })
+    output.write('pass\n')
+    output.write('pass\n')
+    assert.deepEqual(writes, [])
+    output.write('failure\n', true)
+    assert.deepEqual(writes, ['pass\npass\nfailure\n'])
+    output.flush()
+    assert.lengthOf(writes, 1)
+  })
+
+  test('bound batch size and flush progress on a timer', async () => {
+    const { OutputBuffer } = await import('../src/reporters/output_buffer.js')
+    const writes: string[] = []
+    const output = new OutputBuffer(true, (message) => {
+      writes.push(message)
+    })
+    output.write('x'.repeat(8192))
+    assert.lengthOf(writes, 1)
+    output.write('progress')
+    await new Promise((resolve) => setTimeout(resolve, 40))
+    assert.deepEqual(writes, ['x'.repeat(8192), 'progress'])
+    output.flush()
+  })
+
+  test('flush remaining output before the reporter end hook', async () => {
+    const writes: string[] = []
+    class BufferedReporter extends BaseReporter {
+      protected async start() {
+        this.output.write('pending')
+      }
+      protected async end() {
+        assert.deepEqual(writes, ['pending'])
+      }
+      constructor() {
+        super({ bufferOutput: true })
+        // Test the buffer without changing the process stdout shared by other tests.
+        this.output = new BufferForTest(true, (message) => {
+          writes.push(message)
+        })
+      }
+    }
+    const { OutputBuffer: BufferForTest } = await import('../src/reporters/output_buffer.js')
+    const runner = new Runner(new Emitter())
+    runner.registerReporter((r, e) => new BufferedReporter().boot(r, e))
+    await runner.start()
+    await runner.end()
+  })
+})
+
+test('duration reporter writes suite-qualified file estimates at runner end', async (context) => {
+  const { mkdtemp, readFile, rm } = await import('node:fs/promises')
+  const { fileURLToPath } = await import('node:url')
+  const { fileDurations } = await import('../src/reporters/main.js')
+  const directory = await mkdtemp(fileURLToPath(new URL('../.durations-', import.meta.url)))
+  context.after(() => rm(directory, { recursive: true, force: true }))
+  const output = `${directory}/durations.json`
+  const emitter = new Emitter()
+  const runner = new Runner(emitter)
+  const refiner = new Refiner()
+  const suite = new Suite('unit', emitter, refiner)
+  for (const title of ['first', 'second']) {
+    const instance = new Test(title, (t) => new TestContext(t), emitter, refiner)
+    instance.options.meta.fileName = '/tests/a.spec.ts'
+    instance.run(() => {})
+    suite.add(instance)
+  }
+  runner.add(suite)
+  runner.registerReporter(fileDurations({ output, cwd: '/' }))
+  await runner.start()
+  await runner.exec()
+  await runner.end()
+  const durations = JSON.parse(await readFile(output, 'utf8')) as Record<string, number>
+  assert.deepEqual(Object.keys(durations), ['unit:tests/a.spec.ts'])
+  assert.isAtLeast(durations['unit:tests/a.spec.ts'], 0)
+})

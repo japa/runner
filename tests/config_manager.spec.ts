@@ -7,6 +7,7 @@
  * file that was distributed with this source code.
  */
 
+import { isRunningInAIAgent } from '@poppinss/utils'
 import { assert } from 'chai'
 import { test } from 'node:test'
 import { Refiner } from '@japa/core'
@@ -17,6 +18,11 @@ import type { CLIArgs, Config } from '../src/types.js'
 import { ConfigManager, NOOP } from '../src/config_manager.js'
 import { ndjson, spec, dot, github } from '../src/reporters/main.js'
 
+/** The runner picks `dot` inside an AI agent (CLAUDECODE, AI_AGENT, ...), so the suite must too. */
+const DEFAULT_ACTIVATED = isRunningInAIAgent()
+  ? ['dot']
+  : ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : [])
+
 const USER_DEFINED_CONFIG_DATASET: [Config, Config][] = [
   [
     {
@@ -24,13 +30,16 @@ const USER_DEFINED_CONFIG_DATASET: [Config, Config][] = [
     },
     {
       cwd: process.cwd(),
+      captureTestLocations: true,
+      shardDurations: {},
+      selection: {},
       files: [],
       filters: {},
       exclude: ['node_modules/**', '.git/**', 'coverage/**'],
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
-        activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
+        activated: DEFAULT_ACTIVATED,
         list: [spec(), ndjson(), dot(), github()],
       },
       setup: [],
@@ -46,13 +55,16 @@ const USER_DEFINED_CONFIG_DATASET: [Config, Config][] = [
     },
     {
       cwd: process.cwd(),
+      captureTestLocations: true,
+      shardDurations: {},
+      selection: {},
       files: ['tests/unit/**.spec.ts'],
       filters: {},
       exclude: ['node_modules/**', '.git/**', 'coverage/**'],
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
-        activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
+        activated: DEFAULT_ACTIVATED,
         list: [spec(), ndjson(), dot(), github()],
       },
       plugins: [],
@@ -69,13 +81,16 @@ const USER_DEFINED_CONFIG_DATASET: [Config, Config][] = [
     },
     {
       cwd: process.cwd(),
+      captureTestLocations: true,
+      shardDurations: {},
+      selection: {},
       files: ['tests/unit/**.spec.ts'],
       filters: {},
       exclude: ['node_modules/**', '.git/**', 'coverage/**'],
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
-        activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
+        activated: DEFAULT_ACTIVATED,
         list: [spec(), ndjson(), dot(), github()],
       },
       plugins: [],
@@ -93,13 +108,16 @@ const USER_DEFINED_CONFIG_DATASET: [Config, Config][] = [
     },
     {
       cwd: process.cwd(),
+      captureTestLocations: true,
+      shardDurations: {},
+      selection: {},
       files: ['tests/unit/**.spec.ts'],
       filters: {},
       exclude: ['node_modules/**', '.git/**', 'coverage/**'],
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
-        activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
+        activated: DEFAULT_ACTIVATED,
         list: [spec(), ndjson(), dot(), github()],
       },
       plugins: [],
@@ -117,13 +135,16 @@ const USER_DEFINED_CONFIG_DATASET: [Config, Config][] = [
     },
     {
       cwd: process.cwd(),
+      captureTestLocations: true,
+      shardDurations: {},
+      selection: {},
       files: ['tests/unit/**.spec.ts'],
       filters: {},
       exclude: ['node_modules/**', '.git/**', 'coverage/**'],
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
-        activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
+        activated: DEFAULT_ACTIVATED,
         list: [spec(), ndjson(), dot(), github()],
       },
       plugins: [],
@@ -145,6 +166,9 @@ const USER_DEFINED_CONFIG_DATASET: [Config, Config][] = [
     },
     {
       cwd: process.cwd(),
+      captureTestLocations: true,
+      shardDurations: {},
+      selection: {},
       files: ['tests/unit/**.spec.ts'],
       filters: {
         tags: ['@integration', '~@slow'],
@@ -154,7 +178,7 @@ const USER_DEFINED_CONFIG_DATASET: [Config, Config][] = [
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
-        activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
+        activated: DEFAULT_ACTIVATED,
         list: [spec(), ndjson(), dot(), github()],
       },
       plugins: [],
@@ -177,6 +201,9 @@ const USER_DEFINED_CONFIG_DATASET: [Config, Config][] = [
     },
     {
       cwd: process.cwd(),
+      captureTestLocations: true,
+      shardDurations: {},
+      selection: {},
       files: ['tests/unit/**.spec.ts'],
       filters: {
         tags: ['@integration', '~@slow'],
@@ -186,7 +213,7 @@ const USER_DEFINED_CONFIG_DATASET: [Config, Config][] = [
       forceExit: true,
       refiner: new Refiner(),
       reporters: {
-        activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
+        activated: DEFAULT_ACTIVATED,
         list: [spec(), ndjson(), dot(), github()],
       },
       plugins: [],
@@ -206,6 +233,9 @@ const USER_DEFINED_CONFIG_DATASET: [Config, Config][] = [
     },
     {
       cwd: process.cwd(),
+      captureTestLocations: true,
+      shardDurations: {},
+      selection: {},
       files: [],
       filters: {},
       exclude: ['node_modules/**', '.git/**', 'coverage/**'],
@@ -231,6 +261,9 @@ const USER_DEFINED_CONFIG_DATASET: [Config, Config][] = [
     },
     {
       cwd: process.cwd(),
+      captureTestLocations: true,
+      shardDurations: {},
+      selection: {},
       files: [],
       filters: {},
       exclude: ['node_modules/**', '.git/**', 'coverage/**'],
@@ -257,13 +290,16 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
     new CliParser().parse([]),
     {
       cwd: process.cwd(),
+      captureTestLocations: true,
+      shardDurations: {},
+      selection: {},
       files: [],
       filters: {},
       exclude: ['node_modules/**', '.git/**', 'coverage/**'],
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
-        activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
+        activated: DEFAULT_ACTIVATED,
         list: [spec(), ndjson(), dot(), github()],
       },
       plugins: [],
@@ -280,6 +316,9 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
     new CliParser().parse(['--tags=@slow']),
     {
       cwd: process.cwd(),
+      captureTestLocations: true,
+      shardDurations: {},
+      selection: {},
       files: ['tests/unit/**.spec.ts'],
       filters: {
         tags: ['@slow'],
@@ -288,7 +327,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
-        activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
+        activated: DEFAULT_ACTIVATED,
         list: [spec(), ndjson(), dot(), github()],
       },
       plugins: [],
@@ -306,13 +345,16 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
     new CliParser().parse(['--timeout=1000']),
     {
       cwd: process.cwd(),
+      captureTestLocations: true,
+      shardDurations: {},
+      selection: {},
       files: ['tests/unit/**.spec.ts'],
       filters: {},
       exclude: ['node_modules/**', '.git/**', 'coverage/**'],
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
-        activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
+        activated: DEFAULT_ACTIVATED,
         list: [spec(), ndjson(), dot(), github()],
       },
       plugins: [],
@@ -336,6 +378,9 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
     new CliParser().parse(['--timeout=1000']),
     {
       cwd: process.cwd(),
+      captureTestLocations: true,
+      shardDurations: {},
+      selection: {},
       suites: [
         {
           name: 'unit',
@@ -350,7 +395,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
-        activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
+        activated: DEFAULT_ACTIVATED,
         list: [spec(), ndjson(), dot(), github()],
       },
       plugins: [],
@@ -369,13 +414,16 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
     new CliParser().parse(['--retries=4']),
     {
       cwd: process.cwd(),
+      captureTestLocations: true,
+      shardDurations: {},
+      selection: {},
       files: ['tests/unit/**.spec.ts'],
       filters: {},
       exclude: ['node_modules/**', '.git/**', 'coverage/**'],
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
-        activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
+        activated: DEFAULT_ACTIVATED,
         list: [spec(), ndjson(), dot(), github()],
       },
       plugins: [],
@@ -399,6 +447,9 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
     new CliParser().parse(['--retries=4']),
     {
       cwd: process.cwd(),
+      captureTestLocations: true,
+      shardDurations: {},
+      selection: {},
       suites: [
         {
           name: 'unit',
@@ -413,7 +464,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
-        activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
+        activated: DEFAULT_ACTIVATED,
         list: [spec(), ndjson(), dot(), github()],
       },
       plugins: [],
@@ -432,13 +483,16 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
     new CliParser().parse(['--timeout=1000', '--retries=4']),
     {
       cwd: process.cwd(),
+      captureTestLocations: true,
+      shardDurations: {},
+      selection: {},
       files: ['tests/unit/**.spec.ts'],
       filters: {},
       exclude: ['node_modules/**', '.git/**', 'coverage/**'],
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
-        activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
+        activated: DEFAULT_ACTIVATED,
         list: [spec(), ndjson(), dot(), github()],
       },
       plugins: [],
@@ -461,6 +515,9 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
     new CliParser().parse(['--tags=@slow']),
     {
       cwd: process.cwd(),
+      captureTestLocations: true,
+      shardDurations: {},
+      selection: {},
       files: ['tests/unit/**.spec.ts'],
       filters: {
         tags: ['@slow'],
@@ -470,7 +527,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
-        activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
+        activated: DEFAULT_ACTIVATED,
         list: [spec(), ndjson(), dot(), github()],
       },
       plugins: [],
@@ -494,6 +551,9 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
     new CliParser().parse(['--tests=users']),
     {
       cwd: process.cwd(),
+      captureTestLocations: true,
+      shardDurations: {},
+      selection: {},
       files: ['tests/unit/**.spec.ts'],
       filters: {
         tags: ['@integration', '~@slow'],
@@ -503,7 +563,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       forceExit: true,
       refiner: new Refiner(),
       reporters: {
-        activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
+        activated: DEFAULT_ACTIVATED,
         list: [spec(), ndjson(), dot(), github()],
       },
       plugins: [],
@@ -527,6 +587,9 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
     new CliParser().parse(['--groups=customers']),
     {
       cwd: process.cwd(),
+      captureTestLocations: true,
+      shardDurations: {},
+      selection: {},
       files: ['tests/unit/**.spec.ts'],
       filters: {
         tags: ['@integration', '~@slow'],
@@ -536,7 +599,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       forceExit: true,
       refiner: new Refiner(),
       reporters: {
-        activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
+        activated: DEFAULT_ACTIVATED,
         list: [spec(), ndjson(), dot(), github()],
       },
       plugins: [],
@@ -560,6 +623,9 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
     new CliParser().parse(['--files=*']),
     {
       cwd: process.cwd(),
+      captureTestLocations: true,
+      shardDurations: {},
+      selection: {},
       files: ['tests/unit/**.spec.ts'],
       filters: {
         tags: ['@integration', '~@slow'],
@@ -569,7 +635,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       forceExit: true,
       refiner: new Refiner(),
       reporters: {
-        activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
+        activated: DEFAULT_ACTIVATED,
         list: [spec(), ndjson(), dot(), github()],
       },
       plugins: [],
@@ -594,6 +660,9 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
     new CliParser().parse(['unit', 'functional']),
     {
       cwd: process.cwd(),
+      captureTestLocations: true,
+      shardDurations: {},
+      selection: {},
       files: ['tests/unit/**.spec.ts'],
       filters: {
         tags: ['@integration', '~@slow'],
@@ -604,7 +673,7 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
       forceExit: true,
       refiner: new Refiner(),
       reporters: {
-        activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
+        activated: DEFAULT_ACTIVATED,
         list: [spec(), ndjson(), dot(), github()],
       },
       plugins: [],
@@ -625,6 +694,9 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
     new CliParser().parse(['--reporters', 'progress']),
     {
       cwd: process.cwd(),
+      captureTestLocations: true,
+      shardDurations: {},
+      selection: {},
       files: [],
       filters: {},
       exclude: ['node_modules/**', '.git/**', 'coverage/**'],
@@ -645,20 +717,23 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
     {
       files: [],
       reporters: {
-        activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
+        activated: DEFAULT_ACTIVATED,
         list: [spec()],
       },
     },
     new CliParser().parse(['--force-exit']),
     {
       cwd: process.cwd(),
+      captureTestLocations: true,
+      shardDurations: {},
+      selection: {},
       files: [],
       filters: {},
       exclude: ['node_modules/**', '.git/**', 'coverage/**'],
       forceExit: true,
       refiner: new Refiner(),
       reporters: {
-        activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
+        activated: DEFAULT_ACTIVATED,
         list: [spec()],
       },
       plugins: [],
@@ -672,20 +747,23 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
     {
       files: [],
       reporters: {
-        activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
+        activated: DEFAULT_ACTIVATED,
         list: [spec()],
       },
     },
     new CliParser().parse(['--force-exit=true']),
     {
       cwd: process.cwd(),
+      captureTestLocations: true,
+      shardDurations: {},
+      selection: {},
       files: [],
       filters: {},
       exclude: ['node_modules/**', '.git/**', 'coverage/**'],
       forceExit: true,
       refiner: new Refiner(),
       reporters: {
-        activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
+        activated: DEFAULT_ACTIVATED,
         list: [spec()],
       },
       plugins: [],
@@ -699,20 +777,23 @@ const USER_DEFINED_CONFIG_DATASET_WITH_CLI_ARGS: [Config, CLIArgs, Config][] = [
     {
       files: [],
       reporters: {
-        activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
+        activated: DEFAULT_ACTIVATED,
         list: [spec()],
       },
     },
     new CliParser().parse(['--force-exit=false']),
     {
       cwd: process.cwd(),
+      captureTestLocations: true,
+      shardDurations: {},
+      selection: {},
       files: [],
       filters: {},
       exclude: ['node_modules/**', '.git/**', 'coverage/**'],
       forceExit: false,
       refiner: new Refiner(),
       reporters: {
-        activated: ['spec'].concat(process.env.GITHUB_ACTIONS === 'true' ? ['github'] : []),
+        activated: DEFAULT_ACTIVATED,
         list: [spec()],
       },
       plugins: [],

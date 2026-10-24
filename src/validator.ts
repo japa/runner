@@ -72,6 +72,13 @@ class Validator {
    * current shard is within the total number of shards
    */
   validateShardFilter(config: NormalizedConfig) {
+    for (const [file, duration] of Object.entries(config.shardDurations)) {
+      if (!Number.isFinite(duration) || duration < 0) {
+        throw new Error(
+          `Invalid shard duration for "${file}": expected a finite non-negative number`
+        )
+      }
+    }
     const shard = config.filters.shard
     if (!shard) {
       return

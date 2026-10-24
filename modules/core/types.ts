@@ -11,4 +11,6 @@ export * from '@japa/core/types'
 
 export type BaseReporterOptions = {
   framesMaxLimit?: number
+  /** Batch human-readable output for up to 25ms. Defaults to false. */
+  bufferOutput?: boolean
 }

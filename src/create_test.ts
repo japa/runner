@@ -28,7 +28,7 @@ export function createTest(
   title: string,
   emitter: Emitter,
   refiner: Refiner,
-  debuggingError: Error,
+  debuggingError: Error | null,
   options: {
     group?: Group
     suite?: Suite
@@ -42,8 +42,9 @@ export function createTest(
   testInstance.options.meta.group = options.group
   testInstance.options.meta.fileName = options.file
   testInstance.options.meta.abort = (message: string) => {
-    debuggingError.message = message
-    throw debuggingError
+    const error = debuggingError ?? new Error()
+    error.message = message
+    throw error
   }
 
   if (options.timeout !== undefined) {

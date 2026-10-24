@@ -19,6 +19,9 @@ import type { TestFiles } from './types.js'
  */
 const FILE_SUFFIX_EXPRESSION = /(\.spec|\.test)?\.[js|ts|jsx|tsx|mjs|mts|cjs|cts]+$/
 
+// Reuse the collator rather than resolving locale options for every comparison.
+const FILE_COLLATOR = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' })
+
 /**
  * Files manager exposes the API to collect, filter and import test
  * files based upon the config
@@ -37,11 +40,7 @@ export class FilesManager {
       })
 
       const testFiles = await Array.fromAsync(matchingFiles)
-      return testFiles
-        .sort((current, next) => {
-          return current.localeCompare(next, undefined, { numeric: true, sensitivity: 'base' })
-        })
-        .map((file) => pathToFileURL(join(cwd, file)))
+      return testFiles.sort(FILE_COLLATOR.compare).map((file) => pathToFileURL(join(cwd, file)))
     }
 
     return await files()
@@ -52,22 +51,27 @@ export class FilesManager {
    * URLs
    */
   grep(files: URL[], filters: string[]): URL[] {
+    const compiledFilters = filters.map((filter) => ({
+      value: filter,
+      segments: filter.split('/').reverse(),
+    }))
+
     return files.filter((file) => {
       const filename = string.toUnixSlash(file.pathname)
       const filenameWithoutTestSuffix = filename.replace(FILE_SUFFIX_EXPRESSION, '')
 
-      return !!filters.find((filter) => {
-        if (filename.endsWith(filter)) {
+      const fileSegments = filenameWithoutTestSuffix.split('/').reverse()
+
+      // Keep find's original truthiness behavior when a filter is an empty string.
+      return !!compiledFilters.find(({ value, segments }) => {
+        if (filename.endsWith(value)) {
           return true
         }
 
-        const filterSegments = filter.split('/').reverse()
-        const fileSegments = filenameWithoutTestSuffix.split('/').reverse()
-
-        return filterSegments.every((segment, index) => {
+        return segments.every((segment, index) => {
           return fileSegments[index] && (segment === '*' || fileSegments[index].endsWith(segment))
         })
-      })
+      })?.value
     })
   }
 }

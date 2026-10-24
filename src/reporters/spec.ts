@@ -24,6 +24,14 @@ export class SpecReporter extends BaseReporter {
    */
   #isFirstLoneTest = true
 
+  #writeLine(message: string, immediate = false) {
+    if (this.options.bufferOutput) {
+      this.output.write(`${message}\n`, immediate)
+    } else {
+      console.log(message)
+    }
+  }
+
   /**
    * Returns the icon for the test
    */
@@ -128,7 +136,10 @@ export class SpecReporter extends BaseReporter {
     let subText = this.#getSubText(payload)
     subText = subText ? `\n${indentation}  ${subText}` : ''
 
-    console.log(`${indentation}${icon} ${prefix}${retries}${message} ${duration}${subText}`)
+    this.#writeLine(
+      `${indentation}${icon} ${prefix}${retries}${message} ${duration}${subText}`,
+      payload.hasError
+    )
   }
 
   /**
@@ -144,7 +155,7 @@ export class SpecReporter extends BaseReporter {
       ? colors.dim(` (${this.#getRelativeFilename(this.currentFileName)})`)
       : ''
 
-    console.log(`\n${title}${suffix}`)
+    this.#writeLine(`\n${title}${suffix}`)
   }
 
   protected onTestStart(): void {
@@ -156,7 +167,7 @@ export class SpecReporter extends BaseReporter {
      * - Test is first in a sequence
      */
     if (this.currentFileName && this.#isFirstLoneTest) {
-      console.log(`\n${colors.dim(this.#getRelativeFilename(this.currentFileName))}`)
+      this.#writeLine(`\n${colors.dim(this.#getRelativeFilename(this.currentFileName))}`)
     }
     this.#isFirstLoneTest = false
   }

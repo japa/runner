@@ -9,6 +9,8 @@
 
 import { assert } from 'chai'
 import { test } from 'node:test'
+import { mkdtemp, rm, writeFile } from 'node:fs/promises'
+import { join } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 
 import { FilesManager } from '../src/files_manager.js'
@@ -90,6 +92,22 @@ const FILTERING_DATASET: { files: URL[]; filters: string[]; output: URL[] }[] = 
 ]
 
 test.describe('Files manager | grep', () => {
+  test('preserve suffix, wildcard, empty and URL-encoded filter behavior', () => {
+    const files = [
+      pathToFileURL('/tests/unit/user2.spec.ts'),
+      pathToFileURL('/tests/unit/user10.spec.ts'),
+      pathToFileURL('/tests/functional/user.spec.ts'),
+      pathToFileURL('/tests/unit/café user.spec.ts'),
+    ]
+    const manager = new FilesManager()
+    assert.deepEqual(manager.grep(files, ['unit/user2', 'functional/*']), [files[0], files[2]])
+    assert.deepEqual(manager.grep(files, ['user10.spec.ts']), [files[1]])
+    assert.deepEqual(manager.grep(files, ['caf%C3%A9%20user']), [files[3]])
+    assert.deepEqual(manager.grep(files, []), [])
+    assert.deepEqual(manager.grep(files, ['', 'user2']), [])
+    assert.deepEqual(manager.grep(files, ['user2', '']), [files[0]])
+  })
+
   test('apply filter on the file name', async () => {
     for (let { files, filters, output } of FILTERING_DATASET) {
       await wrapAssertions(() => {
@@ -100,6 +118,17 @@ test.describe('Files manager | grep', () => {
 })
 
 test.describe('Files manager | getFiles', () => {
+  test('preserve locale-aware numeric ordering used by shards', async (context) => {
+    const cwd = await mkdtemp(fileURLToPath(new URL('../.files-manager-', import.meta.url)))
+    context.after(() => rm(cwd, { recursive: true, force: true }))
+    const names = ['test10.spec.ts', 'test2.spec.ts', 'Test1.spec.ts', 'café.spec.ts', 'z.spec.ts']
+    await Promise.all(names.map((name) => writeFile(join(cwd, name), '')))
+    const expected = [...names]
+      .sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }))
+      .map((name) => pathToFileURL(join(cwd, name)))
+    assert.deepEqual(await new FilesManager().getFiles(cwd, '*.spec.ts', []), expected)
+  })
+
   test('get files for the glob pattern', async () => {
     const cwd = new URL('../', import.meta.url)
     const files = await new FilesManager().getFiles(fileURLToPath(cwd), ['tests/**/*.spec.ts'], [])

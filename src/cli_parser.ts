@@ -27,13 +27,34 @@ const OPTIONS = {
     'reporters',
     'bailLayer',
     'shard',
+    'changed',
+    'agentFile',
+    'cacheDir',
   ],
-  boolean: ['help', 'matchAll', 'failed', 'bail', 'listPinned'],
+  boolean: [
+    'help',
+    'matchAll',
+    'failed',
+    'bail',
+    'listPinned',
+    'allowKnownFailures',
+    'updateBaseline',
+    'reporterAgent',
+    'prepareCaches',
+    'failedNew',
+  ],
   alias: {
     forceExit: 'force-exit',
     matchAll: 'match-all',
     listPinned: 'list-pinned',
     bailLayer: 'bail-layer',
+    allowKnownFailures: 'allow-known-failures',
+    updateBaseline: 'update-baseline',
+    reporterAgent: 'agent',
+    agentFile: 'agent-file',
+    cacheDir: 'cache-dir',
+    prepareCaches: 'prepare-caches',
+    failedNew: 'failed-new',
     help: 'h',
   },
 }
@@ -58,6 +79,14 @@ ${colors.green('--failed')}                    ${colors.dim('Run tests failed du
 ${colors.green('--bail')}                      ${colors.dim('Exit early when a test fails')}
 ${colors.green('--bail-layer')}                ${colors.dim('Specify at which layer to enable the bail mode. Can be "group" or "suite"')}
 ${colors.green('--shard')}                     ${colors.dim('Run a subset of test files. Must be in "current/total" format')}
+${colors.green('--allow-known-failures')}      ${colors.dim('Exit 0 when the only failures are recorded in japa.baseline.json')}
+${colors.green('--update-baseline')}           ${colors.dim("Record this run's failures as the new japa.baseline.json")}
+${colors.green('--agent')}                     ${colors.dim('Print machine-readable NDJSON results instead of a terminal report; setup/planning failures exit 2')}
+${colors.green('--changed')}                   ${colors.dim('Run only files affected by the given changed paths, or "auto" for git changes')}
+${colors.green('--failed-new')}                ${colors.dim('With --failed, skip failures already recorded in japa.baseline.json')}
+${colors.green('--prepare-caches')}            ${colors.dim('Build the selection and dependency caches without running tests')}
+${colors.green('--agent-file')}                ${colors.dim('Write agent JSON lines to a file instead of stdout')}
+${colors.green('--cache-dir')}                  ${colors.dim('Directory for the selection and dependency caches (default node_modules/.cache/japa)')}
 ${colors.green('-h, --help')}                  ${colors.dim('View help')}
 
 ${colors.yellow('Examples:')}

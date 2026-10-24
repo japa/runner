@@ -48,9 +48,9 @@
     "cross-env": "^10.1.0",
     "del-cli": "^7.0.0",
     "eslint": "^9.39.2",
+    "fast-check": "^4.10.2",
     "prettier": "^3.8.0",
     "release-it": "^19.2.3",
-    "serialize-error": "^13.0.0",
     "tsdown": "^0.19.0",
     "typescript": "^5.9.3"
   },
@@ -65,7 +65,8 @@
     "find-cache-directory": "^6.0.0",
     "getopts": "^2.3.0",
     "supports-color": "^10.2.2",
-    "timekeeper": "^2.3.1"
+    "timekeeper": "^2.3.1",
+    "serialize-error": "^13.0.0"
   },
   "homepage": "https://github.com/japa/runner#readme",
   "repository": {
@@ -93,7 +94,10 @@
       "./src/plugins/main.ts",
       "./src/reporters/main.ts",
       "./factories/main.ts",
-      "./modules/core/main.ts"
+      "./modules/core/main.ts",
+      "./src/parallel.ts",
+      "./bin/parallel.ts",
+      "./bin/agent.ts"
     ],
     "outDir": "./build",
     "clean": true,
@@ -143,5 +147,9 @@
       "src/reporters/**"
     ]
   },
-  "prettier": "@adonisjs/prettier-config"
+  "prettier": "@adonisjs/prettier-config",
+  "bin": {
+    "japa-parallel": "build/bin/parallel.js",
+    "japa-agent": "build/bin/agent.js"
+  }
 }

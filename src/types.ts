@@ -51,10 +51,48 @@ export type CLIArgs = {
   help?: boolean
   matchAll?: boolean
   listPinned?: boolean
+  allowKnownFailures?: boolean
+  updateBaseline?: boolean
+  reporterAgent?: boolean
+  changed?: string
+  prepareCaches?: boolean
+  failedNew?: boolean
+  agentFile?: string
+  cacheDir?: string
   bail?: boolean
   bailLayer?: string
   shard?: string
 } & Record<string, string | string[] | boolean>
+
+/**
+ * Map a test file to source files it depends on without importing them, such as the
+ * controller behind a route it requests. Paths are relative to `cwd` or absolute.
+ */
+export type DependencyResolver = (testFile: string) => Iterable<string> | Promise<Iterable<string>>
+
+/**
+ * Guess the tests for a changed file that no test reaches. `from` and `to` are path
+ * prefixes where each `*` stands for one path segment, e.g.
+ * `{ from: 'app/modules/*\/', to: 'tests/modules/*\/' }`.
+ */
+export type HeuristicRule = { from: string; to: string }
+
+export type SelectionOptions = {
+  /** Run while recording the dependency map; their files join the test's dependencies. */
+  resolvers?: DependencyResolver[]
+  /**
+   * When a changed path is reached by no test and is not loaded at boot, run test files
+   * named after it (`lease.ts` -> `lease.spec.ts`) plus the files the rules map it to,
+   * instead of the full suite. The selection is reported as heuristic. Off by default.
+   */
+  heuristic?: boolean | HeuristicRule[]
+  /**
+   * Path prefixes (`*` stands for one segment) whose change can affect any test even
+   * when some test imports them: config, bootstrap and route files, whose effect is
+   * loading itself. A change to one runs the full suite.
+   */
+  global?: string[]
+}
 
 /**
  * The shard to run when splitting test files across multiple
@@ -94,6 +132,15 @@ export type BaseConfig = {
    * the test files
    */
   cwd?: string
+
+  /** Capture declaration stacks for timeout/pinned-test diagnostics. Defaults to true. */
+  captureTestLocations?: boolean
+
+  /** File duration estimates in milliseconds; enables balanced sharding when nonempty. */
+  shardDurations?: Record<string, number>
+
+  /** How `--changed` places files that no import reaches. */
+  selection?: SelectionOptions
 
   /**
    * The timeout to apply on all the tests, unless overwritten explicitly

@@ -168,6 +168,9 @@ export class ConfigManager {
 
     const baseConfig: NormalizedBaseConfig = {
       cwd: this.#config.cwd ?? process.cwd(),
+      captureTestLocations: this.#config.captureTestLocations ?? true,
+      shardDurations: this.#config.shardDurations ?? {},
+      selection: this.#config.selection ?? {},
       exclude: this.#config.exclude || ['node_modules/**', '.git/**', 'coverage/**'],
       filters: Object.assign({}, this.#config.filters ?? {}, cliFilters),
       importer: this.#config.importer ?? DEFAULTS.importer,

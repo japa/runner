@@ -8,7 +8,7 @@
  */
 
 import string from '@poppinss/string'
-import { ErrorsPrinter } from '@japa/errors-printer'
+import { OutputBuffer } from '../../../src/reporters/output_buffer.js'
 
 import { type Emitter, type Runner } from '../main.js'
 import { colors } from '../../../src/helpers.js'
@@ -46,10 +46,12 @@ export abstract class BaseReporter {
    */
   currentGroupName?: string
 
+  protected output: OutputBuffer
   protected options: BaseReporterOptions
 
   constructor(options: BaseReporterOptions = {}) {
     this.options = Object.assign({ stackLinesCount: 2 }, options)
+    this.output = new OutputBuffer(options.bufferOutput)
   }
 
   /**
@@ -138,6 +140,7 @@ export abstract class BaseReporter {
       return
     }
 
+    const { ErrorsPrinter } = await import('@japa/errors-printer')
     const errorPrinter = new ErrorsPrinter({
       framesMaxLimit: this.options.framesMaxLimit,
     })
@@ -223,6 +226,7 @@ export abstract class BaseReporter {
     })
 
     emitter.on('runner:end', async (payload) => {
+      this.output.flush()
       await this.end(payload)
     })
   }

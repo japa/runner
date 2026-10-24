@@ -89,6 +89,11 @@ export function formatPinnedTest(test: Test) {
 /**
  * Prints a summary of all the pinned tests
  */
+/** CLI warning. Goes to stderr so agent JSON on stdout stays parseable. */
+export function warn(message: string) {
+  console.error(colors.yellow(message))
+}
+
 export function printPinnedTests(runner: Runner) {
   let pinnedTests: string[] = []
   runner.suites.forEach((suite) => {

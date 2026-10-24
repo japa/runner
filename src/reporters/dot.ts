@@ -32,7 +32,7 @@ export class DotReporter extends BaseReporter {
       output = colors.green(icons.tick)
     }
 
-    process.stdout.write(`${output}`)
+    this.output.write(output, payload.hasError)
   }
 
   /**

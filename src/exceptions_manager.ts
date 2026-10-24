@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-import { ErrorsPrinter } from '@japa/errors-printer'
+import type { ErrorsPrinter } from '@japa/errors-printer'
 import debug from './debug.js'
 
 /**
@@ -15,10 +15,16 @@ import debug from './debug.js'
  * console
  */
 export class ExceptionsManager {
-  #exceptionsBuffer: any[] = []
-  #rejectionsBuffer: any[] = []
+  #exceptionsBuffer: unknown[] = []
+  #rejectionsBuffer: unknown[] = []
   #state: 'watching' | 'reporting' = 'watching'
-  #errorsPrinter = new ErrorsPrinter({ stackLinesCount: 2, framesMaxLimit: 4 })
+  #errorsPrinter?: Promise<ErrorsPrinter>
+
+  #getErrorsPrinter() {
+    return (this.#errorsPrinter ??= import('@japa/errors-printer').then(
+      ({ ErrorsPrinter }) => new ErrorsPrinter({ stackLinesCount: 2, framesMaxLimit: 4 })
+    ))
+  }
 
   hasErrors: boolean = false
 
@@ -38,8 +44,10 @@ export class ExceptionsManager {
       if (this.#state === 'watching') {
         this.#exceptionsBuffer.push(error)
       } else {
-        this.#errorsPrinter.printSectionBorder('[Unhandled Error]')
-        await this.#errorsPrinter.printError(error)
+        process.exitCode = 1
+        const printer = await this.#getErrorsPrinter()
+        printer.printSectionBorder('[Unhandled Error]')
+        await printer.printError(error)
         process.exitCode = 1
       }
     })
@@ -50,8 +58,10 @@ export class ExceptionsManager {
       if (this.#state === 'watching') {
         this.#rejectionsBuffer.push(error)
       } else {
-        this.#errorsPrinter.printSectionBorder('[Unhandled Rejection]')
-        await this.#errorsPrinter.printError(error)
+        process.exitCode = 1
+        const printer = await this.#getErrorsPrinter()
+        printer.printSectionBorder('[Unhandled Rejection]')
+        await printer.printError(error)
         process.exitCode = 1
       }
     })
@@ -63,6 +73,8 @@ export class ExceptionsManager {
     }
 
     this.#state = 'reporting'
+    if (!this.#exceptionsBuffer.length && !this.#rejectionsBuffer.length) return
+    const printer = await this.#getErrorsPrinter()
 
     /**
      * Print exceptions
@@ -70,10 +82,10 @@ export class ExceptionsManager {
     if (this.#exceptionsBuffer.length) {
       let exceptionsCount = this.#exceptionsBuffer.length
       let exceptionsIndex = this.#exceptionsBuffer.length
-      this.#errorsPrinter.printSectionHeader('Unhandled Errors')
+      printer.printSectionHeader('Unhandled Errors')
       for (let exception of this.#exceptionsBuffer) {
-        await this.#errorsPrinter.printError(exception)
-        this.#errorsPrinter.printSectionBorder(`[${++exceptionsIndex}/${exceptionsCount}]`)
+        await printer.printError(exception)
+        printer.printSectionBorder(`[${++exceptionsIndex}/${exceptionsCount}]`)
       }
       this.#exceptionsBuffer = []
     }
@@ -84,10 +96,10 @@ export class ExceptionsManager {
     if (this.#rejectionsBuffer.length) {
       let rejectionsCount = this.#exceptionsBuffer.length
       let rejectionsIndex = this.#exceptionsBuffer.length
-      this.#errorsPrinter.printSectionBorder('Unhandled Rejections')
+      printer.printSectionBorder('Unhandled Rejections')
       for (let rejection of this.#rejectionsBuffer) {
-        await this.#errorsPrinter.printError(rejection)
-        this.#errorsPrinter.printSectionBorder(`[${++rejectionsIndex}/${rejectionsCount}]`)
+        await printer.printError(rejection)
+        printer.printSectionBorder(`[${++rejectionsIndex}/${rejectionsCount}]`)
       }
       this.#rejectionsBuffer = []
     }

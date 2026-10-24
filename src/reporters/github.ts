@@ -10,7 +10,7 @@
 import { relative } from 'node:path'
 import string from '@poppinss/string'
 import { stripVTControlCharacters } from 'node:util'
-import { ErrorsPrinter } from '@japa/errors-printer'
+import type { ErrorsPrinter } from '@japa/errors-printer'
 import { BaseReporter } from '../../modules/core/main.js'
 
 /**
@@ -92,6 +92,8 @@ export class GithubReporter extends BaseReporter {
   async end() {
     const summary = this.runner!.getSummary()
     const errorsList = this.aggregateErrors(summary)
+    if (!errorsList.length) return
+    const { ErrorsPrinter } = await import('@japa/errors-printer')
     const errorPrinter = new ErrorsPrinter(this.options)
 
     for (let error of errorsList) {

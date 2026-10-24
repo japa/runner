@@ -7,6 +7,7 @@
  * file that was distributed with this source code.
  */
 
+import { isRunningInAIAgent } from '@poppinss/utils'
 import { assert } from 'chai'
 import { test } from 'node:test'
 import { Planner } from '../src/planner.js'
@@ -484,10 +485,10 @@ test.describe('Planner | reporters', () => {
         [
           {
             handler: reporters[0].handler,
-            name: 'spec',
+            name: isRunningInAIAgent() ? 'dot' : 'spec',
           },
         ].concat(
-          process.env.GITHUB_ACTIONS === 'true'
+          !isRunningInAIAgent() && process.env.GITHUB_ACTIONS === 'true'
             ? [
                 {
                   handler: reporters[1].handler,
@@ -767,5 +768,80 @@ test.describe('Planner | shard', () => {
         )
       })
     }
+  })
+})
+
+test.describe('Planner | balanced shard', () => {
+  const files = ['a', 'b', 'c', 'd'].map(
+    (name) => new URL(`../tests/${name}.spec.ts`, import.meta.url)
+  )
+
+  async function shard(current: number, total: number, durations: Record<string, number>) {
+    const config = new ConfigManager(
+      { files: () => files, shardDurations: durations, filters: { shard: { current, total } } },
+      {}
+    ).hydrate()
+    const plan = await new Planner(config).plan()
+    return plan.suites[0].filesURLs
+  }
+
+  test('balance expensive files and preserve import order within each shard', async () => {
+    const durations = {
+      'tests/a.spec.ts': 10,
+      'tests/b.spec.ts': 1,
+      'tests/c.spec.ts': 9,
+      'tests/d.spec.ts': 2,
+    }
+    const shards = await Promise.all([1, 2].map((current) => shard(current, 2, durations)))
+    assert.deepEqual(shards, [
+      [files[0], files[1]],
+      [files[2], files[3]],
+    ])
+    assert.deepEqual(shards.flat().sort(), [...files].sort())
+  })
+
+  test('distribute zero estimates and allow empty shards without duplication', async () => {
+    const durations = Object.fromEntries(['a', 'b', 'c', 'd'].map((n) => [`tests/${n}.spec.ts`, 0]))
+    const shards = await Promise.all([1, 2, 3, 4, 5].map((current) => shard(current, 5, durations)))
+    assert.deepEqual(shards, files.map((file) => [file]).concat([[]]))
+  })
+
+  test('reject non-finite or negative estimates', () => {
+    for (const value of [Number.NaN, Infinity, -1]) {
+      assert.throws(
+        () =>
+          new Planner(
+            new ConfigManager(
+              { files: [], shardDurations: { 'tests/a.spec.ts': value } },
+              {}
+            ).hydrate()
+          ),
+        /Invalid shard duration/
+      )
+    }
+  })
+
+  test('use suite-specific estimates and keep filtered-out files out of every shard', async () => {
+    const durations = {
+      'unit:tests/a.spec.ts': 10,
+      'tests/b.spec.ts': 1,
+      'tests/c.spec.ts': 9,
+      'tests/d.spec.ts': 2,
+    }
+    const shards = await Promise.all(
+      [1, 2].map(async (current) => {
+        const config = new ConfigManager(
+          {
+            suites: [{ name: 'unit', files: () => files }],
+            shardDurations: durations,
+            filters: { files: ['a', 'b', 'c'], shard: { current, total: 2 } },
+          },
+          {}
+        ).hydrate()
+        const plan = await new Planner(config).plan()
+        return plan.suites[0].filesURLs
+      })
+    )
+    assert.deepEqual(shards, [[files[0]], [files[1], files[2]]])
   })
 })
